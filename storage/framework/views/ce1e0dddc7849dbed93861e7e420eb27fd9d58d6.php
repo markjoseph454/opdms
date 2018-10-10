@@ -213,7 +213,7 @@
 <?php $__env->startSection('pagescript'); ?>
     <script src="<?php echo e(asset('public/OPDMS/vue/reception/queue.js')); ?>"></script>
     <script src="<?php echo e(asset('public/OPDMS/js/reception/notification.js')); ?>"></script>
-    <script src="<?php echo e(asset('public/OPDMS/js/reception/notification.js')); ?>"></script>
+    <script src="<?php echo e(asset('public/OPDMS/js/partials/texteditor.js')); ?>"></script>
     <script>
         $('#nurse_notes_modal').modal()
     </script>

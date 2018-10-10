@@ -248,12 +248,17 @@
 @endsection
 
 
+@section('pluginscript')
+    <script src="{{ asset('public/plugins/js/tinymce/tinymce.min.js') }}"></script>
+@endsection
 
 
 @section('pagescript')
     <script src="{{ asset('public/OPDMS/vue/reception/queue.js') }}"></script>
     <script src="{{ asset('public/OPDMS/js/reception/notification.js') }}"></script>
-    <script src="{{ asset('public/OPDMS/js/reception/notification.js') }}"></script>
+
+
+    <script src="{{ asset('public/OPDMS/js/partials/texteditor.js') }}"></script>
     <script>
         $('#nurse_notes_modal').modal()
     </script>

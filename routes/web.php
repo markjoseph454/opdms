@@ -674,7 +674,7 @@ Route::post('get_all_consultation_records', 'OPDMS\ConsultationRecordsController
 Route::post('get_all_referral_records', 'OPDMS\ReferralRecordsController@get_all_referral_records');
 // get all followup records of this patient for showing on medical records modal
 Route::post('get_all_followup_records', 'OPDMS\FollowupRecordsController@get_all_followup_records');
-// show the selected consultationdasds
+// show the selected consultation
 Route::post('show_consultation', 'OPDMS\ConsultationRecordsController@show_consultation');
 
 
