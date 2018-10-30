@@ -354,11 +354,6 @@
                         </div>
                         <div class="modal-body">
                             <form class="scanbarcode">
-                                <div class="form-group">
-                                    <input type="text" name="barcode" class="form-control barcodeinput" 
-                                    placeholder="Enter Patient QRcode/Hospital no" autofocus required />
-                                    <br><br>
-                                </div>
                                 <label class="error_msg" style="color: red;font-size: 12px;display: none;">patient classification expired 
                                     <a href="#" class="continue" style="color: rgb(35, 82, 124);cursor: pointer;"> &nbsp;&nbsp; <b>continue</b> </a> 
                                 </label>
@@ -367,6 +362,12 @@
                                 </label>
                                 <label class="error_ms" style="color: red;font-size: 12px;display: none;">
                                 </label>
+                                <div class="form-group">
+                                    <input type="text" name="barcode" class="form-control barcodeinput" 
+                                    placeholder="Enter Patient QRcode/Hospital no" autofocus required />
+                                    <br><br>
+                                </div>
+                                
                             </form>
                             <br/>
                             <br/>

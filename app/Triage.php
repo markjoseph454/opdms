@@ -12,4 +12,8 @@ class Triage extends Model
         'patients_id', 'users_id', 'clinic_code', 'finished'
     ];
 
+    public function getColumn(){
+      return $this->fillable;
+    }
+
 }

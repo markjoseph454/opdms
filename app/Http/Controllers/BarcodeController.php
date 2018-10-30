@@ -52,6 +52,8 @@ class BarcodeController extends Controller
 
 
         PDF::SetTitle('HOSPITAL CARD');
+        for ($i=0; $i < 10; $i++) { 
+            
         PDF::addPage('l',array(85.60,53.98));
         PDF::SetAutoPageBreak(TRUE, 0);
         PDF::Rect(0, 0, 90, 60,'F',array(),array(255,255,255));
@@ -110,6 +112,8 @@ class BarcodeController extends Controller
         PDF::Text(11,40,"If found, please return to EVRMC Tacloban City");
         PDF::Text(6,43,"EVRMC HOTLINES: Globe 09955215282, Sun 09338781851");
         PDF::Text(29.5,46,"Smart 09983489054, T.M 09367360504");
+        }
+        
         //PDF::IncludeJS("print();");
         PDF::Output();
         return;

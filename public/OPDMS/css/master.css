@@ -45,7 +45,7 @@
 
 /*--- For Loader Icon ---*/
 .loaderRefresh{
-    z-index: 99999;
+    z-index: 100;
     position: absolute;
     background: rgba(255, 255, 255, 0.7);
     top: 0;

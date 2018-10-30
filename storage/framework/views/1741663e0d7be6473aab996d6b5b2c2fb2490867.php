@@ -49,6 +49,8 @@
 
         <?php if(Auth::user()->role == 5): ?> 
             <?php echo $__env->make('OPDMS.reception.roles', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+        <?php elseif(Auth::user()->role == 1): ?> 
+            <?php echo $__env->make('OPDMS.patients.roles', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
         <?php endif; ?>
 
 

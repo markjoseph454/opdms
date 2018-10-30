@@ -48,6 +48,8 @@
 
         @if(Auth::user()->role == 5) {{-- Reception --}}
             @include('OPDMS.reception.roles')
+        @elseif(Auth::user()->role == 1) {{-- roles --}}
+            @include('OPDMS.patients.roles')
         @endif
 
 

@@ -27,21 +27,5 @@ $( function() {
 });
 
 
-$(document).ready(function () {
-	$('.birthday').on('change', function(){
-		var birthday = $(this).val();
-			if (birthday != "") {
-				var today = new Date();
-				var birthDate = new Date(birthday);
-				var age = today.getFullYear() - birthDate.getFullYear();
-				var m = today.getMonth() - birthDate.getMonth();
-				if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-				  age--;
-				}
-				$('#age').val(age)
-			}else{
-				return;
-			}
-	});
-});
+
 

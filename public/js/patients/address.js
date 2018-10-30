@@ -36,7 +36,7 @@ $(document).ready(function () {
 				$("select[name='region']").append(option);
 			}
 			showProvince('08');
-			errorHide();
+			// errorHide();
 			//$("#address").val(region);
 		}
 	});
@@ -53,62 +53,62 @@ $(document).ready(function () {
 /*----------------------- PROVINCE ------------------------*/
 
 
-	function showProvince($scope){
-			$("select[name='province']").find('option').first().text('Loading...');
+function showProvince($scope){
+		$("select[name='province']").find('option').first().text('Loading...');
 
+		$("select[name='province']").find('option').first().nextUntil().remove();
+		$("select[name='city_municipality']").find('option').first().nextUntil().remove();
+		$("select[name='brgy']").find('option').first().nextUntil().remove();
+
+		if ($scope == '08') {
+			var regCode = '08';
+			region = $("select[name='region'] option[value="+regCode+"]").text();
+		}else{
+			var regCode = $($scope).val();
+			region = $("select[name='region'] option[value="+regCode+"]").text();
+			$("#address").val(region);
+		}
+
+		request = $.ajax({
+			url: baseUrl+"/province",
+			type: "post",
+			headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+			data: {'regCode':regCode},
+			dataType: "json"
+		});
+
+		request.done(function (response, textStatus, jqXHR) {
 			$("select[name='province']").find('option').first().nextUntil().remove();
-			$("select[name='city_municipality']").find('option').first().nextUntil().remove();
-			$("select[name='brgy']").find('option').first().nextUntil().remove();
-
-			if ($scope == '08') {
-				var regCode = '08';
-				region = $("select[name='region'] option[value="+regCode+"]").text();
-			}else{
-				var regCode = $($scope).val();
-				region = $("select[name='region'] option[value="+regCode+"]").text();
-				$("#address").val(region);
-			}
-
-			request = $.ajax({
-				url: baseUrl+"/province",
-				type: "post",
-				headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-				data: {'regCode':regCode},
-				dataType: "json"
-			});
-
-			request.done(function (response, textStatus, jqXHR) {
-				$("select[name='province']").find('option').first().nextUntil().remove();
-				if (response.length > 0) {
-					for (var i = 0 ; i < response.length; i++) {
-						var option = $('<option>').val(response[i].provCode).text(response[i].provDesc);
-						$("select[name='province']").append(option);
-					}
-					$("select[name='province']").focus();
-					var spin = $('<i class="fa fa-spinner fa-spin text-success">');
-					$('.provinceLabel').append(spin);
-					errorHide();
+			if (response.length > 0) {
+				for (var i = 0 ; i < response.length; i++) {
+					var option = $('<option>').val(response[i].provCode).text(response[i].provDesc);
+					$("select[name='province']").append(option);
 				}
-			});
-
-			request.fail(function (jqXHR, textStatus, errorThrown){
-		       console.log("The following error occured: "+ jqXHR, textStatus, errorThrown);
-		   	});
-
-		   	request.always(function(){
-		   		$("select[name='province']").find('option').first().text('Select Province');
-				$('.provinceLabel').find('i').fadeOut('slow');
-		   	});
-
-	}
-
-	$(document).ready(function () {
-		$($("select[name='province']")).on('click', function () {
-			if($("select[name='region']").val() == ''){
-				$('.provinceError').fadeIn('fast');
+				$("select[name='province']").focus();
+				var spin = $('<i class="fa fa-spinner fa-spin text-success">');
+				$('.provinceLabel').append(spin);
+				errorHide();
 			}
 		});
+
+		request.fail(function (jqXHR, textStatus, errorThrown){
+	       console.log("The following error occured: "+ jqXHR, textStatus, errorThrown);
+	   	});
+
+	   	request.always(function(){
+	   		$("select[name='province']").find('option').first().text('Select Province');
+			$('.provinceLabel').find('i').fadeOut('slow');
+	   	});
+
+}
+
+$(document).ready(function () {
+	$($("select[name='province']")).on('click', function () {
+		if($("select[name='region']").val() == ''){
+			$('.provinceError').fadeIn('fast');
+		}
 	});
+});
 
 
 
@@ -249,9 +249,9 @@ $(document).ready(function () {
 
 
 
-function errorHide() {
-	$('p.text-danger').fadeOut(0);
-}
+// function errorHide() {
+// 	$('p.text-danger').fadeOut(0);
+// }
 
 
 

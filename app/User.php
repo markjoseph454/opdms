@@ -38,7 +38,7 @@ class User extends Authenticatable
                     return redirect('admittedpatient');
                     break;
                 }else{
-                    return redirect('searchpatient');
+                    return redirect('patients');
                     break;
                 }
                

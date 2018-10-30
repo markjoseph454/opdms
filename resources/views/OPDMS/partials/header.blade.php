@@ -38,7 +38,7 @@
 </head>
 
 
-<body class="hold-transition skin-blue sidebar-mini fixed">
+<body class="hold-transition skin-green sidebar-mini fixed" oncontextmenu="return false;">
 
     <div class="wrapper">
 
@@ -76,6 +76,7 @@
 
 {{--        <script src="{{ asset('public/js/app.js') }}"></script>--}}
 
+        
         <script src="{{ asset('public/OPDMS/plugins/jquery/jquery.js') }}"></script>
         <script src="{{ asset('public/OPDMS/plugins/jquery-ui/jquery-ui.min.js') }}"></script>
         <script src="{{ asset('public/OPDMS/plugins/toastr/toastr.min.js') }}"></script>
