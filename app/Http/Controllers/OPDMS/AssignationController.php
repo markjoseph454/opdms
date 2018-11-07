@@ -76,11 +76,9 @@ class AssignationController extends Controller
         $data = array();
 
         foreach($assignations as $row){
-
             if(Cache::has('active_'.$row->id)){
                 array_push($data, $row);
             }
-
         }
 
         echo json_encode($data);

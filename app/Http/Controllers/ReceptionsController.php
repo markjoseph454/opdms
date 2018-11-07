@@ -195,7 +195,7 @@ class ReceptionsController extends Controller
                 $statusArray = array(31,10,48,22,21);
 
                 /*check if patient is mss classified*/
-                 $checkIfClassified = Mssclassification::where('patients_id', '=', $patient->id)->first();
+                 /*$checkIfClassified = Mssclassification::where('patients_id', '=', $patient->id)->first();
                  if (count($checkIfClassified) > 0 || Auth::user()->clinic == 32 || Auth::user()->clinic == 43){
 
                      if (Auth::user()->clinic == 32 || Auth::user()->clinic == 43){
@@ -208,7 +208,7 @@ class ReceptionsController extends Controller
                          }
                      }
 
-                     if ($proceed){
+                     if ($proceed){*/
                         /*check if patient is already on the queue and is on the same clinic*/
                         $checkQueueList = Queue::where('patients_id', '=', $patient->id)
                             ->where('clinic_code', '=', Auth::user()->clinic)
@@ -235,14 +235,14 @@ class ReceptionsController extends Controller
                             Session::flash('toaster', array('error', 'Patient is already on the queue list.'));
                             return redirect()->back()->withInput();
                         }
-                     }else{
+                     /*}else{
                          Session::flash('toaster', array('error', 'MSS Classification already expired.'));
                          return redirect()->back()->withInput();
                      }
                  }else{
                      Session::flash('toaster', array('error', 'Patient is not yet MSS classified and will not be included in the queue list. Kindly advise the patient to proceed to MSS for classification.'));
                      return redirect()->back()->withInput();
-                 }
+                 }*/
             }else{
                 Session::flash('toaster', array('error', 'Credentials Not Found'));
                 return redirect()->back()->withInput();

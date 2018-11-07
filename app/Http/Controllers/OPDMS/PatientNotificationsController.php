@@ -97,8 +97,120 @@ class PatientNotificationsController extends Controller
 
         echo json_encode($data);
 
+    }
 
+
+
+    public function notifications_popup(Request $request)
+    {
+        $followup = DB::table('followup')
+            ->where([
+                ['followup.patients_id', $request->pid],
+                ['followup.clinic_code', Auth::user()->clinic],
+                ['followupdate', DB::raw('CURDATE()')]
+            ])
+            ->count();
+        $referrals = DB::table('refferals')
+            ->where([
+                ['refferals.patients_id', $request->pid],
+                ['refferals.to_clinic', Auth::user()->clinic],
+                ['refferals.status', 'P']
+            ])
+            ->count();
+        $consultations = DB::table('consultations')
+            ->where([
+                ['consultations.patients_id', $request->pid],
+            ])
+            ->count();
+
+        $data = ['followup' => $followup, 'referrals' => $referrals, 'consultations' => $consultations];
+        echo json_encode($data);
+        return;
+    }
+
+
+
+    public function get_all_notifications(Request $request)
+    {
+        $followup = DB::table('followup')
+                        ->where([
+                            ['followup.patients_id', $request->pid],
+                            ['followup.clinic_code', Auth::user()->clinic],
+                            ['followupdate', DB::raw('CURDATE()')]
+                        ])
+                        ->leftJoin('clinics', 'clinics.id', 'followup.clinic_code')
+                        ->leftJoin('users', 'users.id', 'followup.users_id')
+                        ->leftJoin(DB::raw('
+                            (SELECT id as uid, last_name as ft_last_name, first_name as ft_first_name
+                            FROM users) as ff
+                        '), function ($join){
+                            $join->on('ff.uid', 'followup.assignedTo');
+                        })
+                        ->select('users.last_name', 'users.first_name', 'ff.ft_last_name', 'ff.ft_first_name',
+                            'clinics.name', 'followup.reason', 'followup.followupdate', 'followup.created_at',
+                            'users.role')
+                        ->get();
+
+        $referrals = DB::table('refferals')
+                        ->where([
+                            ['refferals.patients_id', $request->pid],
+                            ['refferals.to_clinic', Auth::user()->clinic],
+                            ['refferals.status', 'P']
+                        ])
+                        ->leftJoin('users', 'users.id', 'refferals.users_id')
+                        ->leftJoin('clinics', 'clinics.id', 'refferals.from_clinic')
+                        ->leftJoin(DB::raw('
+                            (SELECT id, name FROM clinics) c
+                        '), function ($join){
+                            $join->on('c.id', 'refferals.to_clinic');
+                        })
+                        ->leftJoin(DB::raw('
+                                        (SELECT id as uid, last_name as rt_last_name, first_name as rt_first_name
+                                        FROM users) as rr
+                                    '), function ($join){
+                            $join->on('rr.uid', 'refferals.assignedTo');
+                        })
+                        ->select('users.last_name', 'users.first_name', 'rr.rt_last_name', 'rr.rt_first_name',
+                            'clinics.name as from_clinic', 'c.name as to_clinic', 'refferals.reason',
+                            'refferals.created_at', 'users.role')
+                        ->get();
+
+
+        $consultations = DB::table('consultations')
+                            ->where([
+                                ['consultations.patients_id', $request->pid],
+                            ])
+                            ->leftJoin('users', 'users.id', 'consultations.users_id')
+                            ->leftJoin('clinics', 'clinics.id', 'consultations.clinic_code')
+                            ->select('consultations.consultation', 'consultations.updated_at',
+                                'users.last_name', 'users.first_name',
+                                'clinics.name', 'users.role')
+                            ->orderBy('consultations.updated_at', 'desc')
+                            ->get();
+
+        $data = ['followup' => $followup, 'referrals' => $referrals, 'consultations' => $consultations];
+
+        echo json_encode($data);
+        return;
 
     }
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

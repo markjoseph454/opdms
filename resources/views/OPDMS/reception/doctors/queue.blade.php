@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="{{ asset('public/OPDMS/css/reception/patient_queue.css') }}" />
     <link rel="stylesheet" href="{{ asset('public/OPDMS/css/partials/patient_information.css') }}" />
     <link rel="stylesheet" href="{{ asset('public/OPDMS/css/reception/patient_assignation.css') }}" />
+    <link rel="stylesheet" href="{{ asset('public/OPDMS/css/reception/notification.css') }}" />
 @endsection
 
 
@@ -39,6 +40,24 @@
 
 
     @section('content')
+
+        {{-- modals goes here --}}
+
+            @include('OPDMS.partials.modals.modal_container');
+
+
+       {{-- @include('OPDMS.reception.modals.patient_assignation') --}}{{-- patient assignation --}}{{--
+        @include('OPDMS.reception.modals.patient_re_assignation') --}}{{-- patient re_assignation --}}{{--
+        @include('OPDMS.partials.modals.medical_records') --}}{{-- medical records --}}{{--
+        @include('OPDMS.partials.modals.consultation_show') --}}{{-- consultation show records --}}{{--
+        @include('OPDMS.partials.modals.nurse_notes') --}}{{-- nurse notes --}}{{--
+        --}}{{--@include('OPDMS.partials.modals.notifications')--}}{{----}}{{-- notification status goes here --}}{{--
+        @include('OPDMS.partials.modals.patient_notifications')--}}{{-- notification status goes here --}}{{--
+        @include('OPDMS.partials.modals.patient_information') --}}{{-- patient information --}}{{--
+        @include('OPDMS.partials.modals.vital_signs_form') --}}{{-- nurse notes --}}
+
+
+
         <!-- Content Wrapper. Contains page content -->
             <div class="content-wrapper patient_queue_wrapper">
 
@@ -50,13 +69,6 @@
 
                     <div class="box box-default bg-danger">
 
-
-
-                        {{-- modals goes here --}}
-
-                        @include('OPDMS.partials.modals.patient_information') {{-- patient information --}}
-                        @include('OPDMS.reception.modals.patient_assignation') {{-- patient assignation --}}
-                        @include('OPDMS.reception.modals.patient_re_assignation') {{-- patient re_assignation --}}
 
 
                         <div class="box-body">
@@ -200,7 +212,7 @@
 
 @section('pagescript')
     <script src="{{ asset('public/OPDMS/vue/reception/queue.js') }}"></script>
-
+    <script src="{{ asset('public/OPDMS/js/reception/notification.js') }}"></script>
     <script>
         $(function () {
             //Initialize Select2 Elements

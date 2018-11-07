@@ -17,9 +17,9 @@ class ConsultationRecordsController extends Controller
                 ->where('consultations.patients_id', $request->pid)
                 ->leftJoin('users', 'users.id', 'consultations.users_id')
                 ->leftJoin('clinics', 'clinics.id', 'consultations.clinic_code')
-                ->select('consultations.id as cid', 'consultations.created_at',
-                    'clinics.name', 'users.last_name', 'users.first_name', 'users.middle_name', 'users.role')
-                ->orderBy('consultations.created_at', 'desc')
+                ->select('consultations.id as cid', 'consultations.consultation', 'consultations.updated_at as created_at', 'users.profile',
+                    'consultations.users_id', 'clinics.name', 'users.last_name', 'users.first_name', 'users.middle_name', 'users.role')
+                ->orderBy('consultations.updated_at', 'desc')
                 ->get();
         return $consultations->toJson();
     }
@@ -31,11 +31,12 @@ class ConsultationRecordsController extends Controller
                             ->leftJoin('users', 'users.id', 'consultations.users_id')
                             ->leftJoin('clinics', 'clinics.id', 'consultations.clinic_code')
                             ->select('consultations.id as cid', 'consultations.consultation', 'consultations.created_at',
-                                'consultations.users_id as users_id',
+                                'consultations.users_id as users_id', 'users.profile',
                                 'clinics.name', 'users.last_name', 'users.first_name', 'users.middle_name', 'users.role')
                             ->orderBy('consultations.created_at', 'desc')
                             ->first();
         return $consultation->toJson();
     }
+
 
 }

@@ -100,10 +100,11 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('medical_certificate/{pid?}/{id?}', 'MedicalCertificateController@store');
     Route::get('printNurseNotes/{id}', 'ConsultationController@print');
 
-
-
     //edited for pedia
     Route::get('patient_information/{pid?}', 'PatientInformationController@patient_information');
+
+
+    Route::get('industrialPrint/{id?}', 'IndustrialController@printing');
     
     
 });
@@ -295,7 +296,7 @@ Route::group(['middleware' => 'doctors'], function() {
 
     Route::post('industrialStore', 'IndustrialController@store');
     Route::get('industrialPreview/{id?}', 'IndustrialController@preview');
-    Route::get('industrialPrint/{id?}', 'IndustrialController@printing');
+
     Route::resource('industrial', 'IndustrialController');
 
 
@@ -309,6 +310,9 @@ Route::group(['middleware' => 'doctors'], function() {
 
     Route::get('doctors_census/{starting?}/{ending?}/{limit?}', 'DoctorsCensus@doctors_census');
     Route::post('doctorsStoreCensus', 'DoctorsCensus@doctorsStoreCensus');
+
+    // PHIC Annex 2
+    Route::post('phic_annex', 'PHICController@show');
 
 
 
@@ -638,46 +642,110 @@ Route::group(['middleware' => 'malasakit'], function() {
     
 /*-------- OPDMS ----*/
 
-/* Start Receptions Route */
+Route::group(['middleware' => 'auth'], function () {
+
+    /* Start Receptions Route */
 
 
-Route::get('patient_queue/{status?}', 'OPDMS\ReceptionController@patient_queue'); //patient queue status
-Route::post('queued_action_buttons', 'OPDMS\ActionsController@queued_action_buttons'); // generate dashboard action buttons
+    /*-- Reception GLOBAL Routes --*/
 
-Route::post('patient_info_vs', 'OPDMS\PatientInfoController@patient_info_vs'); // patient information and vital signs GLOBAL
+    Route::post('patient_info_vs', 'OPDMS\PatientInfoController@patient_info_vs'); // patient information and vital signs GLOBAL
+    Route::get('patient_name/{patient?}', 'OPDMS\PatientInfoController@patient_name'); // get full patient_name GLOBAL
+// consultation directly been updated
+    Route::post('write_nurse_notes_two', 'OPDMS\WriteNurseNotesController@write_nurse_notes_two'); // global
 
-Route::post('assign_to_doctor', 'OPDMS\AssignationController@assign_to_doctor'); // get all doctors for patient assignation
-Route::post('assign_now', 'OPDMS\AssignationController@store'); // get all doctors for patient assignation
+    Route::post('nurse_notes_save', 'OPDMS\WriteNurseNotesController@store'); // save nurse notes now | global
+    Route::post('nurse_notes_update', 'OPDMS\WriteNurseNotesController@update'); // update nurse notes now | global
 
-Route::get('patient_name/{patient?}', 'OPDMS\PatientInfoController@patient_name'); // get full patient_name GLOBAL
+    Route::post('insert_vs', 'OPDMS\VitalSignsController@insert_vs'); // insert vs on active editor tinymce | global
 
-Route::post('remove_queued_patient', 'OPDMS\ReceptionController@remove_queued_patient'); // get full patient_name
-Route::post('re_assign_patient', 'OPDMS\ReAssignationController@re_assign_patient'); // get full patient_name
-Route::post('re_assign_now', 'OPDMS\ReAssignationController@re_assign_now'); // get full patient_name
+// get all ultrasound records for displaying on medical records modal
+    Route::post('ultrasound_records', 'OPDMS\UltrasoundRecordsController@ultrasound_records'); //global
 
+// get all xray records for displaying on medical records modal
+    Route::post('xray_records', 'OPDMS\XrayRecordsController@xray_records'); // global
 
+// get all ecg records for displaying on medical records modal
+    Route::post('ecg_records', 'OPDMS\ECGRecordsController@ecg_records'); // global
+// get all ecg records for displaying on medical records modal
+    Route::post('laboratory_records', 'OPDMS\LaboratoryRecordsController@laboratory_records'); // global
+// get all pediatric records of this patient
+    Route::post('pediatric_records', 'OPDMS\PediatricRecordsController@pediatric_records'); //global
+// get all industrial form records of this patient
+    Route::post('industrial_form_records', 'OPDMS\IndustrialFormRecordsController@industrial_form_records'); //global
+// get the count of all medical records of this patient
+    Route::post('medical_records_count', 'OPDMS\MedicalRecordsCountController@medical_records_count'); //global
+// insert the vital signs of this patient
+    Route::post('vital_signs_insert', 'OPDMS\VitalSignsController@store'); //global
+// insert the vital signs of this patient
+    Route::post('charging_records', 'OPDMS\ChargingRecordsController@charging_records'); //global
+    Route::post('patient_notifications', 'OPDMS\PatientNotificationsController@notifications'); // patient notifications / global
+// get the number of patient notification to be displayed on dashboard
+    Route::post('notifications_popup', 'OPDMS\PatientNotificationsController@notifications_popup'); // patient notifications / global
 
-Route::get('doctors_queue', 'OPDMS\DoctorsQueueController@doctors_queue'); // redirect to doctors queue page
-Route::get('status_filtering/{doctors_id?}/{status?}', 'OPDMS\DoctorsQueueController@status_filtering'); // status of patient on doctors
-
-
-Route::post('search_queued_patients', 'OPDMS\SearchQueuedPatientController@search'); /* search today`s queued patients */
-Route::post('qrcode', 'OPDMS\QRCodeController@qrcode'); /* search today`s queued patients */
-
-
-
-Route::post('patient_notifications', 'OPDMS\PatientNotificationsController@notifications'); // patient notifications
-
+// recode on patient notifications
+    Route::post('get_all_notifications', 'OPDMS\PatientNotificationsController@get_all_notifications'); // global
 // get all consultation records of this patient for showing on consultation modal
-Route::post('get_all_consultation_records', 'OPDMS\ConsultationRecordsController@get_all_consultation_records');
+    Route::post('get_all_consultation_records', 'OPDMS\ConsultationRecordsController@get_all_consultation_records'); // global
 // get all referral records of this patient for showing on medical records modal
-Route::post('get_all_referral_records', 'OPDMS\ReferralRecordsController@get_all_referral_records');
+    Route::post('get_all_referral_records', 'OPDMS\ReferralRecordsController@get_all_referral_records'); // global
 // get all followup records of this patient for showing on medical records modal
-Route::post('get_all_followup_records', 'OPDMS\FollowupRecordsController@get_all_followup_records');
+    Route::post('get_all_followup_records', 'OPDMS\FollowupRecordsController@get_all_followup_records'); // global
 // show the selected consultation
-Route::post('show_consultation', 'OPDMS\ConsultationRecordsController@show_consultation');
+    Route::post('show_consultation', 'OPDMS\ConsultationRecordsController@show_consultation'); // global
+// generate a password
+    Route::get('generatePassword', 'OPDMS\UserAccountController@generatePassword'); // global
+// change account information
+    Route::resource('account', 'OPDMS\UserAccountController'); // global
+// check if user auth has expired
+    Route::post('auth_expired', 'OPDMS\AuthExpiredController@auth_expired');
 
 
+});
+
+
+
+                                            /*-- Reception NOT GLOBAL Routes --*/
+
+Route::group(['middleware' => 'receptions'], function () {
+
+    Route::get('patient_queue/{status?}', 'OPDMS\ReceptionController@patient_queue'); //patient queue status | not global
+    Route::post('queued_action_buttons', 'OPDMS\ActionsController@queued_action_buttons'); // generate dashboard action buttons | not global
+    Route::post('assign_to_doctor', 'OPDMS\AssignationController@assign_to_doctor'); // get all doctors for patient assignation | not global
+    Route::post('assign_now', 'OPDMS\AssignationController@store'); // get all doctors for patient assignation | not global
+    Route::post('remove_queued_patient', 'OPDMS\ReceptionController@remove_queued_patient'); // get full patient_name  | not global
+    Route::post('re_assign_patient', 'OPDMS\ReAssignationController@re_assign_patient'); // get full patient_name | not global
+    Route::post('re_assign_now', 'OPDMS\ReAssignationController@re_assign_now'); // get full patient_name | not global
+    Route::get('doctors_queue', 'OPDMS\DoctorsQueueController@doctors_queue'); // redirect to doctors queue page | not global
+    Route::get('status_filtering/{doctors_id?}/{status?}', 'OPDMS\DoctorsQueueController@status_filtering'); // status of patient on doctors | not global
+    Route::post('search_queued_patients', 'OPDMS\SearchQueuedPatientController@search'); /* search today`s queued patients | not global*/
+    Route::post('qrcode', 'OPDMS\QRCodeController@qrcode'); /* search today`s queued patients | not global*/
+// check if nurse notes already written today show the selected consultation
+    Route::post('write_nurse_notes', 'OPDMS\WriteNurseNotesController@write_nurse_notes'); // not global
+// get all the queued history from a specific date and doctor | not global reception only
+    Route::get('queued_history/{start?}/{end?}/{status?}/{doctor_id?}', 'OPDMS\QueuedHistoryController@queued_history')->name('que_history'); // not global
+// submit queued history reception
+    Route::post('queued_history', 'OPDMS\QueuedHistoryController@queue_history'); // not global reception only
+// search patient
+    Route::get('search_patient', 'OPDMS\SearchPatientController@search'); // not global reception only
+// get all todays referrals for showing on notification panel
+    Route::get('outgoing_referral', 'OPDMS\OutgoingReferralController@outgoing_referral'); // not global reception only
+// show todays outgoing referrals
+    Route::get('outgoing_referrals', 'OPDMS\OutgoingReferralController@outgoing_referrals'); // not global reception only
+// show all incoming referrals
+    Route::get('incoming_referral', 'OPDMS\IncomingReferralsController@incoming_referral');
+// incoming referrals search
+    Route::get('incoming_referrals', 'OPDMS\IncomingReferralsController@incoming_referrals');
+// show all charged patients notifications
+    Route::get('charged_notifications', 'OPDMS\ChargedPatientsController@charged_notifications');
+// get all patients that has been charged
+    Route::get('charged_patients', 'OPDMS\ChargedPatientsController@charged_patients');
+// get all patients that has been schedule for followup
+    Route::get('followup_notif', 'OPDMS\ScheduledFollowupController@followup_notif');
+// get all patients that has been schedule for followup
+    Route::get('followup_notifications', 'OPDMS\ScheduledFollowupController@followup_notifications');
+
+});
 
 
 

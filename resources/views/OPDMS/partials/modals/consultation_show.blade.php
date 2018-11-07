@@ -11,10 +11,11 @@
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title text-primary text-uppercase">@{{ p_name }}</h4>
-                <a href="" class="btn btn-flat bg-green">Open All Consultations <i class="fa fa-eye"></i></a>
-                <a href="" class="btn btn-flat btn-info">Print <i class="fa fa-print"></i></a>
+                <a v-bind:href="consultation_print_btn" target="_blank"
+                   class="btn btn-flat btn-info">Print <i class="fa fa-print"></i>
+                </a>
                 <a v-bind:href="create_nurse_notes_link" class="btn btn-flat bg-navy"
-                   v-if="create_nurse_notes">Write Nurse Notes
+                   v-if="create_nurse_notes" v-on:click.prevent="write_nurse_notes_two">Write Nurse Notes
                     <i class="fa fa-pencil"></i>
                 </a>
                 <a v-bind:href="edit_consultation_link" class="btn btn-flat bg-blue"
@@ -25,7 +26,7 @@
                 <small>
                     <em class="text-muted">Clinic:</em> @{{ consultation_clinic_name | capitalize  }} |
                     <em class="text-muted">Consulted / Assisted by:</em> @{{ consultation_consulted_by | capitalize  }} |
-                    <em class="text-muted">Consulted Date:</em> @{{ consultation_date | capitalize  }}
+                    <em class="text-muted">Last Modified:</em> @{{ consultation_date | capitalize  }}
                 </small>
             </div>
             <div class="modal-body">

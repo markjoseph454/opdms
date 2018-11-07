@@ -33,73 +33,75 @@
 
 @section('content')
     @component('doctors/dashboard')
-        @section('main-content')
+@section('main-content')
 
 
-            <div class="content-wrapper" style="padding: 50px 20px">
-                <br/>
-                <div class="container-fluid">
-
-
-
-
-                    <div class="loaderRefresh">
-                        <div class="loaderWaiting">
-                            <i class="fa fa-spinner fa-spin"></i>
-                            <span> Please Wait...</span>
-                        </div>
-                    </div>
+    <div class="content-wrapper" style="padding: 50px 20px">
+        <br/>
+        <div class="container-fluid">
 
 
 
 
-
-                    @include('doctors.medicalRecords')
-                    @include('doctors.ajaxConsultationList')
-                    @include('doctors.ajaxRequisitionList')
-                    @include('doctors.ajaxRefferals')
-                    @include('doctors.ajaxFollowup')
-                    @include('doctors.records.consultation')
-                    @include('doctors.requisition.medsWatch')
-                    @include('doctors.records.radiology')
-
-
-
-                    @include('doctors.industrial.form')
-
-
-                    @include('doctors.consultation_icon', ['patient'=>$patient, 'smoke'=>$smoke])
-
-                    @include('doctors.consultation_patientinfo', ['patient'=>$patient])
-
-                    @include('doctors.consultation_notification', ['refferals'=>$refferals, 'followups'=>$followups])
-
-                    <div class="row diagnosisWrapper">
-                        <form action="{{ url('consultation') }}" method="post" enctype="multipart/form-data" id="consultationForm">
-                            {{ csrf_field()  }}
-                            <div class="form-group">
-                                <textarea name="consultation" id="diagnosis" class="my-editor" rows="65">{!! $consultation->consultation or '' !!}</textarea>
-                            </div>
-
-                            @include('doctors.filemanager')
-
-                            @include('doctors.icdCodeAttachments', ['icds'=>$icdcodes])
-
-                        </form>
-                    </div>
-
+            <div class="loaderRefresh">
+                <div class="loaderWaiting">
+                    <i class="fa fa-spinner fa-spin"></i>
+                    <span> Please Wait...</span>
                 </div>
+            </div>
 
 
 
-                @include('doctors.icd10codes')
 
 
-            </div> <!-- .content-wrapper -->
+            @include('doctors.medicalRecords')
+            @include('doctors.ajaxConsultationList')
+            @include('doctors.ajaxRequisitionList')
+            @include('doctors.ajaxRefferals')
+            @include('doctors.ajaxFollowup')
+            @include('doctors.records.consultation')
+            @include('doctors.requisition.medsWatch')
+            @include('doctors.records.radiology')
 
 
-        @endsection
-    @endcomponent
+
+            @include('doctors.industrial.form')
+
+
+            @include('doctors.consultation_icon', ['patient'=>$patient, 'smoke'=>$smoke])
+
+            @include('doctors.consultation_patientinfo', ['patient'=>$patient])
+
+            @include('doctors.consultation_notification', ['refferals'=>$refferals, 'followups'=>$followups])
+
+            <div class="row diagnosisWrapper">
+                <form action="{{ url('consultation') }}" method="post" enctype="multipart/form-data" id="consultationForm">
+                    {{ csrf_field()  }}
+                    <div class="form-group">
+                        <textarea name="consultation" id="diagnosis" class="my-editor" rows="65">{!! $consultation->consultation or '' !!}</textarea>
+                    </div>
+
+                    @include('doctors.filemanager')
+
+                    @include('doctors.icdCodeAttachments', ['icds'=>$icdcodes])
+
+                </form>
+            </div>
+
+        </div>
+
+
+
+        @include('doctors.icd10codes')
+
+        @include('doctors.phic_annex')
+
+
+    </div> <!-- .content-wrapper -->
+
+
+@endsection
+@endcomponent
 @endsection
 
 
@@ -143,6 +145,9 @@
 
     <!-- smoke inceasation -->
     <script src="{{ asset('public/js/doctors/smokeInceasation.js') }}"></script>
+
+
+    <script src="{{ asset('public/js/doctors/phic_annex.js') }}"></script>
 
 
 

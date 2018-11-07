@@ -108,7 +108,8 @@
                                 </tbody>
                             </table>
 
-                            <a href="" class="btn pull-right btn-sm btn-flat bg-red">
+                            <a href="" class="btn pull-right btn-sm btn-flat bg-red"
+                               v-on:click.prevent="show_vs_modal">
                                 Measure Vital Signs
                             </a>
                         </div>

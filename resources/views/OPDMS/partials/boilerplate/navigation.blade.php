@@ -80,28 +80,11 @@
 
 
 
-            {{--<!-- Menu Body -->
-            <li class="user-body">
-              <div class="row">
-                <div class="col-xs-4 text-center">
-                  <a href="#">Followers</a>
-                </div>
-                <div class="col-xs-4 text-center">
-                  <a href="#">Sales</a>
-                </div>
-                <div class="col-xs-4 text-center">
-                  <a href="#">Friends</a>
-                </div>
-              </div>
-              <!-- /.row -->
-            </li>--}}
-
-
             <!-- Menu Footer-->
             <li class="user-footer">
               <div class="pull-left">
-                <a href="#" class="btn btn-default btn-flat">
-                  Profile <i class="fa fa-user-circle-o"></i>
+                <a href="{{ url('account/'.Auth::user()->id) }}" class="btn btn-default btn-flat">
+                  Account <i class="fa fa-user-circle-o"></i>
                 </a>
               </div>
               <div class="pull-right">

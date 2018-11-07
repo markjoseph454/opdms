@@ -18,6 +18,9 @@
                 <h4 class="modal-title text-blue text-uppercase" id="p_name_holder">
                     {{ p_name }}
                 </h4>
+                <small class="text-muted">
+                    Please select a doctor where this patient will be assigned and be included on the doctors list of queuing patients.
+                </small>
             </div>
             <div class="modal-body">
 
@@ -25,7 +28,8 @@
                     <div class="col-md-8">
                         <h4>
                             Assignations
-                            <small>Designate this patient to a specific doctor.</small>
+                            
+                            <small>List of active doctors</small>
                         </h4>
                     </div>
                     <div class="col-md-4">

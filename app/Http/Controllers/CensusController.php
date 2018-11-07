@@ -51,7 +51,8 @@ class CensusController extends Controller{
                                 ORDER BY COUNT(cicd.icd) DESC LIMIT $limit");
 
         $clinic = Clinic::find(Auth::user()->clinic);
-        return view('receptions.census', compact('census', 'clinic', 'starting', 'ending', 'limit'));
+//        return view('receptions.census', compact('census', 'clinic', 'starting', 'ending', 'limit'));
+        return view('OPDMS.reception.reports.diseases_census', compact('census', 'clinic', 'starting', 'ending', 'limit'));
     }
 
     public function receptionCensus(Request $request)
@@ -104,7 +105,8 @@ class CensusController extends Controller{
 
         $clinic = Clinic::find(Auth::user()->clinic);
 
-        return view('receptions.demographic', compact('demographics', 'starting', 'ending', 'category', 'clinic'));
+//        return view('receptions.demographic', compact('demographics', 'starting', 'ending', 'category', 'clinic'));
+        return view('OPDMS.reception.reports.demographic_detailed', compact('demographics', 'starting', 'ending', 'category', 'clinic'));
 
     }
 
@@ -297,7 +299,8 @@ class CensusController extends Controller{
 
         $clinic = Clinic::find(Auth::user()->clinic);
 
-        return view('receptions.demographicSumarry', compact('final', 'new', 'old', 'cso', 'csn', 'geriaO', 'geriaN', 'starting', 'ending', 'category', 'clinic'));
+//        return view('receptions.demographicSumarry', compact('final', 'new', 'old', 'cso', 'csn', 'geriaO', 'geriaN', 'starting', 'ending', 'category', 'clinic'));
+        return view('OPDMS.reception.reports.demographic_summary', compact('final', 'new', 'old', 'cso', 'csn', 'geriaO', 'geriaN', 'starting', 'ending', 'category', 'clinic'));
     }
 
 

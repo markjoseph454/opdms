@@ -34,6 +34,27 @@ class ConsultationController extends Controller
         $this->middleware('patients', ['only' => ['index']]);
     }
 
+
+    /*public function testonly()
+    {
+        $html = "ddda rvs_0055 sdfddd rvs_9945 asdffff";
+        $needle = "rvs_";
+        $lastPos = 0;
+        $positions = array();
+
+
+        while (($lastPos = strpos($html, $needle, $lastPos))!== false) {
+            $positions[] = substr($html, ($lastPos + 4), 4);
+            $lastPos = $lastPos + strlen($needle);
+        }
+
+// Displays 3 and 10
+        foreach ($positions as $value) {
+            echo $value ."<br />";
+        }
+    }*/
+
+
     public function index(Request $request)
     {
         $pid = Session::get('pid');
@@ -51,12 +72,6 @@ class ConsultationController extends Controller
                                             ->where('users_id', '=', Auth::user()->id)
                                             ->whereDate('created_at', '=', Carbon::now()->toDateString())
                                             ->latest()->first();*/
-        // $consultation = Consultation::where('patients_id', '=', $pid)
-        //                                     ->where('users_id', '=', Auth::user()->id)
-        //                                     ->orWhere('clinic_code', Auth::user()->clinic)
-        //                                     ->whereDate('created_at', '=', Carbon::now()->toDateString())
-        //                                     ->latest()->first();
-                                            
         $consultation = Consultation::where('patients_id', '=', $pid)
                                             ->where('users_id', '=', Auth::user()->id)
                                             ->whereDate('consultations.created_at', '=', Carbon::now()->toDateString())
@@ -72,6 +87,7 @@ class ConsultationController extends Controller
                                             LIMIT 1)"))
                                             ->select('consultations.*')
                                             ->latest()->first();
+
 
                                             //dd($consultation);
                                             //dd(Session::has('cid'));
@@ -138,6 +154,31 @@ class ConsultationController extends Controller
             /*update consultation module*/
 
             Consultation::find(Session::get('cid'))->update(['consultation'=>$request->consultation, 'users_id'=>Auth::user()->id]);
+
+
+
+            /* phic logic */
+            $html = $request->consultation;
+            $needle = "RVS_";
+            $lastPos = 0;
+            $positions = array();
+
+            while (($lastPos = strpos($html, $needle, $lastPos))!== false) {
+                $positions[] = substr($html, ($lastPos + 4), 4);
+                $lastPos = $lastPos + strlen($needle);
+            }
+
+            DB::table('phic_annex_saved')->where('consultation_id', Session::get('cid'))->delete();
+
+            foreach ($positions as $value) {
+                DB::table('phic_annex_saved')
+                    ->insert([
+                        ['consultation_id' => Session::get('cid'), 'phic_annex_id' => $value]
+                    ]);
+            }
+
+
+
 
             /*---------- This code of line is for CIDS only ---------*/
 
@@ -238,6 +279,27 @@ class ConsultationController extends Controller
             $consultation->clinic_code = Auth::user()->clinic;
             $consultation->consultation = $request->consultation;
             $consultation->save();
+
+
+
+            /* phic logic */
+            $html = $request->consultation;
+            $needle = "RVS_";
+            $lastPos = 0;
+            $positions = array();
+
+            while (($lastPos = strpos($html, $needle, $lastPos))!== false) {
+                $positions[] = substr($html, ($lastPos + 4), 4);
+                $lastPos = $lastPos + strlen($needle);
+            }
+
+            foreach ($positions as $value) {
+                DB::table('phic_annex_saved')
+                    ->insert([
+                        ['consultation_id' => $consultation->id, 'phic_annex_id' => $value]
+                    ]);
+            }
+
 
             if ($request->has('img')){
                 for($i=0;$i<count($request->img);$i++){

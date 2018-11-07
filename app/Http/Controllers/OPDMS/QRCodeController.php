@@ -30,7 +30,9 @@ class QRCodeController extends Controller
                         ->first();
             if ($patient){
                 /*check if patient is mss classified*/
-                $checkIfClassified = Mssclassification::where('patients_id', '=', $patient->id)->first();
+
+                // start of uncomment if mss classification is required on clinic
+                /*$checkIfClassified = Mssclassification::where('patients_id', '=', $patient->id)->first();
 
                 $mss_exemption = MSSExemptedClinic::pluck('clinic_id')->all(); // check if clinic is mss exempted
 
@@ -39,7 +41,7 @@ class QRCodeController extends Controller
                     // check if mss classification has expired or clinic is mss exempted
                     $proceed = ($checkIfClassified->validity >= Carbon::now()->toDateString()
                         || in_array(Auth::user()->clinic, $mss_exemption))? true : false;
-                    if ($proceed){
+                    if ($proceed){*/
                         /*check if patient is already on the queue and is on the same clinic*/
                         $checkQueueList = Queue::where('patients_id', '=', $patient->id)
                                             ->where('clinic_code', '=', Auth::user()->clinic)
@@ -53,25 +55,27 @@ class QRCodeController extends Controller
                                 'clinic_code' => Auth::user()->clinic
                             ]);
                             Session::flash('toastr', array('success', 'Patient is now on the queue list'));
-                            return redirect()->back();
+                            return redirect('patient_queue');
                         }else{
                             Session::flash('toastr', array('error', 'Patient is already on the queue list.'));
-                            return redirect()->back();
+                            return redirect('patient_queue');
                         }
-                    }else{
+                    /*}else{
                         Session::flash('toastr', array('error', 'MSS Classification already expired.'));
                         return redirect()->back();
                     }
                 }else{
                     Session::flash('toastr', array('error', 'Patient is not yet MSS classified and will not be included in the queue list. Kindly advise the patient to proceed to MSS for classification.'));
                     return redirect()->back();
-                }
+                }*/
+                // end of uncomment if mss classification is required on clinic
             }else{
                 Session::flash('toastr', array('error', 'Credentials Not Found'));
-                return redirect()->back();
+                return redirect('patient_queue');
             }
         }else{
-            return redirect()->back()->with('toastr', array('error', 'QR Code or Hospital number required'));
+            Session::flash('toastr', array('error', 'QR Code or Hospital number required'));
+            return redirect('patient_queue');
         }
     }
 

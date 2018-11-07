@@ -10,8 +10,6 @@ var baseUrl = getUrl .protocol + "//" + getUrl.host + "/" + getUrl.pathname.spli
 
 
 
-
-
 /*-- For Tooltip --*/
 $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip();
@@ -149,8 +147,8 @@ $(function () {
         'info'        : false,
         'autoWidth'   : true,
         'language'    : { search: 'Filter:', searchPlaceholder: 'Filter Results'}
-    })
-})
+    });
+});
 
 
 
@@ -264,9 +262,19 @@ function dateCalculate($date){
     var d = new Date($date);
     var days = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
     var month = days[d.getMonth()];
-    var day = d.getDate();
+    var day = (d.getDate() < 10)? '0' + d.getDate().toString() : d.getDate();
     var year = d.getFullYear();
     var today = month+' '+day+', '+year;
+    return today;
+}
+
+
+function numeric_date() {
+    var d = new Date();
+    var month = ((d.getMonth() + 1) < 10)? '0' + (d.getMonth() + 1) : (d.getMonth() + 1);
+    var day = d.getDate();
+    var year = d.getFullYear();
+    var today = year+'-'+month+'-'+day;
     return today;
 }
 
@@ -395,7 +403,42 @@ function date_today() {
 }
 
 
+function template_table() {
+    var today = date_today();
 
+    var table = '<table id="teddy" class="table table-bordered" style="border-collapse:collapse; width:100%;height:1200px;" border="1">' +
+        '<thead>' +
+        '<tr style="background-color: #ccc;width: 400pxnote">' +
+        '<th style="padding:5px;width:90px;text-align:center" class="mceNonEditable">DATE/TIME</th>' +
+        '<th style="padding:5px;width:330px;text-align:center" class="mceNonEditable">DOCTOR\'S CONSULTATION</th>' +
+        '<th style="padding:5px;width:130px;text-align:center" class="mceNonEditable">NURSE\'S NOTES</th>' +
+        '</tr>' +
+        '</thead>' +
+        '<tbody>' +
+        '<tr style="width: 300px;">' +
+        '<td valign="top" style="width:90px;" id="doctors" class="mceEditable">' +
+        ''+today+''+
+        '<div id="vs"></div>'+
+        '</td>' +
+        '<td valign="top" style="width:330px;height: 668px" id="doctors" class="mceEditable"></td>' +
+        '<td valign="top" style="width:130px;" class="mceEditable"></td>' +
+        '</tr>' +
+        '</tbody>' +
+        '</table>';
+    return table;
+}
+
+
+
+
+// show full loader
+function full_loader(){
+    $('.full_window_loader').fadeIn(0);
+
+}
+$('.full_loader').on('click', function () {
+    alert('a')
+});
 
 
 

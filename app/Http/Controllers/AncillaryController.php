@@ -653,7 +653,7 @@ class AncillaryController extends Controller
 	{
 		$patient = DB::select("SELECT a.*, c.label, c.description, c.discount, c.id as mss_id 
 								FROM patients a 
-								LEFT JOIN mssclassification b ON a.id = b.patients_id 
+								LEFT JOIN mssclassification b ON a.id = b.patients_id AND DATE(b.validity) >= CURRENT_DATE()
 								LEFT JOIN mss c ON b.mss_id = c.id
 								WHERE a.id = ?
 							", [$id]);

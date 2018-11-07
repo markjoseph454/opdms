@@ -1,0 +1,89 @@
+.consultation_view_mother{
+     padding: 0 15px;
+ }
+#consultation_all_modal .thumbnail_main_container{
+    padding: 0;
+    background-color: pink;
+}
+.search_consultation_container{
+    padding: 5px;
+    background-color: #f2f2f2;
+    border: 1px solid #cccccc;
+}
+.thumbnail_container{
+    text-align: center;
+    padding: 15px;
+    height: 640px;
+    overflow-y: scroll;
+    background-color: #fff;
+    border: 1px solid #cccccc;
+}
+@media only screen and (max-width: 768px) {
+    /* For mobile phones: */
+    .thumbnail_container{
+        height: 300px;
+    }
+}
+.thumbnail_wrapper{
+    height: 100px;
+    width: 80px;
+    overflow: hidden;
+    box-shadow: -2px 2px 1px 0px #ccc;
+    margin: auto;
+}
+.thumbnail_wrapper:hover{
+    cursor: pointer;
+    box-shadow: 0 0 5px rgba(81, 203, 238, 1);
+    border: 1px solid rgba(81, 203, 238, 1);
+}
+.thumbnail_wrapper_focused{
+    box-shadow: 0 0 5px rgba(81, 203, 238, 1);
+    border: 1px solid rgba(81, 203, 238, 1);
+}
+.thumbnail_wrapper table{
+    background-color: #fff;
+}
+.thumbnail_wrapper tr{
+    font-size: 1px; !important;
+}
+.thumbnail_wrapper p{
+    margin: 0px;
+    line-height: 2px; !important;
+}
+/*.thumbnail_wrapper tr{
+    line-height: 1px;
+}*/
+.thumbnail_wrapper_main{
+    margin-bottom: 5px;
+}
+.thumbnail_wrapper_main p.page_number{
+    text-align: center;
+    font-size: 11px;
+}
+.consultation_view_main_container{
+    height: 700px;
+}
+.consultation_header_wrapper{
+    padding: 5px;
+    background-color: #f2f2f2;
+    border: 1px solid #cccccc;
+}
+.consultation_body_wrapper{
+    height: 640px;
+    padding: 20px 80px;
+    overflow-y: scroll;
+    background-color: #333;
+    border: 1px solid #cccccc;
+}
+@media only screen and (max-width: 768px) {
+    /* For mobile phones: */
+    .consultation_body_wrapper{
+        padding: 0px;
+    }
+}
+.consultation_container{
+    margin: auto;
+}
+.consultation_container table{
+    background-color: #fff;
+}

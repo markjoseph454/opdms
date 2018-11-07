@@ -35,6 +35,11 @@
     <?php echo $__env->yieldContent('pagestyle'); ?>
 
 
+
+    
+    <script src="<?php echo e(asset('public/OPDMS/plugins/vue/vue.js')); ?>"></script>
+
+
 </head>
 
 
@@ -64,6 +69,9 @@
 
         <?php echo $__env->yieldContent('aside'); ?>
 
+
+        <?php echo $__env->make('OPDMS.message.auth_expired', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+
         
         <?php echo $__env->yieldContent('vue-container-end'); ?>
 
@@ -87,8 +95,7 @@
         <script src="<?php echo e(asset('public/AdminLTE/plugins/iCheck/icheck.min.js')); ?>"></script>
         <script src="<?php echo e(asset('public/AdminLTE/bower_components/select2/dist/js/select2.full.min.js')); ?>"></script>
 
-        
-        <script src="<?php echo e(asset('public/OPDMS/plugins/vue/vue.js')); ?>"></script>
+
 
         
         <?php echo $__env->yieldContent('pluginscript'); ?>
@@ -106,11 +113,14 @@
         <?php echo $__env->yieldContent('pagescript'); ?>
 
         <script src="<?php echo e(asset('public/OPDMS/js/partials/toaster.js')); ?>"></script>
+        <script src="<?php echo e(asset('public/OPDMS/js/partials/auth_expired.js')); ?>"></script>
 
         <script>
             var authenticate = <?php echo e(Auth::user()->id); ?>
 
             var auth_role = <?php echo e(Auth::user()->role); ?>
+
+            var auth_clinic = <?php echo e(Auth::user()->clinic); ?>
 
         </script>
 

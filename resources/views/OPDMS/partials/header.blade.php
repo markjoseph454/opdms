@@ -35,6 +35,11 @@
     @yield('pagestyle')
 
 
+
+    {{-- Vue JS here--}}
+    <script src="{{ asset('public/OPDMS/plugins/vue/vue.js') }}"></script>
+
+
 </head>
 
 
@@ -64,6 +69,9 @@
 
         @yield('aside')
 
+
+        @include('OPDMS.message.auth_expired')
+
         {{-- vue element where id as attach end of div --}}
         @yield('vue-container-end')
 
@@ -87,8 +95,7 @@
         <script src="{{ asset('public/AdminLTE/plugins/iCheck/icheck.min.js') }}"></script>
         <script src="{{ asset('public/AdminLTE/bower_components/select2/dist/js/select2.full.min.js') }}"></script>
 
-        {{-- Vue JS here--}}
-        <script src="{{ asset('public/OPDMS/plugins/vue/vue.js') }}"></script>
+
 
         {{-- insert plugins script here --}}
         @yield('pluginscript')
@@ -106,10 +113,12 @@
         @yield('pagescript')
 
         <script src="{{ asset('public/OPDMS/js/partials/toaster.js') }}"></script>
+        <script src="{{ asset('public/OPDMS/js/partials/auth_expired.js') }}"></script>
 
         <script>
             var authenticate = {{ Auth::user()->id }}
             var auth_role = {{ Auth::user()->role }}
+            var auth_clinic = {{ Auth::user()->clinic }}
         </script>
 
 

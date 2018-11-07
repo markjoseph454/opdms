@@ -39,6 +39,11 @@
 
 
     @section('content')
+
+        {{-- modal goes here --}}
+            @include('OPDMS.partials.modals.modal_container');
+
+
         <!-- Content Wrapper. Contains page content -->
             <div class="content-wrapper patient_queue_wrapper">
 
@@ -54,9 +59,9 @@
 
                         {{-- modals goes here --}}
 
-                        @include('OPDMS.partials.modals.patient_information') {{-- patient information --}}
-                        @include('OPDMS.reception.modals.patient_assignation') {{-- patient assignation --}}
-                        @include('OPDMS.reception.modals.patient_re_assignation') {{-- patient re_assignation --}}
+                        {{--@include('OPDMS.partials.modals.patient_information') --}}{{-- patient information --}}{{--
+                        @include('OPDMS.reception.modals.patient_assignation') --}}{{-- patient assignation --}}{{--
+                        @include('OPDMS.reception.modals.patient_re_assignation') --}}{{-- patient re_assignation --}}
 
 
 
@@ -85,7 +90,7 @@
                                     <tbody>
                                     @if(!$patients->isEmpty())
                                         @foreach($patients as $queue)
-                                            <tr v-on:dblclick.prevent="patient_check($event, {{ $queue->pid }})">
+                                            <tr v-on:click.prevent="patient_check($event, {{ $queue->pid }})">
                                                 <td class="selected_icon">
                                                     <i class="fa fa-circle-o fa-lg text-muted"></i>
                                                 </td>
@@ -169,14 +174,20 @@
 
 
                                                 {{-- the assigend time by the receptionist --}}
-                                                <td>Today {{ Carbon::parse($queue->assigned_time)->format('h:i a') }}</td>
+                                                <td>
+                                                    Today {{ Carbon::parse($queue->assigned_time)->format('h:i a') }}
+                                                    <br>
+                                                    <small class="text-muted">
+                                                        {{ Carbon::parse($queue->assigned_time)->diffForHumans() }}
+                                                    </small>
+                                                </td>
                                             </tr>
                                         @endforeach
                                     @endif
                                     </tbody>
                                     <tfoot>
                                     <tr>
-                                        <th colspan="7" class="text-center">
+                                        <th colspan="6" class="text-center">
                                             {{ $patients->links() }}
                                         </th>
                                     </tr>

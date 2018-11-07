@@ -64,7 +64,9 @@ class ReportsRadController extends Controller
 
         //dd($reports);
 
-        return view('radiology.reports.medicalServicesAccomplished',
+        /*return view('radiology.reports.medicalServicesAccomplished',
+            compact('reports','starting', 'ending', 'category'));*/
+        return view('OPDMS.reception.reports.medical_services_accomplished',
             compact('reports','starting', 'ending', 'category'));
 
 
@@ -99,7 +101,9 @@ class ReportsRadController extends Controller
         }
 
 
-        return view('receptions.reports.topLeading',
+        /*return view('receptions.reports.topLeading',
+            compact('reports','starting', 'ending', 'limit', 'start', 'end'));*/
+        return view('OPDMS.reception.reports.medical_services_top_leading',
             compact('reports','starting', 'ending', 'limit', 'start', 'end'));
     }
 
@@ -126,6 +130,7 @@ class ReportsRadController extends Controller
 
     public function search(Request $request)
     {
+
         $this->validate($request, [
             'starting' => 'required|date',
             'ending' => 'required|date|after_or_equal:'.$request->starting.'',
@@ -173,7 +178,8 @@ class ReportsRadController extends Controller
 
         //dd($leyte);
 
-        return view('radiology.reports.highestCases', compact('starting', 'ending', 'leyte', 'samar'));
+        return view('OPDMS.reception.reports.highest_cases_census', compact('starting', 'ending', 'leyte', 'samar'));
+//        return view('radiology.reports.highestCases', compact('starting', 'ending', 'leyte', 'samar'));
     }
 
 

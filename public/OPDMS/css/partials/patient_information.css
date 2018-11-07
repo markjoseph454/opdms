@@ -1,3 +1,7 @@
+#vue-queue table{
+    font-size: 12px;
+}
+
 #patient_information_modal table tr td:first-child{
     background-color: #eee;
 }
@@ -7,3 +11,67 @@
     height: 450px;
     overflow-y: scroll;
 }
+
+#medical_records_modal .medical_records_content_show{
+    height: 450px;
+    overflow-y: scroll;
+}
+
+#medical_records_modal #other_forms_content a{
+    text-indent: 10px;
+}
+
+/*#nurse_notes_modal .modal-body{
+    height: 450px;
+    overflow-y: scroll;
+}*/
+
+
+
+.list_notif{
+    font-size: 12px;
+}
+
+.list_notif small.fa-clock-o{
+    font-size: 10px;
+    float: right;
+    margin-right: 10px;
+}
+.list_notif p.referral_pname{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px !important;
+}
+.list_notif p.referral_drname{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 250px !important;
+}
+.list_notif a p{
+    margin: 0;
+}
+
+
+#registerWrapper table, #registerWrapper th, #registerWrapper td{
+    padding: 5px;
+    border: 1px solid #ccc;
+}
+#registerWrapper img{
+    width: 180px;
+    height: 180px;
+}
+
+ /*user profile on consultation modal*/
+.user_consultation_profile{
+    width: 40px;
+    height: 40px;
+}
+
+
+
+
+
+
+
