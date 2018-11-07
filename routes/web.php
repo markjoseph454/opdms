@@ -114,49 +114,63 @@ Route::group(['middleware' => ['auth']], function () {
 
 
 
-
 Route::group(['middleware' => ['register']], function(){
+    
+    Route::post('registersearch', 'REGISTER\QuerysController@Search');
+    Route::get('registerclinics', 'REGISTER\QuerysController@clinics');
+    Route::get('RegisteredToday', 'REGISTER\QuerysController@today');
+    Route::get('getAddress', 'REGISTER\QuerysController@address');
+    Route::post('reserveHospitalNo', 'REGISTER\QuerysController@reserve');
+    Route::get('printMultiple/{count}', 'REGISTER\QuerysController@print');
+    Route::post('searchprintMultiple', 'REGISTER\QuerysController@searchprint');
+    Route::get('removePatientInfo/{id}', 'REGISTER\QuerysController@patient');
+    Route::get('cancelRemoveRequest/{id}', 'REGISTER\QuerysController@cancel');
+    Route::get('information/{id}', 'REGISTER\QuerysController@information');
+    Route::resource('patients', 'REGISTER\RegisterController');
+
+
+
     Route::get('regions', 'AddressController@regions');
-    Route::get('register_account', 'UsersController@registerAccount');
-    Route::get('census', 'PatientsController@census');
-    Route::post('census', 'PatientsController@getcensus');
+    // Route::get('register_account', 'UsersController@registerAccount');
+    // Route::get('census', 'PatientsController@census');
+    // Route::post('census', 'PatientsController@getcensus');
     Route::post('province', 'AddressController@province');
     Route::post('city_municipality', 'AddressController@city_municipality');
     Route::post('brgy', 'AddressController@brgy');
-    Route::get('unprinted', 'PatientsController@unprinted');
-    Route::get('searchpatient', 'PatientsController@searchpatient');
-    Route::post('search', 'PatientsController@search');
+    // Route::get('unprinted', 'PatientsController@unprinted');
+    // Route::get('searchpatient', 'PatientsController@searchpatient');
+    // Route::post('search', 'PatientsController@search');
     Route::get('hospitalcard/{id}', 'BarcodeController@hospitalcard');
-    Route::post('printed', 'PatientsController@printed');
-    Route::get('registerreport', 'PatientsController@registerreport');
-    Route::post('searchpatientmodal', 'PatientsController@searchpatientmodal');
-    Route::get('markfordelete/{id}', 'PatientsController@markfordelete');
-    Route::get('restorepatient/{id}', 'PatientsController@restorepatient');
-    Route::get('referralreport', 'PatientsController@referralreport');
-    Route::get('getuserbyclinic/{id}', 'PatientsController@getuserbyclinic');
+    // Route::post('printed', 'PatientsController@printed');
+    // Route::get('registerreport', 'PatientsController@registerreport');
+    // Route::post('searchpatientmodal', 'PatientsController@searchpatientmodal');
+    // Route::get('markfordelete/{id}', 'PatientsController@markfordelete');
+    // Route::get('restorepatient/{id}', 'PatientsController@restorepatient');
+    // Route::get('referralreport', 'PatientsController@referralreport');
+    // Route::get('getuserbyclinic/{id}', 'PatientsController@getuserbyclinic');
    
-    Route::get('getpatientwatcher/{id}', 'WatchersController@getpatientwatcher');
-    Route::post('checkpatients', 'PatientsController@checkpatient');
-    Route::post('ignorepatients', 'PatientsController@ignorepatients');
-    Route::get('admitpatient/{id}', 'PatientsController@admitpatient');
-    Route::get('dischargedpatient/{id}', 'PatientsController@dischargedpatient');
-    Route::get('admitpatientbyid/{id}', 'PatientsController@admitpatientbyid');
+    // Route::get('getpatientwatcher/{id}', 'WatchersController@getpatientwatcher');
+    // Route::post('checkpatients', 'PatientsController@checkpatient');
+    // Route::post('ignorepatients', 'PatientsController@ignorepatients');
+    // Route::get('admitpatient/{id}', 'PatientsController@admitpatient');
+    // Route::get('dischargedpatient/{id}', 'PatientsController@dischargedpatient');
+    // Route::get('admitpatientbyid/{id}', 'PatientsController@admitpatientbyid');
 
-    Route::get('selectpatient/{id}', 'InpatientsController@selectpatient');
-    Route::get('admittedpatient', 'InpatientsController@admittedpatient');
-    Route::post('searchadmitted', 'InpatientsController@searchadmitted');
-    Route::post('checkwatcher', 'InpatientsController@checkwatcher');
-    Route::get('selectwatcher/{pid}/{wid}', 'InpatientsController@selectwatcher');
-    Route::get('deleteinpatient/{pid}', 'InpatientsController@deleteinpatient');
-    Route::get('deletewatcher/{pid}/{wid}', 'WatchersController@deletewatcher');
-    Route::resource('patients', 'PatientsController');
-    Route::resource('watcher', 'WatchersController');
+    // Route::get('selectpatient/{id}', 'InpatientsController@selectpatient');
+    // Route::get('admittedpatient', 'InpatientsController@admittedpatient');
+    // Route::post('searchadmitted', 'InpatientsController@searchadmitted');
+    // Route::post('checkwatcher', 'InpatientsController@checkwatcher');
+    // Route::get('selectwatcher/{pid}/{wid}', 'InpatientsController@selectwatcher');
+    // Route::get('deleteinpatient/{pid}', 'InpatientsController@deleteinpatient');
+    // Route::get('deletewatcher/{pid}/{wid}', 'WatchersController@deletewatcher');
+    // Route::resource('patients', 'PatientsController');
+    // Route::resource('watcher', 'WatchersController');
 
 
 
-    //Route::get('searchwatch/{search?}', 'SearchWatcherController@searchwatch');
-    //Route::post('searchwatcher', 'SearchWatcherController@store');
-    Route::post('searchwatcher', 'SearchWatcherController@store');
+    // //Route::get('searchwatch/{search?}', 'SearchWatcherController@searchwatch');
+    // //Route::post('searchwatcher', 'SearchWatcherController@store');
+    // Route::post('searchwatcher', 'SearchWatcherController@store');
 
 });
 

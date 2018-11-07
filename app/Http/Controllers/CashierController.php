@@ -455,8 +455,8 @@ class CashierController extends Controller
 								FROM pharmanagerequest a 
 								LEFT JOIN requisition b ON a.requisition_id = b.id
                                 LEFT JOIN ancillary_items c ON b.item_id = c.id
-                                LEFT JOIN mssclassification d ON b.patients_id = d.patients_id
-                                LEFT JOIN mss e ON d.mss_id = e.id AND d.validity >= CURRENT_DATE()
+                                LEFT JOIN mssclassification d ON b.patients_id = d.patients_id AND d.validity >= CURRENT_DATE()
+                                LEFT JOIN mss e ON d.mss_id = e.id
                                 WHERE b.patients_id = ?
                                 AND a.id NOT IN(SELECT pharmanagerequest_id FROM sales WHERE void = 0) 
                                 AND c.price > 0
@@ -483,8 +483,8 @@ class CashierController extends Controller
 							        c.discount,
 							        a.hospital_no
 							FROM patients a 
-							LEFT JOIN mssclassification b ON a.id = b.patients_id
-							LEFT JOIN mss c ON b.mss_id = c.id AND b.validity >= CURRENT_DATE()
+							LEFT JOIN mssclassification b ON a.id = b.patients_id AND b.validity >= CURRENT_DATE()
+							LEFT JOIN mss c ON b.mss_id = c.id
 							WHERE a.barcode = ?
 							OR a.hospital_no = ?
 							", [$request->barcode, $request->barcode]);
@@ -504,7 +504,7 @@ class CashierController extends Controller
                               	ELSE (f.price * a.qty)
                               END) as netamount
 							FROM ancillaryrequist a 
-							LEFT JOIN mssclassification b ON a.patients_id = b.patients_id 
+							LEFT JOIN mssclassification b ON a.patients_id = b.patients_id AND b.validity >= CURRENT_DATE() 
 							LEFT JOIN mss c ON b.mss_id = c.id 
 							LEFT JOIN patients d ON  a.patients_id = d.id 
 							LEFT JOIN users e ON a.users_id = e.id

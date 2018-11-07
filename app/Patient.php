@@ -69,6 +69,64 @@ class Patient extends Model
         }
         return $address;
     }
+    static function Today()
+    {
+        return DB::select("SELECT a.id,
+                a.hospital_no,
+                a.last_name,
+                a.first_name,
+                a.middle_name,
+                a.suffix,
+                b.brgyDesc, c.citymunDesc, d.provDesc,
+                a.birthday,
+                a.sex,
+                DATE(a.created_at) as regdate,
+                e.id as fordelete
+        FROM patients a 
+        LEFT JOIN refbrgy b ON a.brgy = b.id
+        LEFT JOIN refcitymun c ON a.city_municipality = c.citymunCode
+        LEFT JOIN refprovince d ON c.provCode = d.provCode
+        LEFT JOIN fordelete e ON a.id = e.patient_id
+        WHERE DATE(a.created_at) = ?
+        ORDER BY a.id DESC
+        LIMIT 50
+        ", [Carbon::today()]);
+        // Carbon::today()   
+    }
+    static function Search($request)
+    {
+        return DB::select("SELECT a.id,
+                a.hospital_no,
+                a.last_name,
+                a.first_name,
+                a.middle_name,
+                a.suffix,
+                b.brgyDesc, c.citymunDesc, d.provDesc,
+                a.birthday,
+                a.sex,
+                DATE(a.created_at) as regdate,
+                e.id as fordelete
+        FROM patients a 
+        LEFT JOIN refbrgy b ON a.brgy = b.id
+        LEFT JOIN refcitymun c ON a.city_municipality = c.citymunCode
+        LEFT JOIN refprovince d ON c.provCode = d.provCode
+        LEFT JOIN fordelete e ON a.id = e.patient_id
+        WHERE
+        (CASE 
+            WHEN ? != '' THEN a.last_name LIKE ?
+            WHEN ? THEN a.hospital_no LIKE ?
+            WHEN ? != '' THEN a.first_name LIKE ?
+            WHEN ? != '' THEN CONCAT(a.last_name,' ',a.first_name) LIKE ?
+            WHEN ? != '' THEN CONCAT(a.hospital_no,' ',a.last_name,' ',a.first_name,' ',a.middle_name) LIKE ?
+        END)
+        ORDER BY a.id DESC
+        LIMIT 200"
+        ,[$request->lname, '%'.$request->lname.'%', 
+            $request->hospital_no, '%'.$request->hospital_no.'%', 
+            $request->fname, '%'.$request->fname.'%',
+            $request->completename, '%'.$request->completename.'%',
+            $request->patient, '%'.$request->patient.'%', '%'.$request->patient.'%', '%'.$request->patient.'%']);   
+    }
 
 
 }

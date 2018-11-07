@@ -13,6 +13,11 @@ class VitalSigns extends Model
         'triage_id', 'patients_id', 'users_id', 'weight', 'height', 'blood_pressure', 'pulse_rate', 'respiration_rate', 'body_temperature'
     ];
 
+    public function getColumn(){
+      return $this->fillable;
+    }
+
+
     public function storeVitalSigns($request, $triage_id, $patients_id)
     {
         foreach ($this->fillable as $vitalsigns){
@@ -37,5 +42,7 @@ class VitalSigns extends Model
         }
         return;
     }
+
+
 
 }

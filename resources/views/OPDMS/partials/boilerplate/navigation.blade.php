@@ -74,7 +74,7 @@
               </p>
               <small class="text-muted small">
                 {{-- your role goes here --}}
-                Receptionist
+                <!-- Receptionist -->
               </small>
             </li>
 

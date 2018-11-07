@@ -75,7 +75,7 @@
               </p>
               <small class="text-muted small">
                 
-                Receptionist
+                <!-- Receptionist -->
               </small>
             </li>
 

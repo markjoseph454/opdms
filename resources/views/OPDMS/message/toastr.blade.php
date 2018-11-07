@@ -6,7 +6,7 @@
 
         toastr.options = {
             "progressBar": true,
-            "positionClass":"toast-bottom-right"
+            "positionClass":"toast-top-right"
         };
         toastr.{{ Session::get('toastr.0') }}("{{ Session::get('toastr.1') }}");
     </script>
