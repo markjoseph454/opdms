@@ -13,6 +13,8 @@ var getUrl = window.location;
 var baseUrl = getUrl .protocol + "//" + getUrl.host + "/" + getUrl.pathname.split('/')[1];
 
 
+
+
 $.ajaxSetup({
     headers: {
         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -80,4 +82,23 @@ function dateCalculate($date){
     var year = d.getFullYear();
     var today = month+' '+day+', '+year;
     return today;
+}
+
+
+
+/*  filter results on table */
+function filter_result($scope, $table_name) {
+    var filter = $($scope).val().toUpperCase();
+    var table = document.getElementsByClassName($table_name)[0];
+    var tr = table.getElementsByTagName("tr");
+    for (var i = 0; i < tr.length; i++) {
+        td2 = tr[i].getElementsByTagName("td")[2];
+        if (td2) {
+            if (td2.innerHTML.toUpperCase().indexOf(filter) > -1 ) {
+                tr[i].style.display = "";
+            } else {
+                tr[i].style.display = "none";
+            }
+        }
+    }
 }

@@ -8,6 +8,7 @@ function chargeuser(scope){
 	        console.log(request);
 	        $(".Phospital").val(request.patient.hospital_no);
 	        $(".Pname").val(request.patient.last_name+', '+request.patient.first_name+', '+request.patient.middle_name+'. ');
+
 	        // $(".Pmss").val(request.patient.label+' - '+request.patient.description);
 	        if (request.patient.label) {
 	        	$(".Pmss").val(request.patient.label+' - '+request.patient.description);

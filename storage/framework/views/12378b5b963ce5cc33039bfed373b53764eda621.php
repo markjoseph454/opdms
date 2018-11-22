@@ -3,6 +3,7 @@
 <div>
 
     <div class="text-right">
+
         <form action="<?php echo e(url('monitoring')); ?>" method="post" class="form-inline" role="form">
 
             <?php echo e(csrf_field()); ?>

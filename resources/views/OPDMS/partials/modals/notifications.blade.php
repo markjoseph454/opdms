@@ -11,10 +11,13 @@
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title text-primary text-uppercase">@{{ p_name }}</h4>
+                <p class="small text-muted">
+                    Showing all notifications of this patient last consultation, referrals, follow-up.
+                </p>
             </div>
             <div class="modal-body">
                 <ul class="list-group">
-                    <li class="list-group-item bg-gray text-center">
+                    <li class="list-group-item text-center bg-light-blue">
                         <strong>Notifications</strong>
                     </li>
                     {{-- last consultation --}}
@@ -26,7 +29,7 @@
                             <small>Consulted by:</small>
                             <small class="text-uppercase">@{{ lc_doctor }}</small>
                         </div>
-                        <p v-else class="text-red small">This patient has no saved consultation at this clinic.</p>
+                        <p v-else class="small">This patient has no saved consultation at this clinic.</p>
                     </li>
                     {{-- follow-up --}}
                     <li class="list-group-item list-group-item-info">
@@ -36,7 +39,7 @@
                             <small>Follow-up to:</small>
                             <small>@{{ ff_doctor }}</small>
                         </div>
-                        <p v-else class="text-red small">This patient has no scheduled follow-up today.</p>
+                        <p v-else class="small">This patient has no scheduled follow-up today.</p>
                     </li>
                     {{-- referrals --}}
                     <li class="list-group-item list-group-item-warning">
@@ -45,12 +48,12 @@
                         <div v-if="rr_main_div">
                             <div v-for="refferal in refferal_notifications">
                                 <small>Referral Date:</small>
-                                <small>@{{ refferal.ref_date }}</small>
+                                <small>@{{ refferal.ref_date | formatted_date }}</small>
                                 <br>
                                 <small>Referral from:</small>
                                 <small>@{{ refferal.rf_clinic }}</small>
                                 <br>
-                                <small class="text-uppercase">Referred by:</small>
+                                <small>Referred by:</small>
                                 <small class="text-uppercase">
                                     DR. @{{ refferal.rb_last_name }} @{{ refferal.rb_first_name }}
                                 </small>
@@ -63,7 +66,7 @@
                                 <hr>
                             </div>
                         </div>
-                        <p v-else class="text-red small">This patient has no referral from other clinics.</p>
+                        <p v-else class="small">This patient has no referral from other clinics.</p>
                     </li>
                 </ul>
             </div>

@@ -61,6 +61,8 @@
         @endif
         <a href="#" class="btn btn-success icdCodesBtn" data-toggle="modal" data-target="#icd10CodeModal">ICD <span class="hidden-xs">10 CODES</span></a>
 
+        <a href="" class="btn btn-info icdCodesBtn phic_btn">PHIC Annex2</a>
+
         @if(Auth::user()->clinic == 43)
             <button type="button" class="btn btn-warning icdCodesBtn" data-toggle="modal" data-target="#industrialForm">Industrial Form</button>
         @endif

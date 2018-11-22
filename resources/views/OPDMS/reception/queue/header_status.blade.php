@@ -29,56 +29,75 @@ foreach ($queue_count as $row){
 ?>
 
 
-<div class="box-header with-border">
-    <a href="{{ url('patient_queue') }}" class="btn btn-flat bg-purple"
-       onclick="full_window_loader()">
-        Unassigned
-        <span class="badge bg-gray">
+<div class="box-header with-border row">
+
+    <div class="col-md-9">
+        <a href="{{ url('patient_queue') }}" class="btn btn-flat bg-purple"
+           onclick="full_window_loader()">
+            Unassigned
+            <span class="badge bg-gray">
             {{ $unassigned_total or 0 }}
         </span>
-    </a>
-    <a href="{{ url('patient_queue/P') }}" class="btn btn-flat bg-orange"
-       onclick="full_window_loader()">
-        Pending
-        <span class="badge bg-gray">
+        </a>
+        <a href="{{ url('patient_queue/P') }}" class="btn btn-flat bg-orange"
+           onclick="full_window_loader()">
+            Pending
+            <span class="badge bg-gray">
             {{ $pending_total or 0 }}
         </span>
-    </a>
-    <a href="{{ url('patient_queue/H') }}" class="btn btn-flat bg-brown"
-       onclick="full_window_loader()">
-        Paused
-        <span class="badge bg-gray">
+        </a>
+        <a href="{{ url('patient_queue/H') }}" class="btn btn-flat bg-brown"
+           onclick="full_window_loader()">
+            Paused
+            <span class="badge bg-gray">
             {{ $paused_total or 0 }}
         </span>
-    </a>
-    <a href="{{ url('patient_queue/C') }}" class="btn btn-flat bg-red"
-       data-toggle="tooltip" title="Not Around When Called"
-       onclick="full_window_loader()">
-        NAWC
-        <span class="badge bg-gray">
+        </a>
+        <a href="{{ url('patient_queue/C') }}" class="btn btn-flat bg-red"
+           data-toggle="tooltip" title="Not Around When Called"
+           onclick="full_window_loader()">
+            NAWC
+            <span class="badge bg-gray">
             {{ $nawc_total or 0 }}
         </span>
-    </a>
-    <a href="{{ url('patient_queue/S') }}" class="btn btn-flat bg-green"
-       onclick="full_window_loader()">
-        Serving
-        <span class="badge bg-gray">
+        </a>
+        <a href="{{ url('patient_queue/S') }}" class="btn btn-flat bg-green"
+           onclick="full_window_loader()">
+            Serving
+            <span class="badge bg-gray">
             {{ $serving_total or 0 }}
         </span>
-    </a>
-    <a href="{{ url('patient_queue/F') }}" class="btn btn-flat bg-blue"
-       onclick="full_window_loader()">
-        Finished
-        <span class="badge bg-gray">
+        </a>
+        <a href="{{ url('patient_queue/F') }}" class="btn btn-flat bg-blue"
+           onclick="full_window_loader()">
+            Finished
+            <span class="badge bg-gray">
             {{ $finished_total or 0 }}
+
         </span>
-    </a>
-    <a href="{{ url('patient_queue/A') }}" class="btn btn-flat bg-black"
-       data-toggle="tooltip" title="Show all queued patients"
-       onclick="full_window_loader()">
-        All
-        <span class="badge bg-gray">
+        </a>
+        <a href="{{ url('patient_queue/A') }}" class="btn btn-flat bg-black"
+           data-toggle="tooltip" title="Show all queued patients"
+           onclick="full_window_loader()">
+            All
+            <span class="badge bg-gray">
             {{ $queue_count_sum }}
         </span>
-    </a>
+        </a>
+    </div>
+
+    <div class="col-md-3">
+        <form action="{{ url('search_queued_patients') }}" method="post" class="sidebar-form" style="margin: 0">
+            {{ csrf_field() }}
+            <div class="input-group">
+                <input type="text" name="search" class="form-control" placeholder="Search queued patient..."
+                       required />
+                <span class="input-group-btn">
+                    <button type="submit" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i>
+                    </button>
+                </span>
+            </div>
+        </form>
+    </div>
+
 </div>

@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="{{ asset('public/OPDMS/css/partials/patient_information.css') }}" />
     <link rel="stylesheet" href="{{ asset('public/OPDMS/css/reception/patient_assignation.css') }}" />
     <link rel="stylesheet" href="{{ asset('public/OPDMS/css/reception/notification.css') }}" />
+    <link rel="stylesheet" href="{{ asset('public/OPDMS/css/partials/consultation_all.css') }}" />
 @endsection
 
 
@@ -32,7 +33,7 @@
 @section('dashboard')
     @component('OPDMS.partials.boilerplate.dashboard')
         @section('search_form')
-            @include('OPDMS.partials.boilerplate.search_form', ['redirector' => 'admin.search'])
+            @include('OPDMS.reception.partials.search_form')
         @endsection
     @endcomponent
 @endsection
@@ -40,8 +41,21 @@
 
 
 @section('content')
+
+
+
+    {{-- modals goes here --}}
+
+    @include('OPDMS.partials.modals.modal_container');
+
+
+
+
+
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper patient_queue_wrapper">
+
+
 
         @include('OPDMS.partials.boilerplate.header',
         ['header' => 'Patients Queue', 'sub' => 'All patients that was been queued will be shown here.'])
@@ -52,24 +66,9 @@
             <div class="box box-default bg-danger">
 
 
-
-                {{-- modals goes here --}}
-
-                @include('OPDMS.partials.modals.patient_information') {{-- patient information --}}
-                @include('OPDMS.reception.modals.patient_assignation') {{-- patient assignation --}}
-                @include('OPDMS.reception.modals.patient_re_assignation') {{-- patient re_assignation --}}
-                @include('OPDMS.partials.modals.medical_records') {{-- medical records --}}
-                @include('OPDMS.partials.modals.consultation_show') {{-- consultation show records --}}
-                @include('OPDMS.partials.modals.nurse_notes') {{-- nurse notes --}}
-
-
-
-
                 @include('OPDMS.reception.queue.header_status'){{-- patient status goes here --}}
-                @include('OPDMS.partials.modals.notifications'){{-- notification status goes here --}}
 
                 <div class="box-body">
-
 
                     {{-- patient queued goes here --}}
                     <div class="table-responsive selectable_table" id="queue_table">
@@ -91,7 +90,7 @@
                                 @if(!$queues->isEmpty())
                                     @php $loop_count = $queues->perPage() * ($queues->currentPage() - 1) + 1; @endphp
                                     @foreach($queues as $queue)
-                                        <tr v-on:dblclick.prevent="patient_check($event, {{ $queue->pid }})">
+                                        <tr v-on:click.prevent="patient_check($event, {{ $queue->pid }})">
                                             <td class="selected_icon">
                                                 <i class="fa fa-circle-o fa-lg text-muted"></i>
                                             </td>
@@ -192,7 +191,13 @@
 
 
 
-                                            <td>Today {{ Carbon::parse($queue->queue_time)->format('h:i a') }}</td>
+                                            <td>
+                                                Today {{ Carbon::parse($queue->queue_time)->format('h:i a') }}
+                                                <br>
+                                                <small class="text-muted">
+                                                    {{ Carbon::parse($queue->queue_time)->diffForHumans() }}
+                                                </small>
+                                            </td>
                                         </tr>
                                     @endforeach
                                 @endif
@@ -250,18 +255,14 @@
 
 @section('pluginscript')
     <script src="{{ asset('public/plugins/js/tinymce/tinymce.min.js') }}"></script>
+    <script src="{{ asset('public/plugins/js/preventDelete.js') }}"></script>
 @endsection
 
 
 @section('pagescript')
     <script src="{{ asset('public/OPDMS/vue/reception/queue.js') }}"></script>
     <script src="{{ asset('public/OPDMS/js/reception/notification.js') }}"></script>
-
-
     <script src="{{ asset('public/OPDMS/js/partials/texteditor.js') }}"></script>
-    <script>
-        $('#nurse_notes_modal').modal()
-    </script>
     <script>
         $(function () {
             //Initialize Select2 Elements

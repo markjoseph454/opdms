@@ -33,74 +33,76 @@
 
 <?php $__env->startSection('content'); ?>
     <?php $__env->startComponent('doctors/dashboard'); ?>
-        <?php $__env->startSection('main-content'); ?>
+<?php $__env->startSection('main-content'); ?>
 
 
-            <div class="content-wrapper" style="padding: 50px 20px">
-                <br/>
-                <div class="container-fluid">
-
-
-
-
-                    <div class="loaderRefresh">
-                        <div class="loaderWaiting">
-                            <i class="fa fa-spinner fa-spin"></i>
-                            <span> Please Wait...</span>
-                        </div>
-                    </div>
+    <div class="content-wrapper" style="padding: 50px 20px">
+        <br/>
+        <div class="container-fluid">
 
 
 
 
-
-                    <?php echo $__env->make('doctors.medicalRecords', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
-                    <?php echo $__env->make('doctors.ajaxConsultationList', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
-                    <?php echo $__env->make('doctors.ajaxRequisitionList', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
-                    <?php echo $__env->make('doctors.ajaxRefferals', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
-                    <?php echo $__env->make('doctors.ajaxFollowup', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
-                    <?php echo $__env->make('doctors.records.consultation', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
-                    <?php echo $__env->make('doctors.requisition.medsWatch', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
-                    <?php echo $__env->make('doctors.records.radiology', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
-
-
-
-                    <?php echo $__env->make('doctors.industrial.form', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
-
-
-                    <?php echo $__env->make('doctors.consultation_icon', ['patient'=>$patient, 'smoke'=>$smoke], array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
-
-                    <?php echo $__env->make('doctors.consultation_patientinfo', ['patient'=>$patient], array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
-
-                    <?php echo $__env->make('doctors.consultation_notification', ['refferals'=>$refferals, 'followups'=>$followups], array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
-
-                    <div class="row diagnosisWrapper">
-                        <form action="<?php echo e(url('consultation')); ?>" method="post" enctype="multipart/form-data" id="consultationForm">
-                            <?php echo e(csrf_field()); ?>
-
-                            <div class="form-group">
-                                <textarea name="consultation" id="diagnosis" class="my-editor" rows="65"><?php echo isset($consultation->consultation) ? $consultation->consultation : ''; ?></textarea>
-                            </div>
-
-                            <?php echo $__env->make('doctors.filemanager', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
-
-                            <?php echo $__env->make('doctors.icdCodeAttachments', ['icds'=>$icdcodes], array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
-
-                        </form>
-                    </div>
-
+            <div class="loaderRefresh">
+                <div class="loaderWaiting">
+                    <i class="fa fa-spinner fa-spin"></i>
+                    <span> Please Wait...</span>
                 </div>
+            </div>
 
 
 
-                <?php echo $__env->make('doctors.icd10codes', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
 
 
-            </div> <!-- .content-wrapper -->
+            <?php echo $__env->make('doctors.medicalRecords', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+            <?php echo $__env->make('doctors.ajaxConsultationList', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+            <?php echo $__env->make('doctors.ajaxRequisitionList', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+            <?php echo $__env->make('doctors.ajaxRefferals', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+            <?php echo $__env->make('doctors.ajaxFollowup', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+            <?php echo $__env->make('doctors.records.consultation', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+            <?php echo $__env->make('doctors.requisition.medsWatch', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+            <?php echo $__env->make('doctors.records.radiology', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
 
 
-        <?php $__env->stopSection(); ?>
-    <?php echo $__env->renderComponent(); ?>
+
+            <?php echo $__env->make('doctors.industrial.form', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+
+
+            <?php echo $__env->make('doctors.consultation_icon', ['patient'=>$patient, 'smoke'=>$smoke], array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+
+            <?php echo $__env->make('doctors.consultation_patientinfo', ['patient'=>$patient], array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+
+            <?php echo $__env->make('doctors.consultation_notification', ['refferals'=>$refferals, 'followups'=>$followups], array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+
+            <div class="row diagnosisWrapper">
+                <form action="<?php echo e(url('consultation')); ?>" method="post" enctype="multipart/form-data" id="consultationForm">
+                    <?php echo e(csrf_field()); ?>
+
+                    <div class="form-group">
+                        <textarea name="consultation" id="diagnosis" class="my-editor" rows="65"><?php echo isset($consultation->consultation) ? $consultation->consultation : ''; ?></textarea>
+                    </div>
+
+                    <?php echo $__env->make('doctors.filemanager', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+
+                    <?php echo $__env->make('doctors.icdCodeAttachments', ['icds'=>$icdcodes], array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+
+                </form>
+            </div>
+
+        </div>
+
+
+
+        <?php echo $__env->make('doctors.icd10codes', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+
+        <?php echo $__env->make('doctors.phic_annex', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+
+
+    </div> <!-- .content-wrapper -->
+
+
+<?php $__env->stopSection(); ?>
+<?php echo $__env->renderComponent(); ?>
 <?php $__env->stopSection(); ?>
 
 
@@ -144,6 +146,9 @@
 
     <!-- smoke inceasation -->
     <script src="<?php echo e(asset('public/js/doctors/smokeInceasation.js')); ?>"></script>
+
+
+    <script src="<?php echo e(asset('public/js/doctors/phic_annex.js')); ?>"></script>
 
 
 

@@ -17,9 +17,11 @@ class MonitoringController extends Controller
     {
         if ($category && $daily){
             $date = Carbon::instance(new \DateTime($daily))->toDateString();
-            return view('receptions.reports.daily', compact('date', 'daily', 'category'));
+            return view('OPDMS.reception.reports.queue_census_daily', compact('date', 'daily', 'category'));
+//            return view('receptions.reports.daily', compact('date', 'daily', 'category'));
         }
-        return view('receptions.reports.daily', compact('daily', 'category'));
+        return view('OPDMS.reception.reports.queue_census_daily', compact('daily', 'category'));
+//        return view('receptions.reports.daily', compact('daily', 'category'));
     }
 
 
@@ -63,7 +65,9 @@ class MonitoringController extends Controller
     {
         $start = Carbon::instance(new \DateTime($starting))->toDateString();
         $end = Carbon::instance(new \DateTime($ending))->toDateString();
-        return view('receptions.reports.monthly45', compact('start', 'end', 'starting', 'ending', 'category'));
+        return view('OPDMS.reception.reports.queue_census_monthly',
+            compact('start', 'end', 'starting', 'ending', 'category'));
+//        return view('receptions.reports.monthly45', compact('start', 'end', 'starting', 'ending', 'category'));
     }
 
 

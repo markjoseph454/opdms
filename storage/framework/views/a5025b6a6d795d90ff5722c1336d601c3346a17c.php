@@ -81,14 +81,11 @@
 
 
 
-            
-
-
             <!-- Menu Footer-->
             <li class="user-footer">
               <div class="pull-left">
-                <a href="#" class="btn btn-default btn-flat">
-                  Profile <i class="fa fa-user-circle-o"></i>
+                <a href="<?php echo e(url('account/'.Auth::user()->id)); ?>" class="btn btn-default btn-flat">
+                  Account <i class="fa fa-user-circle-o"></i>
                 </a>
               </div>
               <div class="pull-right">

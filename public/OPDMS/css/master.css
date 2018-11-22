@@ -67,9 +67,46 @@
     vertical-align: middle
 }
 .full_window_loader{
-    position: fixed; !important;
+    position: fixed;!important;
+}
+.full_window_loader .loaderWaiting{
+    top: 30%; !important;
+    left: 45%; !important;
+}
+.full_window_loader .loaderWaiting h4{
+    font-size: 15px;
+    text-align: center;
+    font-weight: bold;
+}
+@media only screen and (max-width: 375px) {
+    /* For mobile phones: */
+    .full_window_loader .loaderWaiting{
+        top: 20%; !important;
+        left: 30%; !important;
+    }
 }
 
+
+.loaderRefresh2{
+    z-index: 99999;
+    position: absolute;
+    background: rgba(255, 255, 255, 0.7);
+    width: 100%;
+}
+
+
+
+li.active_li {
+    cursor:not-allowed
+}
+a.active_link{
+    pointer-events: none;
+}
+/*
+li a.disabled{
+    pointer-events: none;
+}
+*/
 
 
 /*-- thead ---*/
@@ -227,6 +264,48 @@
     background-color: #945751;
     color: #fff;
 }
+.bg-green-inverse{
+    border: 2px solid #00a65a; !important;
+    background-color: #fff;
+    color: #00a65a;
+    transition: background-color .3s;
+    border-radius: 0px;
+}
+.bg-green-inverse:hover{
+    background-color: #00a65a;
+    color: #fff;
+}
+
+
+
+/* float a modal on top of another modal */
+.modal {
+    overflow-y:auto;
+}
+
+
+
+
+/* auth expired */
+.auth_expired_section{
+    position: fixed;
+    background-color: rgba(0,0,0,.8); !important;
+    padding-top: 10%;
+}
+.auth_expired_section img{
+    width: 250px;
+}
+.auth_expired_section p{
+    color: #ccc;
+}
+
+
+
+
+
+
+
+
 
 
 

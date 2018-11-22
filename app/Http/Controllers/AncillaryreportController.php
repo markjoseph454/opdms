@@ -145,10 +145,12 @@ class AncillaryreportController extends Controller
 							$request->from,
 							$request->to]);
 		
-		return view('ancillary.census', compact('census', 'consultation'));
-		
-		
-	}
+//		return view('ancillary.census', compact('census', 'consultation'));
+        return view('OPDMS.reception.reports.medical_services_per_patient', compact('census', 'consultation'));
+
+
+
+    }
 	public function ancillaryreport(Request $request)
 	{
 		if (isset($request->type) || isset($request->from) || isset($request->to)) {
@@ -604,7 +606,8 @@ class AncillaryreportController extends Controller
 			}
 		}
 		else{
-		return view('ancillary.report');	
+//		return view('ancillary.report');
+		return view('OPDMS.reception.reports.mss_report');
 		}
 		
 

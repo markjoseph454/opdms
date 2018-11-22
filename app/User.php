@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\OPDMS\ClinicWithoutDoctor;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Auth;
@@ -59,8 +60,14 @@ class User extends Authenticatable
                   return redirect('malasakit');
                   break;
                 }else{
-                  return redirect('receptions');
-                  break;
+                    // check if the user who is logging in has no doctor
+                    $clinic_without_doctor = ClinicWithoutDoctor::clinic_without_doctor();
+                    if (in_array(Auth::user()->clinic, $clinic_without_doctor)){
+                        return redirect('receptions');
+                    }else{
+                        return redirect('patient_queue');
+                    }
+                    break;
                 }
             case '10': //cashier
                 return redirect('cashier');

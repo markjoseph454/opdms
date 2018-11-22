@@ -14,6 +14,9 @@
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title text-blue text-uppercase">@{{ p_name }}</h4>
+                <small class="text-muted">
+                    Please make sure this patient is not yet being served by a doctor, else re-assignation will fail.
+                </small>
             </div>
             <div class="modal-body">
 
@@ -21,7 +24,7 @@
                     <div class="col-md-8">
                         <h4>
                             Re-assign
-                            <small>Designate this patient to a another doctor.</small>
+                            <small>Designate this patient to another doctor.</small>
                         </h4>
                     </div>
                     <div class="col-md-4">

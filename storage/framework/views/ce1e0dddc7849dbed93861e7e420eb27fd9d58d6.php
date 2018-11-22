@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="<?php echo e(asset('public/OPDMS/css/partials/patient_information.css')); ?>" />
     <link rel="stylesheet" href="<?php echo e(asset('public/OPDMS/css/reception/patient_assignation.css')); ?>" />
     <link rel="stylesheet" href="<?php echo e(asset('public/OPDMS/css/reception/notification.css')); ?>" />
+    <link rel="stylesheet" href="<?php echo e(asset('public/OPDMS/css/partials/consultation_all.css')); ?>" />
 <?php $__env->stopSection(); ?>
 
 
@@ -32,7 +33,7 @@
 <?php $__env->startSection('dashboard'); ?>
     <?php $__env->startComponent('OPDMS.partials.boilerplate.dashboard'); ?>
         <?php $__env->startSection('search_form'); ?>
-            <?php echo $__env->make('OPDMS.partials.boilerplate.search_form', ['redirector' => 'admin.search'], array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+            <?php echo $__env->make('OPDMS.reception.partials.search_form', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
         <?php $__env->stopSection(); ?>
     <?php echo $__env->renderComponent(); ?>
 <?php $__env->stopSection(); ?>
@@ -40,8 +41,21 @@
 
 
 <?php $__env->startSection('content'); ?>
+
+
+
+    
+
+    <?php echo $__env->make('OPDMS.partials.modals.modal_container', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>;
+
+
+
+
+
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper patient_queue_wrapper">
+
+
 
         <?php echo $__env->make('OPDMS.partials.boilerplate.header',
         ['header' => 'Patients Queue', 'sub' => 'All patients that was been queued will be shown here.'], array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
@@ -52,24 +66,9 @@
             <div class="box box-default bg-danger">
 
 
-
-                
-
-                <?php echo $__env->make('OPDMS.partials.modals.patient_information', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?> 
-                <?php echo $__env->make('OPDMS.reception.modals.patient_assignation', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?> 
-                <?php echo $__env->make('OPDMS.reception.modals.patient_re_assignation', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?> 
-                <?php echo $__env->make('OPDMS.partials.modals.medical_records', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?> 
-                <?php echo $__env->make('OPDMS.partials.modals.consultation_show', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?> 
-                <?php echo $__env->make('OPDMS.partials.modals.nurse_notes', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?> 
-
-
-
-
                 <?php echo $__env->make('OPDMS.reception.queue.header_status', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
-                <?php echo $__env->make('OPDMS.partials.modals.notifications', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
 
                 <div class="box-body">
-
 
                     
                     <div class="table-responsive selectable_table" id="queue_table">
@@ -91,7 +90,7 @@
                                 <?php if(!$queues->isEmpty()): ?>
                                     <?php $loop_count = $queues->perPage() * ($queues->currentPage() - 1) + 1; ?>
                                     <?php $__currentLoopData = $queues; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $queue): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                        <tr v-on:dblclick.prevent="patient_check($event, <?php echo e($queue->pid); ?>)">
+                                        <tr v-on:click.prevent="patient_check($event, <?php echo e($queue->pid); ?>)">
                                             <td class="selected_icon">
                                                 <i class="fa fa-circle-o fa-lg text-muted"></i>
                                             </td>
@@ -151,7 +150,15 @@
 
 
 
-                                            <td>Today <?php echo e(Carbon::parse($queue->queue_time)->format('h:i a')); ?></td>
+                                            <td>
+                                                Today <?php echo e(Carbon::parse($queue->queue_time)->format('h:i a')); ?>
+
+                                                <br>
+                                                <small class="text-muted">
+                                                    <?php echo e(Carbon::parse($queue->queue_time)->diffForHumans()); ?>
+
+                                                </small>
+                                            </td>
                                         </tr>
                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 <?php endif; ?>
@@ -208,15 +215,16 @@
 <?php $__env->stopSection(); ?>
 
 
+<?php $__env->startSection('pluginscript'); ?>
+    <script src="<?php echo e(asset('public/plugins/js/tinymce/tinymce.min.js')); ?>"></script>
+    <script src="<?php echo e(asset('public/plugins/js/preventDelete.js')); ?>"></script>
+<?php $__env->stopSection(); ?>
 
 
 <?php $__env->startSection('pagescript'); ?>
     <script src="<?php echo e(asset('public/OPDMS/vue/reception/queue.js')); ?>"></script>
     <script src="<?php echo e(asset('public/OPDMS/js/reception/notification.js')); ?>"></script>
     <script src="<?php echo e(asset('public/OPDMS/js/partials/texteditor.js')); ?>"></script>
-    <script>
-        $('#nurse_notes_modal').modal()
-    </script>
     <script>
         $(function () {
             //Initialize Select2 Elements

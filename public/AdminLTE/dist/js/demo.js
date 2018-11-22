@@ -173,10 +173,12 @@ $(function () {
       + '<i class="fa fa-wrench"></i>'
       + '</a>')
 
-  // Add the tab button to the right sidebar tabs
-  $('[href="#control-sidebar-home-tab"]')
+  // Add the tab button to the right sidebar tabs edited for opd
+  /*$('[href="#control-sidebar-home-tab"]')
     .parent()
-    .before($tabButton)
+    .before($tabButton)*/
+
+    // $('.skins_menu_ul').append($tabButton); edited for opd
 
   // Create the menu
   var $demoSettings = $('<div />')
@@ -341,9 +343,11 @@ $(function () {
   $demoSettings.append($skinsList)
 
   $tabPane.append($demoSettings)
-  $('#control-sidebar-home-tab').after($tabPane)
+  // $('#control-sidebar-home-tab').after($tabPane)
+    $('#skins_menu_main_div').append($tabPane)
 
-  setup()
+
+    setup()
 
   $('[data-toggle="tooltip"]').tooltip()
 })

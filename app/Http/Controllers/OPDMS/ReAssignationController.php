@@ -93,13 +93,52 @@ class ReAssignationController extends Controller
 
     public function re_assign_now(Request $request)
     {
-        Assignation::where([
-            ['patients_id', $request->pid],
-            [DB::raw('DATE(assignations.created_at)'), DB::raw('CURDATE()')],
-            [DB::raw('assignations.clinic_code'), Auth::user()->clinic]
-        ])->update(['status' => 'P', 'doctors_id' => $request->doctors_id]);
+
+        $status = Assignation::where([
+                        ['patients_id', $request->pid],
+                        [DB::raw('DATE(assignations.created_at)'), DB::raw('CURDATE()')],
+                        [DB::raw('assignations.clinic_code'), Auth::user()->clinic]
+                    ])->pluck('status')->first();
+        // check if patient not yet being served
+        if ($status){
+            if ($status != 'S'){
+                Assignation::where([
+                    ['patients_id', $request->pid],
+                    [DB::raw('DATE(assignations.created_at)'), DB::raw('CURDATE()')],
+                    [DB::raw('assignations.clinic_code'), Auth::user()->clinic]
+                ])->update(['status' => 'P', 'doctors_id' => $request->doctors_id]);
+                echo json_encode(true);
+            }else{
+                echo json_encode(false);
+            }
+        }else{
+            echo json_encode(false);
+        }
+        return;
+
+
+
     }
 
 
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

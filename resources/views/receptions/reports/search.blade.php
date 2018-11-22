@@ -3,6 +3,7 @@
 <div>
 
     <div class="text-right">
+
         <form action="{{ url('monitoring') }}" method="post" class="form-inline" role="form">
 
             {{ csrf_field() }}
