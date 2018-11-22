@@ -29,3 +29,6 @@
 #modal-edit-patient .box-body{
 	padding: 4px 10px 4px 10px;
 }
+#modal-edit-patient .vital-signs-coontainer{
+	display: none;
+}

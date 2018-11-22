@@ -18,6 +18,7 @@
     <link href="<?php echo e(asset('public/OPDMS/css/patients/edit_patient.css')); ?>" rel="stylesheet" />
     <link href="<?php echo e(asset('public/OPDMS/css/patients/remove.css')); ?>" rel="stylesheet" />
     <link href="<?php echo e(asset('public/OPDMS/css/patients/patient_information.css')); ?>" rel="stylesheet" />
+    <link href="<?php echo e(asset('public/OPDMS/css/patients/transaction.css')); ?>" rel="stylesheet" />
 <?php $__env->stopSection(); ?>
 
 
@@ -51,21 +52,24 @@
                     <div class="table-responsive" style="max-height: 400px;">
                         <table class="table table-striped table-hover" id="patient-table">
                             <thead>
-                                <tr>
+                                <tr class="bg-gray">
                                     <th></th>
                                     <th><span class="fa fa-user-o"></span></th>
                                     <th>ID No</th>
                                     <th>Last Name</th>
                                     <th>First Name</th>
                                     <th>Middle Name</th>
-                                    <th>Suffix</th>
+                                    <th>Civil Status</th>
                                     <th>Gender</th>
                                     <th>Birthdate</th>
+                                    <th>Age</th>
                                     <th>Address</th>
                                     <th>Reg.Date</th>
+                                    <th>Printed</th>
                                 </tr>
                             </thead>
                             <tbody>
+                                <?php if(count($data) > 0): ?>
                                 <?php $__currentLoopData = $data; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $list): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <tr data-id="<?php echo e($list->id); ?>" <?php if($list->fordelete): ?> status="remove" <?php endif; ?>>
                                     <td><span class="fa fa-caret-right"></span></td>
@@ -74,13 +78,29 @@
                                     <td class="last_name"><?php echo e($list->last_name); ?></td>
                                     <td class="first_name"><?php echo e($list->first_name); ?></td>
                                     <td class="middle_name"><?php echo e($list->middle_name); ?></td>
-                                    <td class="suffix"><?php echo e($list->suffix); ?></td>
-                                    <td class="sex"><?php echo e(($list->sex == "M")?'Male':'Female'); ?></td>
+                                    <td class="civil_status text-center"><?php echo e($list->civil_status); ?></td>
+                                    <td class="sex text-center"><?php echo e(($list->sex == "M")?'Male':'Female'); ?></td>
                                     <td class="birthday"><?php if($list->birthday): ?> <?php echo e(Carbon::parse($list->birthday)->format('m/d/Y')); ?> <?php endif; ?></td>
+                                    <td align="center" class="age <?php if(Patient::age($list->birthday) > 60): ?> text-red text-bold <?php endif; ?>"><?php echo e(Patient::age($list->birthday)); ?></td>
+
                                     <td class="address"><?php echo e($list->brgyDesc.' '.$list->citymunDesc.', '.$list->provDesc); ?></td>
                                     <td><?php echo e(Carbon::parse($list->regdate)->format('m/d/Y')); ?></td>
+                                    <td align="center" class="print_status">
+                                        <?php if($list->printed == 'Y'): ?>
+                                            <small class="label bg-green">Printed</small>
+                                        <?php else: ?>
+                                            <small class="label bg-red">No</small>
+                                        <?php endif; ?>
+                                    </td>
                                 </tr>
                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                <?php else: ?>
+                                <tr class="">
+                                    <td></td>
+                                    <td></td>
+                                    <td colspan="12" align="center" class="text-bold"><span class="fa fa-warning"></span> Empty Data</td>
+                                </tr>
+                                <?php endif; ?>
                             </tbody>
                         </table>
                     </div>
@@ -114,6 +134,7 @@
     <?php echo $__env->make('OPDMS.patients.modals.print', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
     <?php echo $__env->make('OPDMS.patients.modals.patient_information', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
     <?php echo $__env->make('OPDMS.patients.modals.medical_records', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+    <?php echo $__env->make('OPDMS.patients.modals.transation', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
     <!-- /.content-wrapper -->
 <?php $__env->stopSection(); ?>
 
@@ -149,6 +170,7 @@
     <script src="<?php echo e(asset('public/OPDMS/js/patients/roles.js')); ?>"></script>
     <script src="<?php echo e(asset('public/OPDMS/js/patients/patient_information.js')); ?>"></script>
     <script src="<?php echo e(asset('public/OPDMS/js/patients/medical_record.js')); ?>"></script>
+    <script src="<?php echo e(asset('public/OPDMS/js/patients/transaction.js')); ?>"></script>
 
     <script src="<?php echo e(asset('public/OPDMS/js/patients/address.js')); ?>"></script>
 
@@ -162,6 +184,12 @@
         $(function () {
             //Initialize Select2 Elements
             $('.select2').select2();
+
+
+
+            $(window).load(function(){
+                $('body').attr('oncontextmenu', 'return false');
+            })
         });
     </script>
 

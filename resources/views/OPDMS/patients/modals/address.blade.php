@@ -12,8 +12,8 @@
                     
                     <div class="col-md-12 col-sm-12 divider">
                         <label>Region <b class="text-red">*</b></label>
-                        <select name="region" class="form-control select select2"
-                                onchange="showProvince($(this))" style="width: 100%">
+                        <select name="region" class="form-control region select2" id="region" 
+                                onchange="showProvince($(this).val())" style="width: 100%">
                             <option value="" hidden>Select Region</option>
                         </select>
                             <!-- <span class="help-block">
@@ -23,7 +23,7 @@
 
                     <div class="col-md-12 col-sm-12 divider">
                         <label class="provinceLabel">Province <b class="text-red">*</b></label>
-                        <select name="province" class="form-control select select2" style="width: 100%">
+                        <select name="province" class="form-control province select2" id="province" style="width: 100%">
                             <option value="" hidden>Select Province</option>
                         </select>
                        <!--  @if ($errors->has('province'))
@@ -36,7 +36,7 @@
 
                     <div class="col-md-12 col-sm-12 divider">
                         <label class="citymunicipalityLabel">City / Municipality <b class="text-red">*</b></label>
-                        <select name="city_municipality" class="form-control select select2" style="width: 100%">
+                        <select name="city_municipality" class="form-control city_municipality select2" id="city_municipality" style="width: 100%">
                             <option value="" hidden>Select City / Municipality</option>
                         </select>
                         <!-- @if ($errors->has('city_municipality'))
@@ -48,14 +48,14 @@
 
                     <div class="col-md-12 col-sm-12 divider">
                         <label class="brgyLabel">Barangay </label>
-                        <select name="brgy" class="form-control select select2" style="width: 100%">
+                        <select name="brgy" class="form-control brgy select2" id="brgy" style="width: 100%">
                             <option value="" hidden>Select Barangay</option>
                         </select>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-success btn-sm" id="clone-address" data-dismiss="modal"><span class="fa fa-close"></span> OK</button>
+                <button type="button" class="btn btn-success btn-sm" id="clone-address" data-dismiss="modal"><span class="fa fa-check"></span> OK</button>
             </div>
         </div>
     <!-- /.modal-content -->

@@ -6,7 +6,7 @@ $(document).on('click', '#edit-button', function(){
 	if (id == "#") {
 		toastr.error('Kindly Select Patient Record First');
 	}else{
-		edit_patient(id);
+		edit_patient(id, enable = false);
 	}
 })
 
@@ -15,6 +15,14 @@ $(document).on('click', '#print-button', function(){
 	if (id == "#") {
 		toastr.error('Kindly Select Patient Record First');
 	}else{
+		$('#patient-table tbody tr').each(function(){
+			var tr_id = $(this).attr("data-id");
+			if (id == tr_id) {
+				$(this).find('.print_status').html('<small class="label bg-green">Printed</small>');
+			}
+		})
+
+
 		$(this).attr('href', baseUrl+'/patients/'+id);
 		$(this).attr("target", "_blank")
 	}
@@ -34,8 +42,16 @@ $(document).on('click', '#remove-button', function(){
 	}
 });
 
+
+$(document).on('click', '#print-multiple', function(){
+	var count = 50; 
+	$('.print-count').val('50');
+	printMultipleTable(count);
+	$('#modal-print-patient').modal('toggle');
+});
+
 var something = $('.trial-click');
-$('#patient-table tbody tr').mousedown(function(event) {
+$(document).on('mousedown', '#patient-table tbody tr', function(event) {
 	
     switch (event.which) {
         

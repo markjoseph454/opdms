@@ -10,7 +10,7 @@ $(document).on('submit', '.incomeform', function(e){
 	      	$('.transaction-content').empty();
 	      	var request = JSON.parse(data);
 	      	if (request.reciept) {
-
+	      		var charges = request.charge;
 	      		var input2 = $('<input type="hidden" name="category_id" value="4">');  
 		      	if (request.data.length < 1) {
 		      		$('.error_ms').text('patient credentials not found').show();
@@ -26,12 +26,16 @@ $(document).on('submit', '.incomeform', function(e){
 		        	 var option = "<option value="+request.data[0].mss_id+'-'+request.data[0].discount+">"+request.data[0].label+'-'+request.data[0].description+'%'+"</option>";
 		        	 var option2 = "<option value='15-0.2'>Senior 20%</option>";
 		        	 var option3 = "<option value='14-0.2'>PWD 20%</option>";
-		        	 var option4 = "<option value='0-0'>DISABLE</option>";
-			    	 $('.patient_classification').append(option, option2,option3,option4);	
+		        	 var option5 = "<option value='4-0.5'>C2 50%</option>";
+		        	 var option4 = "<option value='0-0'>Disable Discount</option>";
+
+			    	 $('.patient_classification').append(option, option2, option3, option5, option4);	
 
 		        	 $('.th-discount').attr('id', request.data[0].discount);
 		        	 $('.error_msgs').hide();
 		        	 $('.error_msg').hide();
+	      			chargelist(charges);
+
 		        }
 		        else if (request.data[0].mss_id && request.data[0].label == null) {
 		        	
@@ -49,6 +53,8 @@ $(document).on('submit', '.incomeform', function(e){
 		        	 	var option3 = "<option value='14-0.2'>PWD 20%</option>";
 		        		$('.patient_classification').append(option, option2, option3);
 		        		patientvalueincome(request);
+	      				chargelist(charges);
+
 		        	})
 		        }
 		        else if(request.data[0].mss_id == null){
@@ -66,11 +72,12 @@ $(document).on('submit', '.incomeform', function(e){
 		        	 	var option3 = "<option value='14-0.2'>PWD 20%</option>";
 		        		$('.patient_classification').append(option, option2, option3);
 		        		patientvalueincome(request);
+	      				chargelist(charges);
+
 		        		
 		        	})
 		        }
-		        var charges = request.charge;
-		        chargelist(charges);
+		        
 		        if (charges.length < 1) {
 		        	appendthisincome(nos)	
 		        }

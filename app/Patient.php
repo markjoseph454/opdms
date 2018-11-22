@@ -76,12 +76,13 @@ class Patient extends Model
                 a.last_name,
                 a.first_name,
                 a.middle_name,
-                a.suffix,
+                a.civil_status,
                 b.brgyDesc, c.citymunDesc, d.provDesc,
                 a.birthday,
                 a.sex,
                 DATE(a.created_at) as regdate,
-                e.id as fordelete
+                e.id as fordelete,
+                a.printed
         FROM patients a 
         LEFT JOIN refbrgy b ON a.brgy = b.id
         LEFT JOIN refcitymun c ON a.city_municipality = c.citymunCode
@@ -95,17 +96,19 @@ class Patient extends Model
     }
     static function Search($request)
     {
+        // dd($request->datereg);
         return DB::select("SELECT a.id,
                 a.hospital_no,
                 a.last_name,
                 a.first_name,
                 a.middle_name,
-                a.suffix,
+                a.civil_status,
                 b.brgyDesc, c.citymunDesc, d.provDesc,
                 a.birthday,
                 a.sex,
                 DATE(a.created_at) as regdate,
-                e.id as fordelete
+                e.id as fordelete,
+                a.printed
         FROM patients a 
         LEFT JOIN refbrgy b ON a.brgy = b.id
         LEFT JOIN refcitymun c ON a.city_municipality = c.citymunCode
@@ -117,16 +120,15 @@ class Patient extends Model
             WHEN ? THEN a.hospital_no LIKE ?
             WHEN ? != '' THEN a.first_name LIKE ?
             WHEN ? != '' THEN CONCAT(a.last_name,' ',a.first_name) LIKE ?
+            WHEN ? != '' THEN DATE(a.created_at) = ?
             WHEN ? != '' THEN CONCAT(a.hospital_no,' ',a.last_name,' ',a.first_name,' ',a.middle_name) LIKE ?
         END)
-        ORDER BY a.id DESC
-        LIMIT 200"
+        ORDER BY a.id DESC"
         ,[$request->lname, '%'.$request->lname.'%', 
             $request->hospital_no, '%'.$request->hospital_no.'%', 
             $request->fname, '%'.$request->fname.'%',
             $request->completename, '%'.$request->completename.'%',
-            $request->patient, '%'.$request->patient.'%', '%'.$request->patient.'%', '%'.$request->patient.'%']);   
+            $request->datereg, $request->datereg,
+            $request->patient, '%'.$request->patient.'%']);   
     }
-
-
 }

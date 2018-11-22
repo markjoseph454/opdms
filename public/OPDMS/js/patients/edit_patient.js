@@ -2,7 +2,8 @@ $('#modal-edit-patient').on('shown.bs.modal', function(){
     $('#modal-edit-patient input.last_name').focus();
 });
 
-function edit_patient(id) {
+function edit_patient(id, enable) {
+    $('#modal-edit-patient .loaderRefresh').fadeIn('fast');
     request = $.ajax({
         url: baseUrl+'/patients/'+id+'/edit',
         type: "get",
@@ -19,6 +20,7 @@ function edit_patient(id) {
         $('#modal-edit-patient .middle_name').val(response.patient.middle_name);
         $('#modal-edit-patient .suffix').val(response.patient.suffix);
         $('#modal-edit-patient .birthday').val(dateCalculate(response.patient.birthday));
+        $('#modal-edit-patient .calculated-age').val(getAge(response.patient.birthday));
         $('#modal-edit-patient div#sexdiv select.sex').val((response.patient.sex));
         $('#modal-edit-patient .civil_status').val(response.patient.civil_status);
         $('#modal-edit-patient .contact_no').val(response.patient.contact_no);
@@ -32,11 +34,15 @@ function edit_patient(id) {
         }
 
         getallclinics(response.triage);
+        if (enable == false) {
+            if (new Date(dateCalculate(response.patient.created_at)) < new Date(dateToday)) {
+                enable = false;
+            }else{
+                enable = true;
+            } 
+        }
 
-
-        if (new Date(dateCalculate(response.patient.created_at)) < new Date(dateToday)) {
-            $('#modal-edit-patient .vital-signs-coontainer').css('display', 'none');
-        }else{
+        if(enable == true){
             $('#modal-edit-patient .vital-signs-coontainer').css('display', 'block');
         }
         if (response.vital) {
@@ -55,6 +61,10 @@ function edit_patient(id) {
             $('#modal-edit-patient .body_temperature').val('');
         }
 
+        gotoaddressFile(response.address);
+        
+
+
     });
     request.fail(function (jqXHR, textStatus, errorThrown){
         console.log("The following error occurred: "+ jqXHR, textStatus, errorThrown);
@@ -62,6 +72,7 @@ function edit_patient(id) {
     });
     request.always(function (response){
         $('#modal-edit-patient').modal('toggle');
+        $('#modal-edit-patient .loaderRefresh').fadeOut('fast');
         console.log("To God Be The Glory...");
     });
 }
@@ -73,6 +84,7 @@ $(document).on('submit', '#modal-edit-patient #edit-form', function(e){
     var patient_id = $(scope).attr('data-id');
     var url = baseUrl+'/patients/'+patient_id;
     var data = $(this).serialize();
+    // alert(data);
         request = $.ajax({
             url: url,
             type: "post",

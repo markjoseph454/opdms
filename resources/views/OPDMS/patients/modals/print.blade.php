@@ -16,7 +16,7 @@
                     </div>
                 </div>
                 <div class="text-center">
-                    <small class="text-red">Input value and hit Enter Key! </small>
+                    <small class="text-red">Input value and hit [Enter] Key </small>
                 </div>
                 <div class="search-header text-right" style="background: #ccc">
                     <span class="search-print pull-left"><span class="search-count"></span> Search Result</span>
@@ -26,7 +26,7 @@
                 <div class="table-responsive">
                     <table class="table table-striped table-hover" id="print-table">
                         <thead>
-                            <tr>
+                            <tr class="bg-gray">
                                 <th><input type="checkbox" name="" id="selectall"></th>
                                 <th>ID no</th>
                                 <th>Last Name</th>

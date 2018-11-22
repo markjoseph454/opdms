@@ -18,6 +18,7 @@
     <link href="{{ asset('public/OPDMS/css/patients/edit_patient.css') }}" rel="stylesheet" />
     <link href="{{ asset('public/OPDMS/css/patients/remove.css') }}" rel="stylesheet" />
     <link href="{{ asset('public/OPDMS/css/patients/patient_information.css') }}" rel="stylesheet" />
+    <link href="{{ asset('public/OPDMS/css/patients/transaction.css') }}" rel="stylesheet" />
 @endsection
 
 
@@ -55,21 +56,24 @@
                     <div class="table-responsive" style="max-height: 400px;">
                         <table class="table table-striped table-hover" id="patient-table">
                             <thead>
-                                <tr>
+                                <tr class="bg-gray">
                                     <th></th>
                                     <th><span class="fa fa-user-o"></span></th>
                                     <th>ID No</th>
                                     <th>Last Name</th>
                                     <th>First Name</th>
                                     <th>Middle Name</th>
-                                    <th>Suffix</th>
+                                    <th>Civil Status</th>
                                     <th>Gender</th>
                                     <th>Birthdate</th>
+                                    <th>Age</th>
                                     <th>Address</th>
                                     <th>Reg.Date</th>
+                                    <th>Printed</th>
                                 </tr>
                             </thead>
                             <tbody>
+                                @if(count($data) > 0)
                                 @foreach($data as $list)
                                 <tr data-id="{{ $list->id }}" @if($list->fordelete) status="remove" @endif>
                                     <td><span class="fa fa-caret-right"></span></td>
@@ -78,13 +82,29 @@
                                     <td class="last_name">{{ $list->last_name }}</td>
                                     <td class="first_name">{{ $list->first_name }}</td>
                                     <td class="middle_name">{{ $list->middle_name }}</td>
-                                    <td class="suffix">{{ $list->suffix }}</td>
-                                    <td class="sex">{{ ($list->sex == "M")?'Male':'Female' }}</td>
+                                    <td class="civil_status text-center">{{ $list->civil_status }}</td>
+                                    <td class="sex text-center">{{ ($list->sex == "M")?'Male':'Female' }}</td>
                                     <td class="birthday">@if($list->birthday) {{ Carbon::parse($list->birthday)->format('m/d/Y') }} @endif</td>
+                                    <td align="center" class="age @if(Patient::age($list->birthday) > 60) text-red text-bold @endif">{{ Patient::age($list->birthday) }}</td>
+
                                     <td class="address">{{ $list->brgyDesc.' '.$list->citymunDesc.', '.$list->provDesc }}</td>
                                     <td>{{ Carbon::parse($list->regdate)->format('m/d/Y') }}</td>
+                                    <td align="center" class="print_status">
+                                        @if($list->printed == 'Y')
+                                            <small class="label bg-green">Printed</small>
+                                        @else
+                                            <small class="label bg-red">No</small>
+                                        @endif
+                                    </td>
                                 </tr>
                                 @endforeach
+                                @else
+                                <tr class="">
+                                    <td></td>
+                                    <td></td>
+                                    <td colspan="12" align="center" class="text-bold"><span class="fa fa-warning"></span> Empty Data</td>
+                                </tr>
+                                @endif
                             </tbody>
                         </table>
                     </div>
@@ -118,6 +138,7 @@
     @include('OPDMS.patients.modals.print')
     @include('OPDMS.patients.modals.patient_information')
     @include('OPDMS.patients.modals.medical_records')
+    @include('OPDMS.patients.modals.transation')
     <!-- /.content-wrapper -->
 @endsection
 
@@ -155,6 +176,7 @@
     <script src="{{ asset('public/OPDMS/js/patients/roles.js') }}"></script>
     <script src="{{ asset('public/OPDMS/js/patients/patient_information.js') }}"></script>
     <script src="{{ asset('public/OPDMS/js/patients/medical_record.js') }}"></script>
+    <script src="{{ asset('public/OPDMS/js/patients/transaction.js') }}"></script>
 
     <script src="{{ asset('public/OPDMS/js/patients/address.js') }}"></script>
 
@@ -168,6 +190,12 @@
         $(function () {
             //Initialize Select2 Elements
             $('.select2').select2();
+
+
+
+            $(window).load(function(){
+                $('body').attr('oncontextmenu', 'return false');
+            })
         });
     </script>
 

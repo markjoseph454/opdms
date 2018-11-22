@@ -234,6 +234,7 @@ use app\Http\Controllers\MssController;
                 foreach ($exdist as $keyso):
                   $mss = MssController::getresultreferringperdistrict($excont[$d], $request->users_id, $request->from, $request->to);
                 $a = 0;
+                $b = 0;
                 $c1 = 0;
                 $c2 = 0;
                 $c3 = 0;
@@ -242,6 +243,9 @@ use app\Http\Controllers\MssController;
                 foreach ($mss  as $list): 
                   if ($list->mss_id == 1) {
                     $a++;
+                  }
+                  if ($list->mss_id == 16) {
+                    $b++;
                   }
 
                   if ($list->mss_id == 3) {
@@ -267,13 +271,13 @@ use app\Http\Controllers\MssController;
                 <tr>
                   <td>{{ $exdist[$d] }}</td>
                   <td align="center" class="a">@if($a <= 0) {{ " " }} @else {{ $a }} @endif</td>
-                  <td align="center" class="b"></td>
+                  <td align="center" class="b">@if($a <= 0) {{ " " }} @else {{ $b }} @endif</td>
                   <td align="center" class="c1">@if($c1 <= 0) {{ " " }} @else {{ $c1 }} @endif</td>
                   <td align="center" class="c2">@if($c2 <= 0) {{ " " }} @else {{ $c2 }} @endif</td>
                   <td align="center" class="c3">@if($c3 <= 0) {{ " " }} @else {{ $c3 }} @endif  </td>
                   <td align="center" class="sc"></td>
                   <td align="center" class="de">@if($de <= 0) {{ " " }} @else {{ $de }} @endif</td>
-                  <td align="center" class="totals success" style="font-weight: bold;font-size: 12px;">{{ $total+$a+$c1+$c2+$c3+$de }}</td>
+                  <td align="center" class="totals success" style="font-weight: bold;font-size: 12px;">{{ $total+$a+$b+$c1+$c2+$c3+$de }}</td>
                 </tr>
                 <?php
                 $d++;

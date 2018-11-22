@@ -133,7 +133,7 @@
                             <tr>
                                 <td hidden></td>
                                 <td><?php echo e($var->hospital_no); ?></td>
-                                <td><?php echo e($var->patient); ?></td>
+                                <td><?php echo e($var->last_name.', '.$var->first_name.' '.$var->middle_name); ?></td>
                                 <td><?php echo e($var->address); ?></td>
                                 <td><?php echo e(Carbon::parse($var->birthday)->format('m/d/Y')); ?></td>
                                 <td><?php echo e($var->sex); ?></td>

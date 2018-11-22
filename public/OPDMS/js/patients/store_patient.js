@@ -1,5 +1,5 @@
 $('#modal-store-patient').on('shown.bs.modal', function(){
-    $('#modal-store-patient input.last_name').focus();
+    $('#modal-store-patient input.middle_name').focus();
 });
 
 $(document).on('click', '#savereg, #saveclose', function(){
@@ -25,9 +25,9 @@ $(document).on('submit', '#modal-store-patient #store-form', function(e){
 		});
 
 		request.done(function (response, textStatus, jqXHR) {
-		    // console.log(response);
-		    if (response == 'Synchronize Registration Not Allowed.') {
-		    	toastr.error(response);
+		    console.log(response);
+		    if (response.patient == 'Synchronize Registration Not Allowed.') {
+		    	toastr.error(response.patient);
 		    }
 		    if (response.errors) {
 		    	if (response.errors.last_name) {

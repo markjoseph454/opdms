@@ -303,7 +303,7 @@ class MssController extends Controller
     public function classification(Request $request)
     {
       $patient = Patient::where('barcode', '=', $request->barcode)
-                ->orWhere('hospital_no', '=', $request->barcode)->get()->first();
+                ->orWhere('hospital_no', '=', $request->barcode)->first();
       if ($patient) {
         $check = Mssclassification::where('patients_id', '=', $patient->id)->first();
         if ($check) {
@@ -314,7 +314,6 @@ class MssController extends Controller
                 ->leftJoin('msshouseexpenses', 'mssclassification.id', '=', 'msshouseexpenses.classification_id')
                 ->leftJoin('mss', 'mssclassification.mss_id', '=', 'mss.id')
                 ->where('mssclassification.id', '=', $check->id)
-                ->get()
                 ->first();
           $family = Mssfamily::where('patient_id', $view->patients_id)->get();
           $mss = DB::select("SELECT * FROM mss WHERE id NOT IN(10,11,12,13,14,15)");
@@ -333,7 +332,7 @@ class MssController extends Controller
     public function classified(Request $request)
     {
       if ($request->from != "" && $request->to != "") {
-          $classified = DB::select("SELECT b.hospital_no, CONCAT(b.last_name,' ',b.first_name, ' ',b.middle_name) as patient,
+          $classified = DB::select("SELECT b.hospital_no, b.last_name,b.first_name,b.middle_name,
                                 b.address, b.birthday, b.sex, CONCAT(d.label,'-',d.description) as mss, 
                                 CONCAT(c.last_name, ' ',c.first_name, ' ',c.middle_name) as users,
                                 a.id,
@@ -363,7 +362,7 @@ class MssController extends Controller
                                 ", [$request->from, $request->to]);
       }elseif ($request->hospital_no != "" || $request->name  != "") {
         if ($request->name != "") {
-          $classified = DB::select("SELECT b.hospital_no, CONCAT(b.last_name,' ',b.first_name, ' ',b.middle_name) as patient,
+          $classified = DB::select("SELECT b.hospital_no, b.last_name,b.first_name, b.middle_name,
                                 b.address, b.birthday, b.sex, CONCAT(d.label,'-',d.description) as mss, 
                                 CONCAT(c.last_name, ' ',c.first_name, ' ',c.middle_name) as users,
                                 a.id,
@@ -393,7 +392,7 @@ class MssController extends Controller
                                 GROUP BY a.mss_id  
                                 ", [$request->hospital_no, "%".$request->name."%"]);
         }else{
-          $classified = DB::select("SELECT b.hospital_no, CONCAT(b.last_name,' ',b.first_name, ' ',b.middle_name) as patient,
+          $classified = DB::select("SELECT b.hospital_no, b.last_name,b.first_name,b.middle_name,
                         b.address, b.birthday, b.sex, CONCAT(d.label,'-',d.description) as mss, 
                         CONCAT(c.last_name, ' ',c.first_name, ' ',c.middle_name) as users,
                         a.id,
@@ -422,7 +421,7 @@ class MssController extends Controller
                                 ", [$request->hospital_no]);
         }
       }else{
-        $classified = DB::select("SELECT b.hospital_no, CONCAT(b.last_name,' ',b.first_name, ' ',b.middle_name) as patient,
+        $classified = DB::select("SELECT b.hospital_no, b.last_name, b.first_name, b.middle_name,
                       b.address, b.birthday, b.sex, CONCAT(d.label,'-',d.description) as mss, 
                       CONCAT(c.last_name, ' ',c.first_name, ' ',c.middle_name) as users,
                       a.id,

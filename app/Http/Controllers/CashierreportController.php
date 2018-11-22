@@ -31,6 +31,12 @@ class CashierreportController extends Controller
         if ($request->exporttype == "EXCELL") {
           return redirect('exporttransactiontoexcell')->withInput();
         }
+            $cshier_id = Auth::user()->id;
+            if ($cshier_id == 150 || $cshier_id == 325) {
+
+              $cshier_id = '150,325';
+            }
+
             // dd($request);
             if ($request->mortype == 'INCOME') {
             $data =  DB::select("SELECT h.void,
@@ -50,7 +56,7 @@ class CashierreportController extends Controller
                                           LEFT JOIN patients i ON h.patients_id = i.id
                                           LEFT JOIN users j ON h.users_id = j.id
                                           WHERE date(h.created_at) = ?
-                                          AND h.users_id = ?
+                                          AND h.users_id IN($cshier_id)
                                           GROUP BY h.or_no
                                           UNION 
                                           SELECT o.void,
@@ -105,13 +111,11 @@ class CashierreportController extends Controller
                               LEFT JOIN cashincomesubcategory s ON o.category_id = s.id
                               LEFT JOIN cashincomecategory t ON s.cashincomecategory_id = t.id
                               WHERE date(o.created_at) = ?
-                                          AND o.users_id = ?
+                                          AND o.users_id IN($cshier_id)
                                           GROUP BY o.or_no, t.id
                               ORDER BY numbers ASC
-                                          ", [$request->transdate, Auth::user()->id, 
-                                                $request->transdate, Auth::user()->id, 
-                                                $request->transdate, Auth::user()->id, 
-                                                $request->transdate, Auth::user()->id]);
+                                          ", [$request->transdate, 
+                                                $request->transdate]);
            
             }elseif ($request->mortype == 'MEDICINE') {
                   $data = DB::select("SELECT a.void,
@@ -184,7 +188,7 @@ class CashierreportController extends Controller
             PDF::text(55,15,'EASTERN VISAYAS REGIONAL MEDICAL CENTER');
             PDF::text(10,30,'HOSPITAL INCOME (LBP)');
 
-        /*==============================END OF HEADER==================================*/
+            /*==============================END OF HEADER==================================*/
        
             PDF::SetFont('Times','B',10);
             PDF::SetXY(10,35);
@@ -243,38 +247,58 @@ class CashierreportController extends Controller
             $radiology = 0;
             $cardiology = 0;
             // dd(count($data));
+            
             foreach ($data as $list) {
-                   if ($i == 29 || $i == 60 || $i == 91 || $i == 122 || $i == 153 || $i == 184 || $i == 215 || $i == 246 || $i == 277 || $i == 308 || $i == 339 || $i == 370) {
-                      PDF::SetAutoPageBreak(TRUE, 0);
-                      PDF::AddPage('L', 'LEGAL');
+                    for ($trim = 29;$trim<=2966;$trim+=33) {
+                      if($i == $trim){
+                        PDF::SetAutoPageBreak(TRUE, 0);
+                        PDF::AddPage('L', 'LEGAL');
 
-                      PDF::SetFont('Times','B',11);
-                      PDF::text(140,5,'REPORT OF COLLECTIONS AND DEPOSITS');
-                      PDF::SetFont('helvetica',11);
-                      PDF::text(10,15,'Entitty Name:');
-                      PDF::text(10,25,'Fund:');
-                      PDF::text(180,15,'Report No.');
-                      PDF::SetXY(220,15);
-                      PDF::Cell(25,5,"".$request->mreportno."",0,0,'C');
-                      PDF::text(180,20,'Sheet No.');
-                      PDF::text(225,20,''.PDF::getAliasNumPage().' of '.PDF::getAliasNbPages().'');
-                      PDF::SetXY(220,20);
-                      PDF::Cell(28,5,"",0,0,'C');/*================pageno*/
+                        PDF::SetFont('Times','B',10);
+                        PDF::SetXY(10,15);
+                        PDF::MultiCell(50,20,"\nOfficial Receipt/\nReport of Collections\nby Sub-Collector",1,'C',false);
+                        PDF::Cell(22,5,"DATE",1,0,'C');
+                        PDF::SetFont('helvetica','',10);
+                        PDF::SetXY(32,35);
+                        PDF::Cell(28,5,"NUMBER",1,0,'C');
+                        PDF::SetXY(60,15);
+                        PDF::SetFont('helvetica','',7);
+                        PDF::MultiCell(17,25,"\n\n\n\n\nResponsibilty\nCenter\nCode",1,'C',false);
+                        PDF::SetXY(77,15);
+                        PDF::SetFont('Times','',11);
+                        PDF::MultiCell(50,25,"\n\n\n\nPayor",1,'C',false);
+                        PDF::SetXY(77+50,15);
+                        PDF::MultiCell(45,25,"\n\n\n\nParticulars",1,'C',false);
+                        PDF::SetXY(77+95,15);
+                        PDF::SetFont('Times','',8);
+                        PDF::MultiCell(23,25,"\n\n\n\n\n\nMFO/PAP",1,'C',false);
+                        PDF::SetXY(77+95+23,15);
+                        PDF::SetFont('Times','',11);
+                        PDF::Cell(150,5,"AMOUNT",1,0,'C');
+                        PDF::SetXY(77+95+23,20);
+                        PDF::SetFont('Helvetica','B',11);
+                        PDF::MultiCell(25,20,"TOTAL\nPER\nOR",1,'C',false);
+                        PDF::SetXY(77+95+23+25,20);
+                        PDF::SetFont('Times','',9);
+                        PDF::MultiCell(25,20,"\n\nOTHER\nFEES\n(4020217099)",1,'C',false);
+                        PDF::SetXY(77+95+23+50,20);
+                        PDF::SetFont('Helvetica','B',6.5);
+                        PDF::MultiCell(25,20,"\nMEDICAL FEES \n- PHYSICAL MEDICINE &\n REHABILITATION\n SERVICES\n(4020217009)",1,'C',false);
+                        PDF::SetXY(77+95+23+75,20);
+                        PDF::SetFont('Helvetica','B',9);
+                        PDF::MultiCell(25,20,"\nLABORATORY",1,'C',false);
+                        PDF::SetXY(77+95+23+100,20);
+                        PDF::SetFont('Helvetica','',9);
+                        PDF::MultiCell(25,20,"\nRADIOLOGY",1,'C',false);
+                        PDF::SetXY(77+95+23+125,20);
+                        PDF::SetFont('Helvetica','',9);
+                        PDF::MultiCell(25,20,"\nCARDIOLOGY",1,'C',false);
 
+                        /*============================END OF TABLE HEADER=================================*/
 
-                      PDF::text(180,25,'Date:');
-                      PDF::Line(55, 20, 125, 20, $style);
-                      PDF::Line(55, 25, 125, 25, $style);
-
-                      PDF::Line(220, 20, 245, 20, $style);
-                      PDF::Line(220, 25, 245, 25, $style);
-                      PDF::text(220,25,Carbon::parse($request->transdate)->format('M. d, Y'));
-                      PDF::Line(220, 30, 245, 30, $style);
-
-                      PDF::SetFont('','B');
-                      PDF::text(55,15,'EASTERN VISAYAS REGIONAL MEDICAL CENTER');
-                      PDF::text(10,30,'HOSPITAL INCOME (LBP)');
-                        $y = 35;
+                        
+                          $y = 40;
+                    }
                   }
                   
                   PDF::SetFont('Helvetica','',9);
@@ -407,21 +431,13 @@ class CashierreportController extends Controller
             PDF::SetFont('Helvetica','',11);
             // dd($i);  
             /*====================END OF TRANSACTION TOTAL============================================*/
-                              if ($i >= 15 && $i <= 29 ||
-                                    $i >= 52 && $i <= 66 ||
-                                    $i >= 89 && $i <= 103 ||
-                                    $i >= 120 && $i <= 147 ||
-                                    $i >= 161 && $i <= 177 ||
-                                    $i >= 200 && $i <= 214 ||
-                                    $i >= 237 && $i <= 266 ||
-                                    $i >= 274 && $i <= 295 ||
-                                    $i >= 311 && $i <= 325 ||
-                                    $i > 355 && $i <= 370) {
-                                    PDF::SetAutoPageBreak(TRUE, 0);
-                                    PDF::AddPage('L', 'LEGAL');
-                                    $y = -40;
-                              }
-            
+            for ($trim = 29;$trim<=2966;$trim+=33) {
+              if($i>($trim-9) && $i <= $trim){
+                PDF::SetAutoPageBreak(TRUE, 0);
+                PDF::AddPage('L', 'LEGAL');
+                $y = -40;
+              }
+            }
       
             $y = PDF::GetY()+5;
             PDF::SetFont('Helvetica','', 11);
@@ -488,16 +504,12 @@ class CashierreportController extends Controller
             // dd($i);
                   
             /*============================end of footer============================*/
-            if ($i >= 49 && $i <= 60 ||
-                $i >= 155 && $i <= 160 ||
-                $i >= 78 && $i <= 85 ||
-                $i >= 106 && $i <= 111 ||
-                $i >= 190 && $i <= 198 ||
-                $i >= 270 && $i <= 280 ||
-                $i > 325 && $i<= 330) {
-                  PDF::SetAutoPageBreak(TRUE, 0);
-                  PDF::AddPage('L', 'LEGAL');
-                  $y = -40;
+           for ($trim = 29;$trim<=2966;$trim+=33) {
+              if($i>($trim-21) && $i <= $trim){
+                PDF::SetAutoPageBreak(TRUE, 0);
+                PDF::AddPage('L', 'LEGAL');
+                $y = -40;
+              }
             }
             
 

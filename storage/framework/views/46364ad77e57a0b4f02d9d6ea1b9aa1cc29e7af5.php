@@ -234,6 +234,7 @@ use app\Http\Controllers\MssController;
                 foreach ($exdist as $keyso):
                   $mss = MssController::getresultreferringperdistrict($excont[$d], $request->users_id, $request->from, $request->to);
                 $a = 0;
+                $b = 0;
                 $c1 = 0;
                 $c2 = 0;
                 $c3 = 0;
@@ -242,6 +243,9 @@ use app\Http\Controllers\MssController;
                 foreach ($mss  as $list): 
                   if ($list->mss_id == 1) {
                     $a++;
+                  }
+                  if ($list->mss_id == 16) {
+                    $b++;
                   }
 
                   if ($list->mss_id == 3) {
@@ -267,13 +271,13 @@ use app\Http\Controllers\MssController;
                 <tr>
                   <td><?php echo e($exdist[$d]); ?></td>
                   <td align="center" class="a"><?php if($a <= 0): ?> <?php echo e(" "); ?> <?php else: ?> <?php echo e($a); ?> <?php endif; ?></td>
-                  <td align="center" class="b"></td>
+                  <td align="center" class="b"><?php if($a <= 0): ?> <?php echo e(" "); ?> <?php else: ?> <?php echo e($b); ?> <?php endif; ?></td>
                   <td align="center" class="c1"><?php if($c1 <= 0): ?> <?php echo e(" "); ?> <?php else: ?> <?php echo e($c1); ?> <?php endif; ?></td>
                   <td align="center" class="c2"><?php if($c2 <= 0): ?> <?php echo e(" "); ?> <?php else: ?> <?php echo e($c2); ?> <?php endif; ?></td>
                   <td align="center" class="c3"><?php if($c3 <= 0): ?> <?php echo e(" "); ?> <?php else: ?> <?php echo e($c3); ?> <?php endif; ?>  </td>
                   <td align="center" class="sc"></td>
                   <td align="center" class="de"><?php if($de <= 0): ?> <?php echo e(" "); ?> <?php else: ?> <?php echo e($de); ?> <?php endif; ?></td>
-                  <td align="center" class="totals success" style="font-weight: bold;font-size: 12px;"><?php echo e($total+$a+$c1+$c2+$c3+$de); ?></td>
+                  <td align="center" class="totals success" style="font-weight: bold;font-size: 12px;"><?php echo e($total+$a+$b+$c1+$c2+$c3+$de); ?></td>
                 </tr>
                 <?php
                 $d++;

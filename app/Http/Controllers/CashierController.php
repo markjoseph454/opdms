@@ -525,6 +525,11 @@ class CashierController extends Controller
 
 	public function getallTransactionsbyday(Request $request)
 	{
+		$cshier_id = Auth::user()->id;
+		if ($cshier_id == 150 || $cshier_id == 325) {
+
+		  $cshier_id = '150,325';
+		}
 		$data =  DB::select("SELECT a.void,
 									DATE(a.created_at) as dates,
 									a.or_no as numbers, 
@@ -556,7 +561,7 @@ class CashierController extends Controller
 							WHERE date(a.created_at) = ?
 							-- AND a.mss_id NOT IN(9,10,11,12,13)
 							-- AND a.price > 0
-							AND a.users_id = ?
+							AND a.users_id IN($cshier_id)
                             GROUP BY a.or_no
                             UNION
 							SELECT h.void,
@@ -576,7 +581,7 @@ class CashierController extends Controller
 							LEFT JOIN patients i ON h.patients_id = i.id
 							LEFT JOIN users j ON h.users_id = j.id
 							WHERE date(h.created_at) = ?
-							AND h.users_id = ?
+							AND h.users_id IN($cshier_id)
 							GROUP BY h.or_no
 							UNION 
 							SELECT o.void,
@@ -631,13 +636,12 @@ class CashierController extends Controller
                             LEFT JOIN cashincomesubcategory s ON o.category_id = s.id
                             LEFT JOIN cashincomecategory t ON s.cashincomecategory_id = t.id
                             WHERE date(o.created_at) = ?
-							AND o.users_id = ?
+							AND o.users_id IN($cshier_id)
 							GROUP BY o.or_no, t.id
                             ORDER BY numbers ASC
-							", [$request->day, Auth::user()->id, 
-								$request->day, Auth::user()->id, 
-								$request->day, Auth::user()->id, 
-								$request->day, Auth::user()->id]);
+							", [$request->day, 
+								$request->day,
+								$request->day]);
 		echo json_encode($data);
 		return;
 	}
