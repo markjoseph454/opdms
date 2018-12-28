@@ -51,6 +51,8 @@
             <?php echo $__env->make('OPDMS.reception.roles', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
         <?php elseif(Auth::user()->role == 1): ?> 
             <?php echo $__env->make('OPDMS.patients.roles', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+        <?php elseif(Auth::user()->role == 7): ?> 
+            <?php echo $__env->make('OPDMS.doctors.partials.roles', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
         <?php endif; ?>
 
 

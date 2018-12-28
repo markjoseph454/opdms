@@ -66,13 +66,17 @@
             <div class="box box-default bg-danger">
 
 
+
+
                 @include('OPDMS.reception.queue.header_status'){{-- patient status goes here --}}
 
                 <div class="box-body">
 
                     {{-- patient queued goes here --}}
                     <div class="table-responsive selectable_table" id="queue_table">
-                        <table class="table table-bordered table-striped table-hover" id="dataTable2">
+
+
+                        <table class="table table-bordered table-striped table-hover reception_queue_table" id="dataTable3">
                             <thead>
                                 <tr>
                                     <th></th>
@@ -84,6 +88,7 @@
                                     <th>Status</th>
                                     {{--<th>Charging</th>--}}
                                     <th>Time Queued</th>
+                                    <th>Time Assigned</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -197,6 +202,17 @@
                                                 <small class="text-muted">
                                                     {{ Carbon::parse($queue->queue_time)->diffForHumans() }}
                                                 </small>
+                                            </td>
+                                            <td>
+                                                @if($queue->assigned_time)
+                                                Today {{ Carbon::parse($queue->assigned_time)->format('h:i a') }}
+                                                <br>
+                                                <small class="text-muted">
+                                                    {{ Carbon::parse($queue->assigned_time)->diffForHumans() }}
+                                                </small>
+                                                @else
+                                                    <strong class="text-muted">None</strong>
+                                                @endif
                                             </td>
                                         </tr>
                                     @endforeach

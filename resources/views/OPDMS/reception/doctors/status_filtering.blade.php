@@ -49,7 +49,7 @@
 
             @include('OPDMS.partials.boilerplate.header',
             ['header' => 'Dr. '. $doctor->last_name.', '.$doctor->first_name ,
-            'sub' => 'Showing all patients filtered by their queuing status.'])
+            'sub' => 'Showing all assigned patients filtered by their queuing status.'])
 
             <!-- Main content -->
                 <section class="content container-fluid">
@@ -84,6 +84,7 @@
                                         <th>Age</th>
                                         <th>Status</th>
                                         {{--<th>Charging</th>--}}
+                                        <th>Queue Time</th>
                                         <th>Assigned Time</th>
                                     </tr>
                                     </thead>
@@ -174,6 +175,13 @@
 
 
                                                 {{-- the assigend time by the receptionist --}}
+                                                <td>
+                                                    Today {{ Carbon::parse($queue->queue_time)->format('h:i a') }}
+                                                    <br>
+                                                    <small class="text-muted">
+                                                        {{ Carbon::parse($queue->queue_time)->diffForHumans() }}
+                                                    </small>
+                                                </td>
                                                 <td>
                                                     Today {{ Carbon::parse($queue->assigned_time)->format('h:i a') }}
                                                     <br>

@@ -715,6 +715,64 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('auth_expired', 'OPDMS\AuthExpiredController@auth_expired');
 
 
+    // adding services of clinics
+    Route::get('services_offered/{status?}', 'OPDMS\ServicesController@services_offered');
+    // store the services created
+    Route::post('services_store', 'OPDMS\ServicesController@services_store');
+    // edit services
+    Route::get('service_edit', 'OPDMS\ServicesController@service_edit');
+
+    // charging services
+    Route::get('ancillary_services', 'OPDMS\ChargingController@ancillary_services');
+    // get mss classification for charging
+    Route::get('mss_classification', 'OPDMS\MSSClassificationController@mss_classification');
+    // save charging request
+    Route::post('charging_save', 'OPDMS\ChargingController@charging_save');
+    // get all unpaid requests of this patient
+    Route::post('unpaid_request', 'OPDMS\ChargingController@unpaid_request');
+    // remove the selected unpaid request
+    Route::post('unpaid_remove', 'OPDMS\ChargingController@unpaid_remove');
+    // paid but undone items on charging
+    Route::post('paid_but_undone', 'OPDMS\ChargingController@paid_but_undone');
+    // make this request done
+    Route::post('paid_done', 'OPDMS\ChargingController@paid_done');
+    // donE all of the requests
+    Route::post('done_all', 'OPDMS\ChargingController@done_all');
+    // get all of the done requests
+    Route::post('paid_and_done', 'OPDMS\ChargingController@paid_and_done');
+    // get vital signs history
+    Route::post('vs_history', 'OPDMS\VitalSignsController@vs_history'); // global
+    // get referral history
+    Route::post('referral_history', 'OPDMS\ReferralController@referral_history');
+    // referral clinic doctor
+    Route::post('referral_clinic_doctor', 'OPDMS\ReferralController@referral_clinic_doctor');
+    // save referral of doctor
+    Route::post('referral_save', 'OPDMS\ReferralController@referral_save');
+    //delete referral
+    Route::post('referral_delete', 'OPDMS\ReferralController@referral_delete');
+    // get all ff history
+    Route::post('followup_history', 'OPDMS\FollowupsController@followup_history');
+    // followup save
+    Route::post('followup_save', 'OPDMS\FollowupsController@followup_save');
+    // delete followup
+    Route::post('followup_delete', 'OPDMS\FollowupsController@followup_delete');
+
+    // icd prime class
+    Route::post('icd_primeclass', 'OPDMS\ICDCodesController@icd_primeclass');
+    // icd subclass one
+    Route::post('icd_subclass_one', 'OPDMS\ICDCodesController@icd_subclass_one');
+    // icd subclass two get
+    Route::post('icd_subclass_two', 'OPDMS\ICDCodesController@icd_subclass_two');
+    // icd code master get selected
+    Route::get('icd_codes_master', 'OPDMS\ICDCodesController@icd_codes_master');
+    // get all categories
+    Route::get('icd_codes_category_master', 'OPDMS\ICDCodesController@icd_codes_category_master');
+
+
+
+    /* End Receptions Route */
+
+
 });
 
 
@@ -732,7 +790,7 @@ Route::group(['middleware' => 'receptions'], function () {
     Route::post('re_assign_now', 'OPDMS\ReAssignationController@re_assign_now'); // get full patient_name | not global
     Route::get('doctors_queue', 'OPDMS\DoctorsQueueController@doctors_queue'); // redirect to doctors queue page | not global
     Route::get('status_filtering/{doctors_id?}/{status?}', 'OPDMS\DoctorsQueueController@status_filtering'); // status of patient on doctors | not global
-    Route::post('search_queued_patients', 'OPDMS\SearchQueuedPatientController@search'); /* search today`s queued patients | not global*/
+    Route::get('search_queued_patients', 'OPDMS\SearchQueuedPatientController@search'); /* search today`s queued patients | not global*/
     Route::post('qrcode', 'OPDMS\QRCodeController@qrcode'); /* search today`s queued patients | not global*/
 // check if nurse notes already written today show the selected consultation
     Route::post('write_nurse_notes', 'OPDMS\WriteNurseNotesController@write_nurse_notes'); // not global
@@ -761,6 +819,45 @@ Route::group(['middleware' => 'receptions'], function () {
 
 });
 
+
+
+
+
+/*--------------- Doctors Route ------------*/
+
+// get all patients assigned to doctor
+Route::get('queuing/{status?}', 'OPDMS\DoctorsQueuingController@queuing'); // not global
+// search and get all patients on todays queue
+Route::get('queuing_search', 'OPDMS\DoctorsQueuingController@queuing_search'); // not global
+// get the assignation status of patient
+Route::post('assignation_status', 'OPDMS\DoctorsQueuingController@assignation_status');
+// create a consultation
+Route::post('create_consultation', 'OPDMS\DoctorsConsultationController@create_consultation');
+// save the consultation
+Route::post('consultation_save', 'OPDMS\DoctorsConsultationController@consultation_save');
+// end consultation of this patient
+Route::post('end_consultation', 'OPDMS\DoctorsConsultationController@end_consultation');
+// check or insert smoke cessation on consultation form
+Route::post('smoking_cessation', 'OPDMS\SmokeCessationController@smoking_cessation');
+// save smoking cessation on db
+Route::post('save_smoking_cessation', 'OPDMS\SmokeCessationController@save_smoking_cessation');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// sample for doc villanueva request
+//Route::get('docted', 'DoctorsController@doc');
 
 
 /* End Receptions Route */

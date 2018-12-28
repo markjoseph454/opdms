@@ -1,53 +1,77 @@
+
 <table border="1">
-    <thead>
+        
+        
         <tr>
-            <th colspan="4" align="center" style="height: 15px">
-                <strong><?php echo e((Auth::user()->clinic == 22)? 'RADIOGRAPHIC' : 'ULTRASOUND'); ?> RESULT</strong>
-            </th>
-        </tr>
-        <tr>
-            <td style="width: 300px;height: 20px">
-                EVRMC-RADIO-UTZ &nbsp; <strong><?php echo e($radiology->imageID); ?></strong> &nbsp; S.2018
-            </td>
-            <td colspan="3" style="width: 267px">
-                Effectivity: Aug 18, 2017 Rev.1
-            </td>
-        </tr>
-        <tr>
-            <td style="height: 40px">
-                Family Name, Given Name, M.I
-                <br>
+            <td>
+                <b>Name:</b>
                 <?php echo e($radiology->patient); ?>
 
             </td>
-            <td style="width: 70px">
-                Age
-                <br>
-                <?php echo e(App\Patient::age($radiology->birthday).' / '.$radiology->sex); ?>
+            <td>
+                <b>Hospital Number:</b>
+                098908
+            </td>
+            <td>
+                <b>Date:</b>
+                <?php echo e(Carbon::parse($radiology->created_at)->toFormattedDateString()); ?>
 
             </td>
-            <td style="width: 70px">
-                Ward <br>
-                OPD
+            
+        </tr>
+        <tr>
+            <td>
+                <b>Birthdate:</b>
+                <?php echo e(\Carbon\Carbon::parse($radiology->birthday)->toFormattedDateString()); ?>
+
             </td>
-            <td style="width: 127px">
-                Date/Time
+            <td>
+                <b>Case Number:</b>
                 <br>
-                <?php echo e(Carbon::parse($radiology->created_at)->toFormattedDateString()); ?>
+                EVRMC-RADIO-UTZ &nbsp; <strong><?php echo e($radiology->imageID); ?></strong> &nbsp; S.2018
+            </td>
+            <td>
+                <b>Time</b>
+                <?php echo e(\Carbon\Carbon::parse($radiology->created_at)->format('h:i a')); ?>
 
             </td>
         </tr>
         <tr>
-            <td style="height: 35px">
-                Clinic Data <br>
+            <td>
+                <b>Address:</b> <?php echo e($radiology->address); ?>
+
+            </td>
+            <td>
+                <b>Age:</b>
+                <?php echo e(\App\Patient::age($radiology->birthday)); ?>
+
+                &nbsp;
+                <b>Sex:</b>
+                <?php echo e($radiology->sex); ?>
+
+            </td>
+            <td>
+                <b>Ward:</b> OPD
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <b>Clinical Data:</b>
+                <br>
                 <?php echo e($radiology->clinicalData); ?>
 
             </td>
-            <td style="width: 267px">
-                Attending Physician <br>
+            <td>
+                <b>Attending Physician</b>
+                <br>
                 <?php echo e($radiology->physician); ?>
 
             </td>
+            <td>
+                <b>OR NO.:</b>
+            </td>
         </tr>
-    </thead>
+        
 </table>
+
+

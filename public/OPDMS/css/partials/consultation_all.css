@@ -75,15 +75,124 @@
     background-color: #333;
     border: 1px solid #cccccc;
 }
-@media only screen and (max-width: 768px) {
-    /* For mobile phones: */
-    .consultation_body_wrapper{
-        padding: 0px;
-    }
-}
+
 .consultation_container{
     margin: auto;
 }
 .consultation_container table{
     background-color: #fff;
 }
+
+.arrow_updown_btn{
+    position: absolute;
+    margin-top: -10px;
+    margin-left: -70px;
+}
+.arrow_updown_btn button{
+    display: block;
+}
+.arrow_updown_btn button:first-child{
+    margin-bottom: 5px;
+}
+
+@media only screen and (max-width: 768px) {
+    /* For mobile phones: */
+    .consultation_body_wrapper{
+        padding: 0px;
+    }
+    .arrow_updown_btn{
+        margin-top: 0px;
+        margin-left: 0px;
+    }
+    .arrow_updown_btn button{
+        background-color: rgba(0,0,0,.3);
+    }
+    .arrow_updown_btn button:hover{
+        background-color: rgba(0,0,0,.6);
+    }
+    .arrow_updown_btn button i{
+        color: #eee;
+    }
+}
+
+
+.close_consultation_form{
+    position: fixed;
+    background: rgba(255, 255, 255, 0.7);
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    z-index: 9999999;
+}
+.close_consultation_form .close_consultation_form_content{
+    position: absolute;
+    top: 45%;
+    left: 35%;
+    padding: 15px;
+    border: 3px solid #333;
+    background-color: #ccc;
+}
+
+
+
+.smoke_cessation_dialog_box{
+    position: absolute;
+    background: rgba(255, 255, 255, 0.7);
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    z-index: 9999999;
+}
+.smoke_cessation_dialog_box .close_consultation_form_content{
+    position: absolute;
+    top: 30%;
+    left: 35%;
+    padding: 15px;
+    border: 3px solid #333;
+    background-color: #ccc;
+}
+
+@media only screen and (max-width: 768px) {
+    .close_consultation_form .close_consultation_form_content{
+        top: 30%;
+        left: 0;
+    }
+    .smoke_cessation_dialog_box .close_consultation_form_content{
+        top: 30%;
+        left: 0;
+    }
+}
+
+
+.icon_indicator{
+    color: #008d4c;
+    position: absolute;
+    margin-left: -30px;
+    margin-top: -15px;
+    display: none;
+}
+
+.referral_clinic_spinner, .referral_clinic_doctor{
+    display: none;
+}
+
+.referral_history_table_parent{
+    height: 400px;
+    overflow: scroll;
+}
+
+/*.color_indicator{
+    border: 1px solid #008d4c;
+    box-shadow: inset 0 0 5px #00b35f; !important;
+    border-radius: 0px;
+}*/
+
+
+
+
+
+

@@ -3,7 +3,7 @@
     <a href="" class="dropdown-toggle"
        onclick="qrcode_open($(this))" title="QR Code / Hospital Number">
         <i class="fa fa-qrcode"></i>
-        {{--<span class="hidden-xs">QR Code</span>--}}
+        <span class="hidden-xs">QR Code</span>
     </a>
     <ul class="dropdown-menu">
         <li class="header text-center text-muted">
@@ -37,7 +37,8 @@
 <li class="dropdown messages-menu">
     <!-- Menu toggle button -->
     <a href="{{ url('patient_queue') }}" title="Patients Queue" onclick="full_loader()">
-        <i class="fa fa-user-circle"></i>
+        <i class="fa fa-users"></i>
+        <span class="hidden-xs">Patients</span>
     </a>
 </li>
 
@@ -46,7 +47,8 @@
 <li class="dropdown messages-menu">
     <!-- Menu toggle button -->
     <a href="{{ url('doctors_queue') }}" title="Doctors Queue" onclick="full_loader()">
-        <i class="fa fa-stethoscope"></i>
+        <i class="fa fa-user-md"></i>
+        <span class="hidden-xs">Doctors</span>
     </a>
 </li>
 
@@ -56,6 +58,17 @@
     <!-- Menu toggle button -->
     <a href="{{ url('queued_history') }}" title="Queuing History" onclick="full_loader()">
         <i class="fa fa-history"></i>
+        <span class="hidden-xs">Queuing History</span>
+    </a>
+</li>
+
+
+{{-- ancillary & services --}}
+<li class="dropdown messages-menu">
+    <!-- Menu toggle button -->
+    <a href="{{ url('services_offered') }}" title="Ancillary items & Services offered" onclick="full_loader()">
+        <i class="fa fa-stethoscope"></i>
+        <span class="hidden-xs">Ancillary & Services</span>
     </a>
 </li>
 

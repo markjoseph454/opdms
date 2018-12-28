@@ -13,8 +13,11 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title"></h4>
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <small class="text-muted">
+                    Showing the basic patient information along with its todays measured vital signs.
+                </small>
             </div>
             <div class="modal-body">
 
@@ -59,7 +62,7 @@
                                 </tr>
                                 <tr>
                                     <td>MSS Classification:</td>
-                                    <td ref="patient_mss"></td>
+                                    <td ref="patient_mss" class="text-red"></td>
                                 </tr>
                                 <tr>
                                     <td>Date Registered:</td>
@@ -108,10 +111,23 @@
                                 </tbody>
                             </table>
 
-                            <a href="" class="btn pull-right btn-sm btn-flat bg-red"
-                               v-on:click.prevent="show_vs_modal">
-                                Measure Vital Signs
-                            </a>
+
+                            <p class="text-red small" v-if="todays_vs">
+                                Todays vital signs of this patient was not found.
+                            </p>
+
+
+                            <div class="btn-group pull-right">
+                                <button type="button" class="btn btn-sm btn-flat bg-red"
+                                        v-on:click.prevent="show_vs_modal">
+                                    Check Vital Signs
+                                </button>
+                                <button type="button" class="btn btn-sm btn-flat btn-default"
+                                        v-on:click.prevent="vs_history">
+                                    History <i class="fa fa-history"></i>
+                                </button>
+                            </div>
+
                         </div>
                     </div>
 

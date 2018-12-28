@@ -49,7 +49,7 @@
 
 
             <?php echo $__env->make('OPDMS.partials.boilerplate.header',
-            ['header' => 'Demographic Detailed Census', 'sub' => 'Showing a detailed demographic census of registered patients.'], array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+            ['header' => 'Demographic Summary Census', 'sub' => 'Showing demographic summary census of registered patients.'], array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
 
             <!-- Main content -->
                 <section class="content container-fluid">

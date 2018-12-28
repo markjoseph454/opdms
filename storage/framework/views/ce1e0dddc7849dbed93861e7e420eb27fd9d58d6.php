@@ -66,13 +66,17 @@
             <div class="box box-default bg-danger">
 
 
+
+
                 <?php echo $__env->make('OPDMS.reception.queue.header_status', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
 
                 <div class="box-body">
 
                     
                     <div class="table-responsive selectable_table" id="queue_table">
-                        <table class="table table-bordered table-striped table-hover" id="dataTable2">
+
+
+                        <table class="table table-bordered table-striped table-hover reception_queue_table" id="dataTable3">
                             <thead>
                                 <tr>
                                     <th></th>
@@ -84,6 +88,7 @@
                                     <th>Status</th>
                                     
                                     <th>Time Queued</th>
+                                    <th>Time Assigned</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -158,6 +163,19 @@
                                                     <?php echo e(Carbon::parse($queue->queue_time)->diffForHumans()); ?>
 
                                                 </small>
+                                            </td>
+                                            <td>
+                                                <?php if($queue->assigned_time): ?>
+                                                Today <?php echo e(Carbon::parse($queue->assigned_time)->format('h:i a')); ?>
+
+                                                <br>
+                                                <small class="text-muted">
+                                                    <?php echo e(Carbon::parse($queue->assigned_time)->diffForHumans()); ?>
+
+                                                </small>
+                                                <?php else: ?>
+                                                    <strong class="text-muted">None</strong>
+                                                <?php endif; ?>
                                             </td>
                                         </tr>
                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>

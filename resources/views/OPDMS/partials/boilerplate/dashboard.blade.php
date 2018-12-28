@@ -50,6 +50,8 @@
             @include('OPDMS.reception.roles')
         @elseif(Auth::user()->role == 1) {{-- roles --}}
             @include('OPDMS.patients.roles')
+        @elseif(Auth::user()->role == 7) {{-- roles --}}
+            @include('OPDMS.doctors.partials.roles')
         @endif
 
 

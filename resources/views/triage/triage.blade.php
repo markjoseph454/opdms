@@ -91,10 +91,20 @@
 
                         <div class="form-group @if ($errors->has('clinic_code')) has-error @endif">
                             <label>Assign Clinic</label>
+                            <span class="pull-right text-info">
+                                Last checkup:
+                                @if($last_checkup) {{  $last_checkup->name }} - {{ $last_checkup->created_at->toFormattedDateString() }}
+                                @else
+                                    No results found
+                                @endif
+                            </span>
                             <select name="clinic_code" class="form-control select">
                                 <option value="">--Select Clinic--</option>
                                 @foreach($clinics as $clinic)
-                                    <option value="{{ $clinic->code }}">{{ $clinic->name }}</option>
+                                    <option value="{{ $clinic->code }}"
+                                    @if($last_checkup) @if($clinic->id == $last_checkup->id) selected @endif @endif>
+                                        {{ $clinic->name }}
+                                    </option>
                                 @endforeach
                             </select>
                             @if ($errors->has('clinic_code'))

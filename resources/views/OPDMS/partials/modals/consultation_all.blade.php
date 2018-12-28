@@ -15,6 +15,10 @@
                 <h4 class="modal-title text-primary text-uppercase">
                     @{{ p_name }}
                 </h4>
+                <button class="btn btn-flat bg-blue" v-on:click.prevent="patient_information">
+                    <i class="fa fa-user-o"></i>
+                    <span>Patient Information</span>
+                </button>
                 <small class="text-muted">
                     Shown here are all the saved consultations of this patient.
                 </small>
@@ -46,7 +50,8 @@
 
 
                             <div class="thumbnail_wrapper_main" v-for="(consultation, index) in search_filter_consultation">
-                                <div class="thumbnail_wrapper" v-html="consultation.consultation" v-on:click="open_consultation($event, index)">
+                                <div v-bind:id="['thumbnail_wrapper_id_' + index]" class="thumbnail_wrapper"
+                                     v-html="consultation.consultation" v-on:click="open_consultation($event, index)">
                                 </div>
                                 <p class="page_number">
                                     @{{ index + 1 }}
@@ -90,6 +95,21 @@
 
 
                         <div class="consultation_body_wrapper row">
+
+                            <div class="arrow_updown_btn">
+                                <button class="btn btn-circle btn-default" data-toggle="tooltip"
+                                        title="Click to view previous consultation" data-container="body" data-placement="top"
+                                v-if="search_filter_consultation.length && arrow_consultation_btn_index != 0"
+                                        v-on:click="open_consultation($event, arrow_consultation_btn_index - 1)">
+                                    <i class="fa fa-arrow-up"></i>
+                                </button>
+                                <button class="btn btn-circle btn-default" data-toggle="tooltip"
+                                title="Click to view next consultation" data-container="body" data-placement="top"
+                                v-if="search_filter_consultation.length && arrow_consultation_btn_index != search_filter_consultation.length - 1"
+                                        v-on:click="open_consultation($event, arrow_consultation_btn_index + 1)">
+                                    <i class="fa fa-arrow-down"></i>
+                                </button>
+                            </div>
 
                             <div class="consultation_container" v-html="featured_consultation">
                             </div>

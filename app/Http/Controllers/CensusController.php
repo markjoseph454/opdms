@@ -82,7 +82,8 @@ class CensusController extends Controller{
                 ->leftJoin('refprovince', 'refprovince.provCode', '=', 'refcitymun.provCode')
                 ->whereNotNull('city_municipality')
                 ->where('queues.clinic_code', '=', Auth::user()->clinic)
-                ->groupBy('queues.patients_id', DB::raw('DATE(queues.created_at)'))
+//                ->groupBy('queues.patients_id', DB::raw('DATE(queues.created_at)')) // wrong code
+                ->groupBy('queues.patients_id')
                 ->when($category == 'New', function ($query) use ($category){
                     return $query->havingRaw('COUNT(queues.patients_id) = 1');
                 })
@@ -149,7 +150,8 @@ class CensusController extends Controller{
                 ->leftJoin('refprovince', 'refprovince.provCode', '=', 'refcitymun.provCode')
                 ->whereNotNull('city_municipality')
                 ->where('queues.clinic_code', '=', Auth::user()->clinic)
-                ->groupBy('queues.patients_id', DB::raw("DATE(queues.created_at)"))
+//                ->groupBy('queues.patients_id', DB::raw("DATE(queues.created_at)")) // wrong code
+                ->groupBy('queues.patients_id')
                 ->select('queues.patients_id', 'pt.birthday', 'pt.sex',
                     DB::raw("CONCAT(pt.last_name,' ',pt.first_name,' ',
                 CASE WHEN pt.suffix IS NOT NULL THEN pt.suffix ELSE '' END,' ',
@@ -158,6 +160,7 @@ class CensusController extends Controller{
                     DB::raw("COUNT(queues.patients_id) AS total"))
                 ->orderBy('queues.created_at', 'desc')
                 ->get();
+
 
 
 

@@ -1,6 +1,6 @@
 <div class="modal" id="patient_notifications_modal">
 
-    <div class="modal-dialog modal-xxl">
+    <div class="modal-dialog modal-xl">
 
 
         <?php echo $__env->make('OPDMS.partials.loader', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?> 
@@ -11,9 +11,13 @@
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title text-primary text-uppercase">{{ p_name }}</h4>
-                <p class="small text-muted">
+                <button class="btn btn-flat bg-blue" v-on:click.prevent="patient_information">
+                    <i class="fa fa-user-o"></i>
+                    <span>Patient Information</span>
+                </button>
+                <small class="text-muted">
                     Showing all consultations, referrals, and follow-up notifications of this patient.
-                </p>
+                </small>
             </div>
 
             <div class="modal-body">
@@ -23,7 +27,13 @@
                     
                     <div class="col-md-5">
                         <div class="table table-responsive">
-                            <h4>Consultations Overview</h4>
+                            <h4>
+                                Consultations Overview
+                                <button class="btn bg-green-inverse" onclick="open_all_consultations()"
+                                        v-if="patient_consultations.length">
+                                    Open All Consultations
+                                </button>
+                            </h4>
                             <table class="table table-bordered table-hover table-striped">
                                 <thead>
                                 <tr class="bg-green-gradient">

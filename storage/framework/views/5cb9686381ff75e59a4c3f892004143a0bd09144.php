@@ -93,10 +93,22 @@
 
                         <div class="form-group <?php if($errors->has('clinic_code')): ?> has-error <?php endif; ?>">
                             <label>Assign Clinic</label>
+                            <span class="pull-right text-info">
+                                Last checkup:
+                                <?php if($last_checkup): ?> <?php echo e($last_checkup->name); ?> - <?php echo e($last_checkup->created_at->toFormattedDateString()); ?>
+
+                                <?php else: ?>
+                                    No results found
+                                <?php endif; ?>
+                            </span>
                             <select name="clinic_code" class="form-control select">
                                 <option value="">--Select Clinic--</option>
                                 <?php $__currentLoopData = $clinics; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $clinic): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                    <option value="<?php echo e($clinic->code); ?>"><?php echo e($clinic->name); ?></option>
+                                    <option value="<?php echo e($clinic->code); ?>"
+                                    <?php if($last_checkup): ?> <?php if($clinic->id == $last_checkup->id): ?> selected <?php endif; ?> <?php endif; ?>>
+                                        <?php echo e($clinic->name); ?>
+
+                                    </option>
                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </select>
                             <?php if($errors->has('clinic_code')): ?>

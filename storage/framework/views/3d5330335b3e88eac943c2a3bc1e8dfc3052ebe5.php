@@ -18,8 +18,13 @@
                 <h4 class="modal-title text-blue text-uppercase" id="p_name_holder">
                     {{ p_name }}
                 </h4>
+                <button class="btn btn-flat bg-blue" v-on:click.prevent="patient_information">
+                    <i class="fa fa-user-o"></i>
+                    <span>Patient Information</span>
+                </button>
                 <small class="text-muted">
-                    Please select a doctor where this patient will be assigned and be included on the doctors list of queuing patients.
+                    Please select a doctor where this patient will be assigned and be included on the
+                    doctors list of queuing patients.
                 </small>
             </div>
             <div class="modal-body">
@@ -29,7 +34,7 @@
                         <h4>
                             Assignations
                             
-                            <small>List of active doctors</small>
+                            <small>Showing list of active doctors.</small>
                         </h4>
                     </div>
                     <div class="col-md-4">

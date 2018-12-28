@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="<?php echo e(asset('public/OPDMS/css/partials/patient_information.css')); ?>" />
     <link rel="stylesheet" href="<?php echo e(asset('public/OPDMS/css/reception/patient_assignation.css')); ?>" />
     <link rel="stylesheet" href="<?php echo e(asset('public/OPDMS/css/reception/notification.css')); ?>" />
+    <link rel="stylesheet" href="<?php echo e(asset('public/OPDMS/css/partials/consultation_all.css')); ?>" />
 <?php $__env->stopSection(); ?>
 
 

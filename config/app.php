@@ -182,6 +182,7 @@ return [
         Intervention\Image\ImageServiceProvider::class,
         App\Providers\RecordsServiceProvider::class,
         App\Providers\QueueCountProvider::class,
+        App\Providers\DoctorsProvider::class,
 
     ],
 

@@ -71,6 +71,21 @@
 
 
 
+#charging_modal .ancillary_services_wrapper{
+    height: 400px;
+    overflow-y: scroll;
+}
+#charging_modal .filter_ancillary{
+    margin-bottom: 5px;
+}
+#charging_modal .charging_qty{
+    width: 50px;
+    padding: 2px; !important;
+    height: 30px; !important;
+}
+
+
+
 
 
 

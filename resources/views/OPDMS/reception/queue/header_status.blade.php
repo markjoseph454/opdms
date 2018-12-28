@@ -4,13 +4,13 @@
 
 //color coding of patient status
 
-//$pending_status = ($status == 'P')? 'bg-orange' : 'btn-default';
-//$paused_status = ($status == 'H')? 'bg-brown' : 'btn-default';
-//$canceled_status = ($status == 'C')? 'bg-red' : 'btn-default';
-//$serving_status = ($status == 'S')? 'bg-green' : 'btn-default';
-//$finished_status = ($status == 'F')? 'bg-blue' : 'btn-default';
-//$all_status = ($status == 'A')? 'bg-black' : 'btn-default';
-//$unassigned_status = ($status)? 'btn-default' : 'bg-purple';
+$pending_status = ($status == 'P')? 'bg-orange' : 'bg-outline bg-outline-orange';
+$paused_status = ($status == 'H')? 'bg-brown' : 'bg-outline bg-outline-brown';
+$canceled_status = ($status == 'C')? 'bg-red' : 'bg-outline bg-outline-red';
+$serving_status = ($status == 'S')? 'bg-green' : 'bg-outline bg-outline-green';
+$finished_status = ($status == 'F')? 'bg-blue' : 'bg-outline bg-outline-blue';
+$all_status = ($status == 'A')? 'bg-black' : 'bg-outline bg-outline-black';
+$unassigned_status = ($status)? 'bg-outline bg-outline-purple' : 'bg-purple';
 
 
 
@@ -32,28 +32,28 @@ foreach ($queue_count as $row){
 <div class="box-header with-border row">
 
     <div class="col-md-9">
-        <a href="{{ url('patient_queue') }}" class="btn btn-flat bg-purple"
+        <a href="{{ url('patient_queue') }}" class="btn btn-flat {{ $unassigned_status }}"
            onclick="full_window_loader()">
             Unassigned
             <span class="badge bg-gray">
             {{ $unassigned_total or 0 }}
         </span>
         </a>
-        <a href="{{ url('patient_queue/P') }}" class="btn btn-flat bg-orange"
+        <a href="{{ url('patient_queue/P') }}" class="btn btn-flat {{ $pending_status }}"
            onclick="full_window_loader()">
             Pending
             <span class="badge bg-gray">
             {{ $pending_total or 0 }}
         </span>
         </a>
-        <a href="{{ url('patient_queue/H') }}" class="btn btn-flat bg-brown"
+        <a href="{{ url('patient_queue/H') }}" class="btn btn-flat {{ $paused_status }}"
            onclick="full_window_loader()">
             Paused
             <span class="badge bg-gray">
             {{ $paused_total or 0 }}
         </span>
         </a>
-        <a href="{{ url('patient_queue/C') }}" class="btn btn-flat bg-red"
+        <a href="{{ url('patient_queue/C') }}" class="btn btn-flat {{ $canceled_status }}"
            data-toggle="tooltip" title="Not Around When Called"
            onclick="full_window_loader()">
             NAWC
@@ -61,14 +61,14 @@ foreach ($queue_count as $row){
             {{ $nawc_total or 0 }}
         </span>
         </a>
-        <a href="{{ url('patient_queue/S') }}" class="btn btn-flat bg-green"
+        <a href="{{ url('patient_queue/S') }}" class="btn btn-flat {{ $serving_status }}"
            onclick="full_window_loader()">
             Serving
             <span class="badge bg-gray">
             {{ $serving_total or 0 }}
         </span>
         </a>
-        <a href="{{ url('patient_queue/F') }}" class="btn btn-flat bg-blue"
+        <a href="{{ url('patient_queue/F') }}" class="btn btn-flat {{ $finished_status }}"
            onclick="full_window_loader()">
             Finished
             <span class="badge bg-gray">
@@ -76,7 +76,7 @@ foreach ($queue_count as $row){
 
         </span>
         </a>
-        <a href="{{ url('patient_queue/A') }}" class="btn btn-flat bg-black"
+        <a href="{{ url('patient_queue/A') }}" class="btn btn-flat {{ $all_status }}"
            data-toggle="tooltip" title="Show all queued patients"
            onclick="full_window_loader()">
             All
@@ -87,11 +87,10 @@ foreach ($queue_count as $row){
     </div>
 
     <div class="col-md-3">
-        <form action="{{ url('search_queued_patients') }}" method="post" class="sidebar-form" style="margin: 0">
-            {{ csrf_field() }}
+        <form action="{{ url('search_queued_patients') }}" method="get" class="" style="margin: 0">
             <div class="input-group">
-                <input type="text" name="search" class="form-control" placeholder="Search queued patient..."
-                       required />
+                <input type="text" name="search" class="form-control" placeholder="Search queued patients..."
+                       required onkeyup="filter_result($(this), 'reception_queue_table')" />
                 <span class="input-group-btn">
                     <button type="submit" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i>
                     </button>

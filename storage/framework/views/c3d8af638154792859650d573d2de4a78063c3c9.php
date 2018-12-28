@@ -65,10 +65,10 @@
 
                                     <div class="form-group <?php if($errors->has('password')): ?> has-error <?php endif; ?>">
                                         <div class="input-group">
-                                        <input type="password" name="password" class="form-control" placeholder="Enter Password"
+                                        <input type="password" id="pass_input" name="password" class="form-control" placeholder="Enter Password"
                                         aria-describedby="passwordaddon" />
-                                        <span class="input-group-addon addonIcon" id="emailaddon">
-                                                <i class="fa fa-lock"></i>
+                                        <span class="input-group-addon addonIcon" id="passwordaddon">
+                                                <i class="fa fa-unlock-alt"></i>
                                             </span>
                                         </div>
                                         <?php if($errors->has('password')): ?>
@@ -77,6 +77,11 @@
                                             </span>
                                         <?php endif; ?>
                                     </div>
+
+                                    <p class="capslockon">
+                                        <i class="fa fa-warning"></i>
+                                        Caps Lock is on.
+                                    </p>
 
                                     <div class="form-group">
                                         <br/>
@@ -106,6 +111,7 @@
 
     <?php $__env->startSection('pagescript'); ?>
         <?php echo $__env->make('message.toaster', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+        <script src="<?php echo e(asset('public/js/partials/login.js')); ?>"></script>
     <?php $__env->stopSection(); ?>
 
 

@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="<?php echo e(asset('public/OPDMS/css/partials/patient_information.css')); ?>" />
     <link rel="stylesheet" href="<?php echo e(asset('public/OPDMS/css/reception/patient_assignation.css')); ?>" />
     <link rel="stylesheet" href="<?php echo e(asset('public/OPDMS/css/reception/notification.css')); ?>" />
+    <link rel="stylesheet" href="<?php echo e(asset('public/OPDMS/css/partials/consultation_all.css')); ?>" />
 <?php $__env->stopSection(); ?>
 
 
@@ -45,15 +46,9 @@
 
         
 
-        <?php echo $__env->make('OPDMS.reception.modals.patient_assignation', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?> 
-        <?php echo $__env->make('OPDMS.reception.modals.patient_re_assignation', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?> 
-        <?php echo $__env->make('OPDMS.partials.modals.medical_records', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?> 
-        <?php echo $__env->make('OPDMS.partials.modals.consultation_show', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?> 
-        <?php echo $__env->make('OPDMS.partials.modals.nurse_notes', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?> 
+            <?php echo $__env->make('OPDMS.partials.modals.modal_container', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>;
+
         
-        <?php echo $__env->make('OPDMS.partials.modals.patient_notifications', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
-        <?php echo $__env->make('OPDMS.partials.modals.patient_information', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?> 
-        <?php echo $__env->make('OPDMS.partials.modals.vital_signs_form', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?> 
 
 
 

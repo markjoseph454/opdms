@@ -50,4 +50,16 @@ class VitalSignsController extends Controller
         return;
     }
 
+
+    public function vs_history(Request $request)
+    {
+        $vs = DB::table('vital_signs')
+                ->where('patients_id', $request->pid)
+                ->latest()
+                ->get();
+        echo json_encode($vs);
+        return;
+    }
+
+
 }

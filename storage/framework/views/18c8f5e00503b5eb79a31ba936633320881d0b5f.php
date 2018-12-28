@@ -14,6 +14,10 @@
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title text-blue text-uppercase">{{ p_name }}</h4>
+                <button class="btn btn-flat bg-blue" v-on:click.prevent="patient_information">
+                    <i class="fa fa-user-o"></i>
+                    <span>Patient Information</span>
+                </button>
                 <small class="text-muted">
                     Please make sure this patient is not yet being served by a doctor, else re-assignation will fail.
                 </small>

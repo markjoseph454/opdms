@@ -189,7 +189,15 @@ class DoctorsQueueController extends Controller
                     "), function ($join){
                         $join->on('paid_request.c_pid', 'assignations.patients_id');
                     })*/
-                    ->select('*', 'assignations.patients_id as pid', 'assignations.created_at as assigned_time')
+                    ->leftJoin('queues', function ($join){
+                        $join->on('queues.patients_id', 'assignations.patients_id')
+                            ->where([
+                                ['queues.clinic_code', Auth::user()->clinic],
+                                [DB::raw('DATE(queues.created_at)'), DB::raw('CURDATE()')],
+                            ]);
+                    })
+                    ->select('*', 'assignations.patients_id as pid', 'assignations.created_at as assigned_time',
+                        'queues.created_at as queue_time')
                     ->orderBy('assignations.created_at')
                     ->paginate(20);
 
@@ -204,7 +212,7 @@ class DoctorsQueueController extends Controller
                         ->select(DB::raw("COUNT(*) as total"), 'status')
                         ->get();
 
-        return view('OPDMS.reception.doctors.status_filtering', compact('patients', 'queue_count', 'doctor'));
+        return view('OPDMS.reception.doctors.status_filtering', compact('patients', 'queue_count', 'doctor', 'status'));
 
     }
 

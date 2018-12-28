@@ -12,6 +12,14 @@
 //$all_status = ($status == 'A')? 'bg-black' : 'btn-default';
 //$unassigned_status = ($status)? 'btn-default' : 'bg-purple';
 
+$pending_status = ($status == 'P')? 'bg-orange' : 'bg-outline bg-outline-orange';
+$paused_status = ($status == 'H')? 'bg-brown' : 'bg-outline bg-outline-brown';
+$canceled_status = ($status == 'C')? 'bg-red' : 'bg-outline bg-outline-red';
+$serving_status = ($status == 'S')? 'bg-green' : 'bg-outline bg-outline-green';
+$finished_status = ($status == 'F')? 'bg-blue' : 'bg-outline bg-outline-blue';
+$all_status = ($status == 'A')? 'bg-black' : 'bg-outline bg-outline-black';
+$unassigned_status = ($status)? 'bg-outline bg-outline-purple' : 'bg-purple';
+
 
 
 /* doctors queue count show total on button of status */
@@ -29,21 +37,21 @@ foreach ($queue_count as $row){
 
 
 <div class="box-header with-border">
-    <a href="{{ url('status_filtering/'.$doctor->id.'/P') }}" class="btn btn-flat bg-orange"
+    <a href="{{ url('status_filtering/'.$doctor->id.'/P') }}" class="btn btn-flat {{ $pending_status }}"
     onclick="full_window_loader()">
         Pending
         <span class="badge bg-gray">
             {{ $pending_total or 0 }}
         </span>
     </a>
-    <a href="{{ url('status_filtering/'.$doctor->id.'/H') }}" class="btn btn-flat bg-brown"
+    <a href="{{ url('status_filtering/'.$doctor->id.'/H') }}" class="btn btn-flat {{ $paused_status }}"
        onclick="full_window_loader()">
         Paused
         <span class="badge bg-gray">
             {{ $paused_total or 0 }}
         </span>
     </a>
-    <a href="{{ url('status_filtering/'.$doctor->id.'/C') }}" class="btn btn-flat bg-red"
+    <a href="{{ url('status_filtering/'.$doctor->id.'/C') }}" class="btn btn-flat {{ $canceled_status }}"
        data-toggle="tooltip" title="Not Around When Called"
        onclick="full_window_loader()">
         NAWC
@@ -51,21 +59,21 @@ foreach ($queue_count as $row){
             {{ $nawc_total or 0 }}
         </span>
     </a>
-    <a href="{{ url('status_filtering/'.$doctor->id.'/S') }}" class="btn btn-flat bg-green"
+    <a href="{{ url('status_filtering/'.$doctor->id.'/S') }}" class="btn btn-flat {{ $serving_status }}"
        onclick="full_window_loader()">
         Serving
         <span class="badge bg-gray">
             {{ $serving_total or 0 }}
         </span>
     </a>
-    <a href="{{ url('status_filtering/'.$doctor->id.'/F') }}" class="btn btn-flat bg-blue"
+    <a href="{{ url('status_filtering/'.$doctor->id.'/F') }}" class="btn btn-flat {{ $finished_status }}"
        onclick="full_window_loader()">
         Finished
         <span class="badge bg-gray">
             {{ $finished_total or 0 }}
         </span>
     </a>
-    <a href="{{ url('status_filtering/'.$doctor->id.'/A') }}" class="btn btn-flat bg-black"
+    <a href="{{ url('status_filtering/'.$doctor->id.'/A') }}" class="btn btn-flat {{ $all_status }}"
        data-toggle="tooltip" title="Show all queued patients"
        onclick="full_window_loader()">
         All

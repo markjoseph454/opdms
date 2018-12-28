@@ -4,7 +4,7 @@
 
 
   <!-- Logo -->
-  <a href="index2.html" class="logo">
+  <a href="{{ asset('/') }}" class="logo">
     <!-- mini logo for sidebar mini 50x50 pixels -->
     <span class="logo-mini"><b>OPD</b></span>
     <!-- logo for regular state and mobile devices -->
@@ -20,6 +20,7 @@
     <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
       <span class="sr-only">Toggle navigation</span>
     </a>
+
 
 
     <!-- Navbar Right Menu -->
@@ -74,7 +75,12 @@
               </p>
               <small class="text-muted small">
                 {{-- your role goes here --}}
-                <!-- Receptionist -->
+                @if(Auth::user()->role == 5)
+                    Receptionist
+                @endif
+                @if(Auth::user()->role == 7)
+                    Doctor
+                @endif
               </small>
             </li>
 

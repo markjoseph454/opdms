@@ -12,10 +12,19 @@
 
     <title>{{ $title or 'OPDMS'  }}</title>
 
+
+    {{-- Vue JS here--}}
+    <script src="{{ asset('public/OPDMS/plugins/vue/vue.js') }}"></script>
+
+
 {{--    <link href="{{ asset('public/css/app.css') }}" rel="stylesheet" />--}}
 
     <!-- Styles -->
     <link href="{{ asset('public/OPDMS/plugins/bootstrap/bootstrap.css') }}" rel="stylesheet" />
+
+    {{-- for foundation icons --}}
+    <link rel="stylesheet" href="{{ asset('public/OPDMS/plugins/foundation/foundation-icons.css') }}">
+
     <link href="{{ asset('public/OPDMS/plugins/font-awesome/font-awesome.min.css') }}" rel="stylesheet" />
     <link href="{{ asset('public/OPDMS/plugins/toastr/toastr.min.css') }}" rel="stylesheet" />
     <link rel="stylesheet" href="{{ asset('public/OPDMS/plugins/jquery-ui/jquery-ui.css') }}" />
@@ -26,9 +35,6 @@
     <link rel="stylesheet" href="{{ asset('public/AdminLTE/dist/css/AdminLTE.min.css') }}"> <!-- Theme style -->
     <link rel="stylesheet" href="{{ asset('public/AdminLTE/dist/css/skins/_all-skins.min.css') }}" />
 
-
-
-
     <link href="{{ asset('public/OPDMS/css/master.css') }}" rel="stylesheet" />
 
     <!-- Load page style -->
@@ -36,8 +42,7 @@
 
 
 
-    {{-- Vue JS here--}}
-    <script src="{{ asset('public/OPDMS/plugins/vue/vue.js') }}"></script>
+
 
 
 </head>
@@ -88,6 +93,7 @@
         <script src="{{ asset('public/OPDMS/plugins/jquery/jquery.js') }}"></script>
         <script src="{{ asset('public/OPDMS/plugins/jquery-ui/jquery-ui.min.js') }}"></script>
         <script src="{{ asset('public/OPDMS/plugins/toastr/toastr.min.js') }}"></script>
+{{--        <script src="{{ asset('public/OPDMS/plugins/sweetalert/sweetalert2.all.min.js') }}"></script>--}}
         <script src="{{ asset('public/OPDMS/plugins/bootstrap/bootstrap.js') }}"></script>
         <script src="{{ asset('public/AdminLTE/bower_components/jquery-slimscroll/jquery.slimscroll.min.js') }}"></script>
 

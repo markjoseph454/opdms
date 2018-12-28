@@ -26,6 +26,7 @@ class ReferralsReportController extends Controller
             $refferals = null;
         }
         $clinicName = Clinic::find(Auth::user()->clinic);
+
 //        return view('receptions.reports.referrals', compact('refferals', 'starting', 'ending', 'clinicName'));
         return view('OPDMS.reception.reports.referrals', compact('refferals', 'starting', 'ending', 'clinicName'));
     }

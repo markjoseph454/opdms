@@ -45,7 +45,6 @@
 
 /*--- For Loader Icon ---*/
 .loaderRefresh{
-    z-index: 100;
     position: absolute;
     background: rgba(255, 255, 255, 0.7);
     top: 0;
@@ -53,6 +52,7 @@
     width: 100%;
     height: 100%;
     display: none;
+    z-index: 99999999;
 }
 .loaderRefresh .loaderWaiting{
     position: absolute;
@@ -140,6 +140,9 @@ li a.disabled{
             #fff 5px
     );
 }
+
+
+
 
 
 /*-- badge like on top of the button --*/
@@ -264,9 +267,77 @@ li a.disabled{
     background-color: #945751;
     color: #fff;
 }
+.text-brown{
+    color: #945751;
+}
+
+.bg-outline{
+    transition: background-color .3s;
+    border-radius: 0px;
+    background-color: transparent;
+}
+.bg-outline-green{
+    border: 2px solid #00a65a; !important;
+    color: #00a65a;
+}
+.bg-outline-green:hover{
+    background-color: #00a65a;
+    color: #fff;
+}
+.bg-outline-blue{
+    border: 2px solid #0073b7; !important;
+    color: #0073b7;
+}
+.bg-outline-blue:hover{
+    background-color: #0073b7;
+    color: #fff;
+}
+.bg-outline-red{
+    border: 2px solid #dd4b39; !important;
+    color: #dd4b39;
+}
+.bg-outline-red:hover{
+    background-color: #dd4b39;
+    color: #fff;
+}
+.bg-outline-orange{
+    border: 2px solid #ff851b; !important;
+    color: #ff851b;
+}
+.bg-outline-orange:hover{
+    background-color: #ff851b;
+    color: #fff;
+}
+.bg-outline-purple{
+    border: 2px solid #605ca8; !important;
+    color: #605ca8;
+}
+.bg-outline-purple:hover{
+    background-color: #605ca8;
+    color: #fff;
+}
+.bg-outline-brown{
+    border: 2px solid #AD6F69; !important;
+    color: #AD6F69;
+}
+.bg-outline-brown:hover{
+    background-color: #AD6F69;
+    color: #fff;
+}
+.bg-outline-black{
+    border: 2px solid #111; !important;
+    color: #111;
+}
+.bg-outline-black:hover{
+    background-color: #111;
+    color: #fff;
+}
+
+
+
 .bg-green-inverse{
     border: 2px solid #00a65a; !important;
-    background-color: #fff;
+    background-color: transparent;
     color: #00a65a;
     transition: background-color .3s;
     border-radius: 0px;
@@ -274,6 +345,40 @@ li a.disabled{
 .bg-green-inverse:hover{
     background-color: #00a65a;
     color: #fff;
+}
+.bg-blue-inverse{
+    border: 1px solid #17a2b8; !important;
+    background-color: transparent;
+    color: #17a2b8;
+    transition: background-color .3s;
+    border-radius: 0;
+}
+.bg-blue-inverse:hover{
+    background-color: #17a2b8;
+    color: #fff;
+}
+
+
+
+.btn-circle-red{
+    background-color: transparent; !important;
+    border: 1px solid #dd4b39; !important;
+    color: #dd4b39; !important;
+    transition: background-color .3s;
+}
+.btn-circle-red:hover{
+    background-color: #dd4b39; !important;
+    color: #fff; !important;
+}
+.btn-circle-green{
+    background-color: transparent; !important;
+    border: 1px solid #00a65a; !important;
+    color: #00a65a; !important;
+    transition: background-color .3s;
+}
+.btn-circle-green:hover{
+    background-color: #00a65a; !important;
+    color: #fff; !important;
 }
 
 
@@ -303,7 +408,36 @@ li a.disabled{
 
 
 
+.img-12{
+    width: 20px;
+}
 
+
+
+.border_left{
+    border-left: 1px solid #ccc;
+}
+
+.height420{
+    height: 420px;
+    overflow: scroll;
+}
+.icd_codes_min_height{
+    height: 420px;
+    overflow: scroll;
+}
+.icd_loader{
+    /*display: inline;*/
+}
+#icd_codes_modal table td:hover{
+    cursor: pointer;
+}
+.mb5{
+    margin-bottom: 5px;
+}
+.icd_paginate a{
+    padding: 6px !important;
+}
 
 
 

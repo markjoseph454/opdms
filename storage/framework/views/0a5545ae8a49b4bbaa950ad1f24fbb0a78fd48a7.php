@@ -2,7 +2,7 @@
 
 
     <?php $__env->slot('title'); ?>
-        Referrals Reports
+        Demographic Detailed Census
     <?php $__env->endSlot(); ?>
 
 
@@ -49,7 +49,7 @@
 
 
             <?php echo $__env->make('OPDMS.partials.boilerplate.header',
-            ['header' => 'Referrals Report', 'sub' => 'Showing all referrals from this clinic.'], array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+            ['header' => 'Demographic Detailed Census', 'sub' => 'Showing a detailed demographic census of registered patients.'], array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
 
             <!-- Main content -->
                 <section class="content container-fluid">

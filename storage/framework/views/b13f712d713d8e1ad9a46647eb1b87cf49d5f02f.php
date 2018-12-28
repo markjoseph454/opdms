@@ -7,7 +7,7 @@
     <div class="col-md-7 text-right">
 
 
-        <form action="<?php echo e(url('refferalsReport')); ?>" method="post" class="form-inline">
+        <form action="<?php echo e(url('refferalsReport')); ?>" method="post" class="form-inline" onsubmit="full_loader()">
 
             <?php echo e(csrf_field()); ?>
 

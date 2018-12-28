@@ -148,6 +148,14 @@ $(function () {
         'autoWidth'   : true,
         'language'    : { search: 'Filter:', searchPlaceholder: 'Filter Results'}
     });
+    $('#dataTable3').DataTable({
+        'paging'      : false,
+        'lengthChange': false,
+        'searching'   : false,
+        'ordering'    : true,
+        'info'        : false,
+        'autoWidth'   : true,
+    });
 });
 
 
@@ -358,22 +366,60 @@ $(document).ready(function(){
 
 
 
-/*  filter results on table */
-function filter_result($scope, $table_name) {
+/*function filter_result($scope, $table_name) {
     var filter = $($scope).val().toUpperCase();
     var table = document.getElementsByClassName($table_name)[0];
     var tr = table.getElementsByTagName("tr");
     for (var i = 0; i < tr.length; i++) {
+
         td2 = tr[i].getElementsByTagName("td")[2];
-        if (td2) {
-            if (td2.innerHTML.toUpperCase().indexOf(filter) > -1 ) {
+        td4 = tr[i].getElementsByTagName("td")[4];
+
+        if (td2 || td4) {
+            if (td2.innerHTML.toUpperCase().indexOf(filter) > -1  || td4.innerHTML.toUpperCase().indexOf(filter) > -1) {
                 tr[i].style.display = "";
             } else {
                 tr[i].style.display = "none";
             }
         }
     }
+}*/
+
+
+
+
+
+function filter_result($scope, $table_name) {
+    var filter = $($scope).val().toUpperCase();
+    var table = document.getElementsByClassName($table_name)[0];
+
+    var tr = $(table).find('tbody').find('tr');
+
+    var originalTable = $('.'+$table_name).clone();
+    var tds = $(originalTable).children('tbody').children('tr').first().children('td').length;
+
+    var table_array = [];
+
+    for (var i = 0; i < tr.length; i++) {
+        for (var j = 0; j < tds; j++){
+            td = tr[i].getElementsByTagName("td")[j];
+            var str =  $(td).text().toUpperCase().trim();
+            table_array.push(str);
+        }
+        var b = table_array.filter(item => item.indexOf(filter) > -1);
+
+        if (b.length){
+            // tr[i].style.display = "";
+            $(tr[i]).fadeIn(0)
+        }else{
+            // tr[i].style.display = "none";
+            $(tr[i]).fadeOut(0)
+        }
+        table_array = [];
+    }
 }
+
+
 
 
 /*  show full window loader */

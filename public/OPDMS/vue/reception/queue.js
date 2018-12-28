@@ -10,6 +10,11 @@ var queue_vue = new Vue({
                 nawc: false,
                 spinner_action_btn:false,
 
+
+                user_id: '', //user id
+                user_clinic: '', //user id
+                user_role: '', //user id
+
                 /* for patient notifications*/
                 ls_main_div: false, // notifications last consultation div,
                 lc_date: '', // patient notification
@@ -93,6 +98,98 @@ var queue_vue = new Vue({
 
                 nurse_notes_consultation_single_open: '', // condition to open nurse open single or multiple
 
+                // for charging
+                search_ancillary_services: '', // filter ancillary and services
+                ancillary_services_array: [], // all the services and ancillary items of clinics
+                add_charging_array: [], // array of selected charging
+
+                mss_status: '', // show mss status
+                mss_discount: '', // set mss discount
+
+
+                unpaid_request_array: [], // for unpaid request on charging
+                paid_but_undone_array: [], // already paid but was not been done
+                paid_and_done_array: [], // all done requests
+
+
+
+                // for doctors variable
+                start_consultation: false, // toggle start consultation btn on doctors
+                end_consultation: false, // toggle end consultation btn on doctors
+                reconsult: false, // toggle reconsult btn on doctors
+                pause_consultation: false, // toggle pause consultation btn on doctors
+                nawc_consultation: false, // toggle nawc consultation btn on doctors
+
+
+                currently_serving: false,
+
+
+                arrow_consultation_btn_index: 0, // for up and down arrow on consultation view
+
+
+                thumbnail_wrapper_id: true,
+
+
+                consultation_open: false, // show if start consultation btn has been click
+                consultation_open_patch: '', // set the default value for consultation on doctor ui
+
+
+                smoke_cessation_doctors: [], // for list doctors that has inserted smoke cessation
+
+
+                vs_history_array: [], // vital signs history
+
+
+                referrals: [], // for referral history
+
+
+                referral_other_clinics: [], // referral to other clinics
+                referral_doctors: [], // referral doctors
+                referral_doctor_has_found: '', // if a doctor has been on referral
+
+                followups: [], // followup history
+                followup_doctors: [], // followup doctors within clinic
+                followup_clinic: '', // followup to the same clinics
+
+
+
+                errors: [], // for error messages
+
+
+                todays_vs: false, // show todays vs on patient info modal
+
+
+                icdPrimeclass: [], // for icd prime class loop
+                icdSubclassOne: [], // for icd sub class one loop
+                icdSubclassTwo: [], // for icd sub class two loop
+                icdCodes: [], // for icd codes loop
+
+
+                searchPrimaryClass: '', // search filter
+                searchSubClassOne: '', // search filter
+                searchSubClassTwo: '', // search filter
+                searchICDCodes: '', // search filter
+
+
+                pagination:{
+                    'current_page': 1
+                },
+                pagination_two:{
+                    'current_page': 1
+                },
+                offset: 5,
+
+
+                icd_type: '', // for icd type
+                icd_code: '', // for icd type
+                icd_search: '', // for icd type
+
+
+                icd_type_category: '', // for icd type
+                icd_code_category: '', // for icd type
+                icd_search_category: '', // for icd type
+
+
             },
             methods: {
 
@@ -102,6 +199,11 @@ var queue_vue = new Vue({
                 patient_check: function (event, pid)
                 {
                     if (this.pid != pid){ // check if patient was clicked twice
+
+
+                        this.user_id = authenticate;
+                        this.user_clinic = auth_clinic;
+                        this.user_role = auth_role;
 
                         var route_url = getUrl.pathname.split('/')[2]; // get the second route parameter
                         var not_allowed_url = [
@@ -117,15 +219,26 @@ var queue_vue = new Vue({
                         this.pid = pid;
                         this.patient_selected = true; // show all dashboard buttons
                         this.patient_name(); // get patient name
-                        if (url_status < 0){
+
+                        if (url_status < 0 && auth_role == 5){
                             this.queued_action_buttons; // ajax for dashboard buttons
                         }
+
                         this.selected_row(event);
                         this.check_icon(event);
                         this.unselected_row(event);
+
+                        // check if user is nurse, receptioist and clerk
+                        if (auth_role == 4 || auth_role == 5 || auth_role == 6){
+                            this.charging_records(); // check the total number of service request and paid requests
+                        }
+
+                        // check if user is doctor
+                        if (auth_role == 7){
+                            this.assignation_status();
+                        }
+
                         this.notifications_popup(); // check if patient has notifications
-                        // this.patient_has_notifications(); // check if patient has notifications
-                        this.charging_records(); // check the total number of service request and paid requests
                         this.disable_action_btn(); // disable action buttons
                     }
                 },
@@ -231,7 +344,11 @@ var queue_vue = new Vue({
                         if(response.mss_id == ''){
                             var mss = 'Unclassified';
                         }else{
-                            var mss = response.label+' '+response.description+'%';
+                            if (new Date(response.validity) < new Date()){
+                                var mss = 'MSS classification has already expired at '+ dateCalculate(response.validity);
+                            }else{
+                                var mss = response.label+' '+response.description+'%';
+                            }
                         }
 
                         /*--------- patient information on table -----*/
@@ -252,6 +369,13 @@ var queue_vue = new Vue({
                         root_element.$refs.bt.innerText = response.body_temperature; // body_temperature
                         root_element.$refs.weight.innerText = response.weight; // weight
                         root_element.$refs.height.innerText = response.height; // height
+
+
+                        if (response.blood_pressure){
+                            root_element.todays_vs = false;
+                        }else{
+                            root_element.todays_vs = true;
+                        }
 
                     });
                     request.fail(function (jqXHR, textStatus, errorThrown){
@@ -433,7 +557,6 @@ var queue_vue = new Vue({
                             console.log("The following error occured: "+ jqXHR, textStatus, errorThrown);
                         });
                     }
-                    return;
                 },
 
 
@@ -669,6 +792,9 @@ var queue_vue = new Vue({
                         if (/*response['consultations'] || */response['followup'] || response['referrals']) {
                             root_element.get_patient_notifications();
                         }
+                    });
+                    request.always(function () {
+                        root_element.enable_action_btn(); // enable action buttons
                     });
                 },
                 
@@ -1628,6 +1754,40 @@ var queue_vue = new Vue({
                 },
 
 
+
+
+
+
+                // view vital signs history
+                vs_history:function () {
+                    var root_element = this; // the parent element
+                    $('#vital_signs_history_modal').modal();
+                    $('#vital_signs_history_modal .loaderRefresh').fadeIn(0);
+                    request = $.ajax({
+                        url: baseUrl+'/vs_history',
+                        type: "post",
+                        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                        data: {'pid':root_element.pid},
+                        dataType: "json"
+                    });
+                    request.done(function (response, textStatus, jqXHR) {
+                        if(response){
+                            root_element.vs_history_array = response;
+                        }else{
+                            root_element.vs_history_array = [];
+                        }
+                    });
+                    request.fail(function (jqXHR, textStatus, errorThrown){
+                        console.log("The following error occured: "+ jqXHR, textStatus, errorThrown);
+                    });
+                    request.always(function(){
+                        $('#vital_signs_history_modal .loaderRefresh').fadeOut('fast');
+                    });
+                    return;
+                },
+
+
+
                 // insert vs of this patient to the table
                 vital_signs_insert: function (event) {
                     var root_element = this; // the parent element
@@ -1699,7 +1859,9 @@ var queue_vue = new Vue({
                         console.log("The following error occured: "+ jqXHR, textStatus, errorThrown);
                     });
                     request.always(function(){
+/*
                         root_element.enable_action_btn(); // enable action buttons
+*/
                     });
                 },
 
@@ -1910,7 +2072,6 @@ var queue_vue = new Vue({
                         dataType: "json"
                     });
                     request.done(function (response, textStatus, jqXHR) {
-                        console.log(response)
                         if (response){
                             root_element.consultations_all = response;
                             root_element.open_consultation('first', 0) // show the first consultation
@@ -1932,13 +2093,14 @@ var queue_vue = new Vue({
                 // selected consultation to be shown in consultation all modal
                 open_consultation: function (event, index) {
 
+                    this.arrow_consultation_btn_index = index;
 
                     this.nurse_notes_consultation_single_open = 'multiple_open'; // open all consultations
 
                     // bind href to print button
                     this.consultation_print_btn = baseUrl+'/printNurseNotes/'+this.search_filter_consultation[index].cid;
 
-                    this.highlight_thumbnail(event);
+                    this.highlight_thumbnail(event, index);
 
                     this.opened_consultation = this.search_filter_consultation[index].cid;
 
@@ -1960,17 +2122,1123 @@ var queue_vue = new Vue({
                 },
 
 
-                highlight_thumbnail: function(event){
+                highlight_thumbnail: function(event, index){
                     $('div.thumbnail_container div.thumbnail_wrapper_main').each(function(index){
                         $(this).find('div.thumbnail_wrapper').removeClass('thumbnail_wrapper_focused');
                     });
-                    $(event.target).closest('div.thumbnail_wrapper').addClass('thumbnail_wrapper_focused');
+                    $('div#thumbnail_wrapper_id_'+index).addClass('thumbnail_wrapper_focused');
+                },
+
+
+                //service add
+                service_add: function(){
+                    $('#services_add_modal').modal();
+                    $('#services_add_modal input[name="service_patch"]').val('');
+                    $('#services_add_modal input[name="sub_category"]').val('');
+                    $('#services_add_modal input[name="price"]').val('');
+                    $('#services_add_modal option[value="inactive"]').removeAttr('selected');
+                    $('#services_add_modal option[value="active"]').attr('selected', 'selected');
+                },
+
+
+                // edit services
+                service_edit: function ($id) {
+                    var root_element = this; // the parent element
+                    $('#services_add_modal').modal();
+                    $('#services_add_modal .loaderRefresh').fadeIn(0);
+                    request = $.ajax({
+                        url: baseUrl+'/service_edit',
+                        type: "get",
+                        data: {'id':$id},
+                        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                        dataType: "json"
+                    });
+                    request.done(function (response, textStatus, jqXHR) {
+                        $('#services_add_modal input[name="service_patch"]').val(response.id);
+                        $('#services_add_modal input[name="sub_category"]').val(response.sub_category);
+                        $('#services_add_modal input[name="price"]').val(response.price);
+                        if (response.status == 'active'){
+                            $('#services_add_modal option[value="inactive"]').removeAttr('selected');
+                            $('#services_add_modal option[value="active"]').attr('selected', 'selected');
+                        }else{
+                            $('#services_add_modal option[value="active"]').removeAttr('selected');
+                            $('#services_add_modal option[value="inactive"]').attr('selected', 'selected');
+                        }
+                    });
+                    request.fail(function (jqXHR, textStatus, errorThrown){
+                        console.log("The following error occured: "+ jqXHR, textStatus, errorThrown);
+                    });
+                    request.always(function(){
+                        $('#services_add_modal .loaderRefresh').fadeOut('fast');
+                    });
                 },
 
 
 
+
+                // query for mss classification
+                charged_patient: function(){
+                    var root_element = this; // the parent element
+                    $('#charging_modal').modal();
+                    $('#charging_modal .loaderRefresh').first().fadeIn(0);
+                    request = $.ajax({
+                        url: baseUrl+'/mss_classification',
+                        type: "get",
+                        data: {'pid':root_element.pid},
+                        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                        dataType: "json"
+                    });
+                    request.done(function (response, textStatus, jqXHR) {
+                        // check if patient is mss classified
+                        if (response['status'] == 'expired'){
+                            var mss = 'MSS classification has already expired at '+ dateCalculate(response['mss'].validity);
+                            root_element.mss_discount = 0; // set mss to fully paid
+                        }else if (response['status'] == 'valid'){
+                            var mss = 'Mss Classification: '+response['mss'].label+' - '+response['mss'].description+'%';
+                            root_element.mss_discount = response['mss'].discount;
+                        }else if (response['status'] == 'unclassified'){
+                            var mss = 'Mss Classification: Unclassified';
+                            root_element.mss_discount = 0; // set mss to fully paid
+                        }
+                        root_element.mss_status = mss;
+                        root_element.view_charging(); // call to display the ancillary and services
+                    });
+                    request.fail(function (jqXHR, textStatus, errorThrown){
+                        console.log("The following error occured: "+ jqXHR, textStatus, errorThrown);
+                    });
+                },
+
+
+
+
+
+                // charging function
+                view_charging: function () {
+                    var root_element = this; // the parent element
+                    this.add_charging_array = [];
+                    this.show_requisition_tab();
+                    request = $.ajax({
+                        url: baseUrl+'/ancillary_services',
+                        type: "get",
+                        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                        dataType: "json"
+                    });
+                    request.done(function (response, textStatus, jqXHR) {
+                        root_element.ancillary_services_array = response;
+                    });
+                    request.fail(function (jqXHR, textStatus, errorThrown){
+                        console.log("The following error occured: "+ jqXHR, textStatus, errorThrown);
+                    });
+                    request.always(function(){
+                        $('#charging_modal .loaderRefresh').fadeOut('fast');
+                    });
+                },
+
+
+                // add charging
+                add_charging: function (index) {
+
+                    this.show_requisition_tab(); // open requisition tab
+
+                    var sub_id = this.search_filter_charging[index].sub_id;
+                    var sub_category = this.search_filter_charging[index].sub_category;
+                    var price = this.search_filter_charging[index].price;
+
+                    var amount = price * 1;
+                    var discount = amount * this.mss_discount;
+                    var net = Math.abs(amount - discount);
+
+                    var data = [];
+                    data['sub_id'] = sub_id;
+                    data['sub_category'] = sub_category;
+                    data['price'] = price;
+                    data['amount'] = amount;
+                    data['discount'] = discount;
+                    data['net'] = net;
+
+                    this.add_charging_array.push(data);
+                    // console.log(this.add_charging_array)
+                },
+
+
+                show_requisition_tab: function(){
+                    $('.nav-tabs a[href="#requisition_table"]').tab('show')
+                },
+
+
+                charging_quantity: function (event, index) {
+                    var amount = this.add_charging_array[index].price * event.target.value;
+                    var discount = amount * this.mss_discount;
+                    var net = Math.abs(amount - discount);
+
+                    this.add_charging_array[index].amount = amount;
+                    this.add_charging_array[index].discount = discount;
+                    this.add_charging_array[index].net = net;
+                    // update array to become reactive
+                    Vue.set(this.add_charging_array, index, this.add_charging_array[index])
+                },
+
+
+                // save charging
+                save_charging: function () {
+                    var root_element = this; // the parent element
+                    var formdata = $('#charging_form').serialize();
+                    $('#requisition_table .loaderRefresh').fadeIn(0);
+                    request = $.ajax({
+                        url: baseUrl+'/charging_save',
+                        type: "post",
+                        data: formdata,
+                        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                    });
+                    request.done(function (response, textStatus, jqXHR) {
+                    });
+                    request.fail(function (jqXHR, textStatus, errorThrown){
+                        console.log("The following error occured: "+ jqXHR, textStatus, errorThrown);
+                    });
+                    request.always(function(){
+                        $('#requisition_table .loaderRefresh').fadeOut('fast');
+                        root_element.add_charging_array = [];
+                        toast('success', 'Requisition successfully saved');
+                    });
+                },
+
+
+
+
+                // get all unpaid charging request
+                unpaid_request: function () {
+                    var root_element = this; // the parent element
+                    $('#unpaid_tab .loaderRefresh').fadeIn(0);
+                    request = $.ajax({
+                        url: baseUrl+'/unpaid_request',
+                        type: "post",
+                        data: {'pid':root_element.pid},
+                        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                        dataType: "json"
+                    });
+                    request.done(function (response, textStatus, jqXHR) {
+                        root_element.unpaid_request_array = [];
+                        if (response.length){
+                            $.each(response, function (index) {
+
+                                var amount = response[index].price * response[index].qty;
+                                var discount = amount * root_element.mss_discount;
+                                var net = Math.abs(amount - discount);
+
+                                var data = [];
+                                data['anc_id'] = response[index].anc_id;
+                                data['sub_category'] = response[index].sub_category;
+                                data['price'] = response[index].price;
+                                data['qty'] = response[index].qty;
+                                data['amount'] = amount;
+                                data['discount'] = discount;
+                                data['net'] = net;
+                                data['created_at'] = response[index].created_at;
+
+                                root_element.unpaid_request_array.push(data);
+                            });
+                        }
+                    });
+                    request.fail(function (jqXHR, textStatus, errorThrown){
+                        console.log("The following error occured: "+ jqXHR, textStatus, errorThrown);
+                    });
+                    request.always(function(){
+                        $('#unpaid_tab .loaderRefresh').fadeOut('fast');
+                    });
+                },
                 
+                // remove unpaid request
+                unpaid_remove: function (index) {
+                    var ans = confirm('Do you really want to delete this request?');
+                    if (ans){
+                        var root_element = this; // the parent element
+                        $('#unpaid_tab .loaderRefresh').fadeIn(0);
+                        var sub_id = this.unpaid_request_array[index].anc_id;
+                        request = $.ajax({
+                            url: baseUrl+'/unpaid_remove',
+                            type: "post",
+                            data: {'sub_id':sub_id},
+                            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                        });
+                        request.done(function (response, textStatus, jqXHR) {
+                            root_element.unpaid_request_array.splice(index, 1)
+                        });
+                        request.fail(function (jqXHR, textStatus, errorThrown){
+                            console.log("The following error occured: "+ jqXHR, textStatus, errorThrown);
+                        });
+                        request.always(function(){
+                            $('#unpaid_tab .loaderRefresh').fadeOut('fast');
+                        });
+                    }
+                },
+
+                // requests that was already paid but was not been undone
+                paid_but_undone: function () {
+                    var root_element = this; // the parent element
+                    $('#paid_but_undone_tab .loaderRefresh').fadeIn(0);
+                    request = $.ajax({
+                        url: baseUrl+'/paid_but_undone',
+                        type: "post",
+                        data: {'pid':root_element.pid},
+                        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                        dataType: "json"
+                    });
+                    request.done(function (response, textStatus, jqXHR) {
+                        root_element.paid_but_undone_array = [];
+                        if (response.length){
+                            $.each(response, function (index) {
+
+                                var amount = response[index].price * response[index].qty;
+                                var discount = amount * root_element.mss_discount;
+                                var net = Math.abs(amount - discount);
+
+                                var data = [];
+                                data['cashincome_id'] = response[index].cashincome_id;
+                                data['sub_category'] = response[index].sub_category;
+                                data['price'] = response[index].price;
+                                data['qty'] = response[index].qty;
+                                data['amount'] = amount;
+                                data['discount'] = discount;
+                                data['net'] = net;
+                                data['created_at'] = response[index].created_at;
+
+                                root_element.paid_but_undone_array.push(data);
+                            });
+                        }
+                    });
+                    request.fail(function (jqXHR, textStatus, errorThrown){
+                        console.log("The following error occured: "+ jqXHR, textStatus, errorThrown);
+                    });
+                    request.always(function(){
+                        $('#paid_but_undone_tab .loaderRefresh').fadeOut('fast');
+                    });
+                },
                 
+                // make this request done
+                paid_done: function (index) {
+                    var ans = confirm('Do you really want to make this request done?');
+                    if (ans){
+                        var root_element = this; // the parent element
+                        $('#paid_but_undone_tab .loaderRefresh').fadeIn(0);
+                        var cashincome_id = this.paid_but_undone_array[index].cashincome_id;
+                        request = $.ajax({
+                            url: baseUrl+'/paid_done',
+                            type: "post",
+                            data: {'cashincome_id':cashincome_id},
+                            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                        });
+                        request.done(function (response, textStatus, jqXHR) {
+                            root_element.paid_but_undone_array.splice(index, 1)
+                        });
+                        request.fail(function (jqXHR, textStatus, errorThrown){
+                            console.log("The following error occured: "+ jqXHR, textStatus, errorThrown);
+                        });
+                        request.always(function(){
+                            $('#paid_but_undone_tab .loaderRefresh').fadeOut('fast');
+                        });
+                    }
+                },
+
+
+                // done all request that was not done
+                done_all: function () {
+                    var ans = confirm('Do you really want to make all of this requests done?');
+                    if (ans) {
+                        var root_element = this; // the parent element
+                        $('#paid_but_undone_tab .loaderRefresh').fadeIn(0);
+                        request = $.ajax({
+                            url: baseUrl + '/done_all',
+                            type: "post",
+                            data: {'pid': root_element.pid},
+                            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                        });
+                        request.done(function (response, textStatus, jqXHR) {
+                            root_element.paid_but_undone_array = [];
+                        });
+                        request.fail(function (jqXHR, textStatus, errorThrown) {
+                            console.log("The following error occured: " + jqXHR, textStatus, errorThrown);
+                        });
+                        request.always(function () {
+                            $('#paid_but_undone_tab .loaderRefresh').fadeOut('fast');
+                        });
+                    }
+                },
+
+
+
+                // requests that was already paid but was not been undone
+                paid_and_done: function () {
+                    var root_element = this; // the parent element
+                    $('#paid_and_done_tab .loaderRefresh').fadeIn(0);
+                    request = $.ajax({
+                        url: baseUrl+'/paid_and_done',
+                        type: "post",
+                        data: {'pid':root_element.pid},
+                        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                        dataType: "json"
+                    });
+                    request.done(function (response, textStatus, jqXHR) {
+                        root_element.paid_and_done_array = [];
+                        if (response.length){
+                            $.each(response, function (index) {
+
+                                var amount = response[index].price * response[index].qty;
+                                var discount = amount * root_element.mss_discount;
+                                var net = Math.abs(amount - discount);
+
+                                var data = [];
+                                data['cashincome_id'] = response[index].cashincome_id;
+                                data['sub_category'] = response[index].sub_category;
+                                data['price'] = response[index].price;
+                                data['qty'] = response[index].qty;
+                                data['amount'] = amount;
+                                data['discount'] = discount;
+                                data['net'] = net;
+                                data['created_at'] = response[index].created_at;
+
+                                root_element.paid_and_done_array.push(data);
+                            });
+                        }
+                    });
+                    request.fail(function (jqXHR, textStatus, errorThrown){
+                        console.log("The following error occured: "+ jqXHR, textStatus, errorThrown);
+                    });
+                    request.always(function(){
+                        $('#paid_and_done_tab .loaderRefresh').fadeOut('fast');
+                    });
+                },
+
+
+
+
+
+
+                // start of for doctors script
+
+                start_consultation_now: function () {
+
+                    var root_element = this; // the parent element
+                    this.serving_patient(); // change status after start consultation is clicked
+                    $('.full_window_loader').fadeIn(0);
+                    request = $.ajax({
+                        url: baseUrl+'/create_consultation',
+                        type: "post",
+                        data: {'pid':root_element.pid},
+                        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                        dataType: "json"
+                    });
+                    request.done(function (response, textStatus, jqXHR) {
+                        if (response['serving']){
+                            alert('Unable to consult this patient, because you are currently serving another patient.');
+                            root_element.consultation_open = false;
+                        } else{
+
+                            create_consultation_editor(); // call texteditor
+
+                            if (response['consultation'].length){
+                                // if a consultation already exists
+                                root_element.consultation_open_patch = response['consultation'][0].cid; // assign cid to form patch
+                                setTimeout(function () {
+                                    tinymce.get('create_consultation_editor').setContent(response['consultation'][0].consultation);
+                                }, 500);
+
+                                root_element.show_nurse_notes_print = true; // show nurse notes print btn
+                                // create nurse notes print link
+                                root_element.show_nurse_notes_print_link = baseUrl+'/printNurseNotes/'+response['consultation'][0].cid;
+
+
+                                // show blank form btn
+                                root_element.new_blank_nurse_form = true;
+
+                            }else{
+                                var table = template_table(); // call empty template table
+                                setTimeout(function () { // important delay the displaying of table
+                                    tinymce.get('create_consultation_editor').setContent(table);
+                                }, 500);
+
+                                root_element.show_nurse_notes_print = false; // hide nurse notes print btn
+                                // set to empty nurse notes print link
+                                root_element.show_nurse_notes_print_link = '';
+
+                                // show blank form btn
+                                root_element.new_blank_nurse_form = false;
+
+                            }
+
+                            $('#create_consultation_modal').modal({
+                                backdrop: 'static',
+                                keyboard: false
+                            });
+
+                        }
+                    });
+                    request.fail(function (jqXHR, textStatus, errorThrown){
+                        console.log("The following error occured: "+ jqXHR, textStatus, errorThrown);
+                    });
+                    request.always(function(){
+                        $('.full_window_loader').fadeOut('fast');
+                    });
+                },
+
+
+
+
+
+
+                // when start consultation is clicked call this method
+                serving_patient: function () {
+                    this.consultation_open = true;
+                    this.start_consultation = false;
+                    this.end_consultation = true;
+                    this.reconsult = false;
+                    this.pause_consultation = true;
+                    this.nawc_consultation = false;
+                    this.currently_serving = false;
+                    $('#assgn_status_'+this.pid).text('Serving').attr('class','bg-green');
+                },
+
+
+
+                blank_consultation_form: function () {
+                    var ans = confirm('Do you really want to create a new blank consultation form?');
+                    if(ans){
+                        this.new_blank_nurse_form = true;
+                        this.consultation_open_patch = '';
+                        var table = template_table(); // call empty template table
+                        setTimeout(function () { // important delay the displaying of table
+                            tinymce.get('create_consultation_editor').setContent(table);
+                        }, 200);
+                    }
+                },
+
+
+
+                // insert smoke cessation for famed only
+                inset_smoke_cessation: function () {
+
+                    var ans = confirm('Do you really want to insert a smoke cessation record for this patient?');
+
+                    if (ans){
+
+                        // check if the cursor is inside the consultation form
+                        var range = tinyMCE.get('create_consultation_editor').selection.getNode().nodeName;
+
+                        if (range == 'BODY'){
+                            toast('error', 'Kindly position your cursor inside the consultation form.');
+                        } else{
+
+                            var root_element = this; // the parent element
+                            $('.full_window_loader').fadeIn(0);
+                            request = $.ajax({
+                                url: baseUrl+'/smoking_cessation',
+                                type: "post",
+                                data: {'pid':root_element.pid},
+                                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                                dataType: "json"
+                            });
+                            request.done(function (response, textStatus, jqXHR) {
+
+                                if (response['existing']) {
+                                    root_element.smoke_cessation_doctors = response['smoke'];
+                                    $('.smoke_cessation_dialog_box').fadeIn(0);
+                                }else{
+                                    root_element.insert_smoke_cessation_anyway();
+                                }
+
+                            });
+                            request.fail(function (jqXHR, textStatus, errorThrown){
+                                console.log("The following error occured: "+ jqXHR, textStatus, errorThrown);
+                            });
+                            request.always(function(){
+                                $('.full_window_loader').fadeOut('fast');
+                            });
+
+                        }
+
+                    } else{
+
+                    }
+
+                },
+
+
+
+                // insert smoke anyway even a previous smoke cessation data has been found
+                insert_smoke_cessation_anyway: function () {
+                    var root_element = this; // the parent element
+                    $('.smoke_cessation_dialog_box').find('.loaderRefresh').fadeIn(0);
+                    request = $.ajax({
+                        url: baseUrl+'/save_smoking_cessation',
+                        type: "post",
+                        data: {'pid':root_element.pid},
+                        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                    });
+                    request.done(function (response, textStatus, jqXHR) {
+                        var icd = '<strong id="smoke" class="mceNonEditable">Smoke Cessation &nbsp;</strong>';
+                        tinymce.activeEditor.execCommand('mceInsertContent', false, icd);
+                        toast('success', 'Smoke cessation successfully saved');
+                    });
+                    request.fail(function (jqXHR, textStatus, errorThrown){
+                        console.log("The following error occured: "+ jqXHR, textStatus, errorThrown);
+                    });
+                    request.always(function(){
+                        $('.smoke_cessation_dialog_box').find('.loaderRefresh').fadeOut('fast');
+                        $('.smoke_cessation_dialog_box').fadeOut('fast');
+                    });
+                },
+
+
+
+
+
+                referral_insert: function () {
+                    var root_element = this; // the parent element
+                    $('#referral_modal .loaderRefresh').fadeIn(0);
+                    $('#referral_modal').modal();
+                    request = $.ajax({
+                        url: baseUrl+'/referral_history',
+                        type: "post",
+                        data: {'pid':root_element.pid},
+                        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                        dataType: "json"
+                    });
+                    request.done(function (response, textStatus, jqXHR) {
+                        root_element.referrals = response['referrals'];
+                        root_element.referral_other_clinics = response['clinics'];
+                        root_element.referral_doctor_has_found = '';
+                    });
+                    request.fail(function (jqXHR, textStatus, errorThrown){
+                        console.log("The following error occured: "+ jqXHR, textStatus, errorThrown);
+                    });
+                    request.always(function(){
+                        $('#referral_modal .loaderRefresh').fadeOut('fast');
+                    });
+                },
+
+
+                referral_to_clinic: function (clinic) {
+                    var root_element = this; // the parent element
+                    $('#referral_modal .referral_clinic_doctor').fadeIn(0);
+                    request = $.ajax({
+                        url: baseUrl+'/referral_clinic_doctor',
+                        type: "post",
+                        data: {'clinic':clinic},
+                        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                        dataType: "json"
+                    });
+                    request.done(function (response, textStatus, jqXHR) {
+                        root_element.replace_null(response);
+                        root_element.referral_doctors = response;
+                        root_element.referral_doctor_has_found =
+                            'There were '+response.length+' registered doctors found on this clinic.';
+                    });
+                    request.fail(function (jqXHR, textStatus, errorThrown){
+                        console.log("The following error occured: "+ jqXHR, textStatus, errorThrown);
+                    });
+                    request.always(function(){
+                        $('#referral_modal .referral_clinic_doctor').fadeOut('fast');
+                    });
+
+                },
+
+
+
+
+                referral_form_submit: function (event) {
+                    var root_element = this; // the parent element
+                    var data = $(event.target).serialize();
+                    $('#referral_modal .loaderRefresh').fadeIn(0);
+                    request = $.ajax({
+                        url: baseUrl+'/referral_save',
+                        type: "post",
+                        data: data,
+                        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                        dataType: "json"
+                    });
+                    request.done(function (response, textStatus, jqXHR) {
+                        root_element.replace_null(response);
+                        toast('success', 'Referral successfully saved');
+                        root_element.referral_insert();
+                    });
+                    request.fail(function (jqXHR, textStatus, errorThrown){
+                        console.log("The following error occured: "+ jqXHR, textStatus, errorThrown);
+                    });
+                    request.always(function(){
+                        $('#referral_modal .loaderRefresh').fadeOut('fast');
+                        $(event.target).find('textarea').val(''); // empty textarea
+                        root_element.referral_other_clinics = []; // empty clinic
+                        root_element.referral_doctors = []; // empty doctors
+                    });
+                },
+
+
+
+                delete_referral: function (id, index) {
+                    var ans  = confirm('Do you really want to delete this referral?');
+                    if (ans){
+                        var root_element = this; // the parent element
+                        $('#referral_modal .loaderRefresh').fadeIn(0);
+                        request = $.ajax({
+                            url: baseUrl+'/referral_delete',
+                            type: "post",
+                            data: {'id':id},
+                            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                        });
+                        request.done(function (response, textStatus, jqXHR) {
+                            root_element.referrals.splice(index, 1);
+                            toast('error', 'Referral has been deleted.');
+                        });
+                        request.fail(function (jqXHR, textStatus, errorThrown){
+                            console.log("The following error occured: "+ jqXHR, textStatus, errorThrown);
+                        });
+                        request.always(function(){
+                            $('#referral_modal .loaderRefresh').fadeOut('fast');
+                        });
+                    }
+                },
+
+
+
+                auth_delete_referral: function (status, user_id) {
+                    var bool = (status == 'P' && user_id == authenticate)? true : false;
+                    return bool;
+                },
+
+
+                auth_delete_followup: function (status, user_id) {
+                    var bool = (status == 'P' && user_id == authenticate)? true : false;
+                    return bool;
+                },
+
+
+
+
+
+                followup_show: function () {
+                    var root_element = this; // the parent element
+                    $('#followup_modal .loaderRefresh').fadeIn(0);
+                    $('#followup_modal').modal();
+                    request = $.ajax({
+                        url: baseUrl+'/followup_history',
+                        type: "post",
+                        data: {'pid':root_element.pid},
+                        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                        dataType: "json"
+                    });
+                    request.done(function (response, textStatus, jqXHR) {
+                        root_element.followups = response['followups'];
+                        root_element.followup_doctors = response['doctors'];
+                        root_element.followup_clinic = response['clinic'];
+                    });
+                    request.fail(function (jqXHR, textStatus, errorThrown){
+                        console.log("The following error occured: "+ jqXHR, textStatus, errorThrown);
+                    });
+                    request.always(function(){
+                        $('#followup_modal .loaderRefresh').fadeOut('fast');
+                    });
+                },
+
+
+
+
+                followup_form_submit: function(event){
+                    var root_element = this; // the parent element
+                    var data = $(event.target).serialize();
+                    $('#followup_modal .loaderRefresh').fadeIn(0);
+                    request = $.ajax({
+                        url: baseUrl+'/followup_save',
+                        type: "post",
+                        data: data,
+                        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                        dataType: "json"
+                    });
+                    request.done(function (response, textStatus, jqXHR) {
+                        if (response.errors){
+                            root_element.errors = response.errors;
+                        }else{
+                            root_element.errors = []; // clear error msg
+
+                            $(event.target).find('textarea').val(''); // empty textarea
+                            $(event.target).find('input[name="date"]').val(''); // empty textarea
+                            root_element.followup_doctors = []; // empty doctors
+                            root_element.followup_show();
+                            toast('success', response.success);
+                        }
+                    });
+                    request.fail(function (jqXHR, textStatus, errorThrown){
+                        console.log("The following error occured: "+ jqXHR, textStatus, errorThrown);
+                    });
+                    request.always(function(){
+                        $('#followup_modal .loaderRefresh').fadeOut('fast');
+                    });
+                },
+
+
+
+                delete_followup: function (id, index) {
+                    var ans  = confirm('Do you really want to delete this followup?');
+                    if (ans){
+                        var root_element = this; // the parent element
+                        $('#followup_modal .loaderRefresh').fadeIn(0);
+                        request = $.ajax({
+                            url: baseUrl+'/followup_delete',
+                            type: "post",
+                            data: {'id':id},
+                            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                        });
+                        request.done(function (response, textStatus, jqXHR) {
+                            root_element.followups.splice(index, 1);
+                            toast('error', response.error);
+                        });
+                        request.fail(function (jqXHR, textStatus, errorThrown){
+                            console.log("The following error occured: "+ jqXHR, textStatus, errorThrown);
+                        });
+                        request.always(function(){
+                            $('#followup_modal .loaderRefresh').fadeOut('fast');
+                        });
+                    }
+                },
+
+
+
+
+                assignation_status: function()
+                {
+                    var root_element = this;
+                    request = $.ajax({
+                        url: baseUrl+'/assignation_status',
+                        type: "post",
+                        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                        data: {'pid':this.pid},
+                        dataType: "json"
+                    });
+                    request.done(function (response, textStatus, jqXHR) {
+
+                        var serv = (response['serv'])? false : true;
+
+                        if(response['status'] == 'F'){ //Finished consultation
+                            root_element.consultation_open = false;
+                            root_element.start_consultation = false;
+                            root_element.end_consultation = false;
+                            root_element.reconsult = serv;
+                            root_element.pause_consultation = false;
+                            root_element.nawc_consultation = false;
+                            root_element.currently_serving = (response['serv'])? true : false ;
+                        }else if(response['status'] == 'S'){ // Serving patient
+                            root_element.consultation_open = true;
+                            root_element.start_consultation = false;
+                            root_element.end_consultation = true;
+                            root_element.reconsult = false;
+                            root_element.pause_consultation = true;
+                            root_element.nawc_consultation = false;
+                            root_element.currently_serving = false;
+                        }else if(response['status'] == 'C'){ // NAWC patient
+                            root_element.consultation_open = false;
+                            root_element.start_consultation = serv;
+                            root_element.end_consultation = false;
+                            root_element.reconsult = false;
+                            root_element.pause_consultation = false;
+                            root_element.nawc_consultation = false;
+                            root_element.currently_serving = (response['serv'])? true : false ;
+                        }else if(response['status'] == 'H'){ // Paused patient
+                            root_element.consultation_open = false;
+                            root_element.start_consultation = false;
+                            root_element.end_consultation = true;
+                            root_element.reconsult = serv;
+                            root_element.pause_consultation = false;
+                            root_element.nawc_consultation = false;
+                            root_element.currently_serving = false;
+                        }else{ // Pending patient
+                            root_element.consultation_open = false;
+                            root_element.start_consultation = serv;
+                            root_element.end_consultation = false;
+                            root_element.reconsult = false;
+                            root_element.pause_consultation = false;
+                            root_element.nawc_consultation = true;
+                            root_element.currently_serving = false;
+                        }
+                    });
+                    request.fail(function (jqXHR, textStatus, errorThrown){
+                        console.log("The following error occured: "+ jqXHR, textStatus, errorThrown);
+                    });
+                    request.always(function(){
+                        root_element.spinner_action_btn = false;
+                    });
+                    return;
+                },
+
+
+
+
+                icd_codes: function () {
+                    $('#icd_codes_modal').modal();
+                    this.icd_primeclass();
+                },
+
+
+
+                /* icd codes */
+                icd_primeclass: function () {
+                    var root_element = this; // the parent element
+                    // $('#followup_modal .loaderRefresh').fadeIn(0);
+                    request = $.ajax({
+                        url: baseUrl+'/icd_primeclass',
+                        type: "post",
+                        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                        dataType: 'json'
+                    });
+                    request.done(function (response, textStatus, jqXHR) {
+                        root_element.icdPrimeclass = response;
+                    });
+                    request.fail(function (jqXHR, textStatus, errorThrown){
+                        console.log("The following error occured: "+ jqXHR, textStatus, errorThrown);
+                    });
+                    request.always(function(){
+                        // $('#followup_modal .loaderRefresh').fadeOut('fast');
+                    });
+                },
+
+
+                icd_subclass_one: function (code) {
+                    var root_element = this; // the parent element
+                    $("#icd_codes_modal .sub_class_one .icd_codes_min_height").scrollTop(0);
+                    $('#icd_codes_modal .sub_class_one .loaderRefresh').fadeIn(0);
+                    request = $.ajax({
+                        url: baseUrl+'/icd_subclass_one',
+                        type: "post",
+                        data: {'code':code},
+                        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                        dataType: 'json'
+                    });
+                    request.done(function (response, textStatus, jqXHR) {
+                        root_element.icdSubclassOne = response;
+                    });
+                    request.fail(function (jqXHR, textStatus, errorThrown){
+                        console.log("The following error occured: "+ jqXHR, textStatus, errorThrown);
+                    });
+                    request.always(function(){
+                        $('#icd_codes_modal .sub_class_one .loaderRefresh').fadeOut('fast');
+                    });
+                },
+
+
+
+                icd_subclass_two: function (code) {
+                    // var root_element = this; // the parent element
+                    // $("#icd_codes_modal .sub_class_two .icd_codes_min_height").scrollTop(0);
+                    // $('#icd_codes_modal .sub_class_two .loaderRefresh').fadeIn(0);
+                    // request = $.ajax({
+                    //     url: baseUrl+'/icd_subclass_two',
+                    //     type: "post",
+                    //     data: {'code':code},
+                    //     headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                    //     dataType: 'json'
+                    // });
+                    // request.done(function (response, textStatus, jqXHR) {
+                    //     root_element.icdSubclassTwo = response;
+                    // });
+                    // request.fail(function (jqXHR, textStatus, errorThrown){
+                    //     console.log("The following error occured: "+ jqXHR, textStatus, errorThrown);
+                    // });
+                    // request.always(function(){
+                    //     $('#icd_codes_modal .sub_class_two .loaderRefresh').fadeOut('fast');
+                    // });
+
+
+                    this.icd_type_category = 'code';
+                    this.icd_search_category = '';
+                    this.searchSubClassTwo = '';
+                    this.icd_code_category = code;
+                    this.pagination_two.current_page = 1;
+                    this.get_icd_codes_category();
+
+
+                },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                // end of for doctors script
+
+
+
+
+
+
+
+
+                isCurrentPage: function(page) {
+                    return this.pagination.current_page === page;
+                },
+                changePage: function(page) {
+                    if (page > this.pagination.last_page) {
+                        page = this.pagination.last_page;
+                    }
+                    this.pagination.current_page = page;
+                    // this.$emit('paginate');
+                    this.get_icd_codes();
+                },
+
+
+                isCurrentPageTwo: function(page) {
+                    return this.pagination_two.current_page === page;
+                },
+                changePageTwo: function(page) {
+                    if (page > this.pagination_two.last_page) {
+                        page = this.pagination_two.last_page;
+                    }
+                    this.pagination_two.current_page = page;
+                    // this.$emit('paginate');
+                    this.get_icd_codes_category();
+                },
+
+
+                icd_codes_master: function (code) {
+                    this.icd_type = 'code';
+                    this.icd_search = '';
+                    this.searchICDCodes = '';
+                    this.icd_code = code;
+                    this.pagination.current_page = 1;
+                    this.get_icd_codes();
+                },
+
+
+                icd_code_search: function () {
+                    this.icd_type = 'search';
+                    this.icd_search = this.searchICDCodes.toLowerCase();
+                    this.icd_code = '';
+                    this.pagination.current_page = 1;
+                    this.get_icd_codes();
+                },
+
+
+                /*icd_codes_master_two: function (code) {
+                    this.icd_type_category = 'code';
+                    this.icd_search_category = '';
+                    this.searchSubClassTwo = '';
+                    this.icd_code_category = code;
+                    this.pagination_two.current_page = 1;
+                    this.get_icd_codes_category();
+                },*/
+
+
+                icd_code_search_two: function () {
+                    this.icd_type_category = 'search';
+                    this.icd_search_category = this.searchSubClassTwo.toLowerCase();
+                    this.icd_code_category = '';
+                    this.pagination_two.current_page = 1;
+                    this.get_icd_codes_category();
+                },
+
+
+                get_icd_codes: function () {
+
+                    var root_element = this; // the parent element
+
+                    $("#icd_codes_modal .icdCodesMaster .icd_codes_min_height").scrollTop(0);
+                    $('#icd_codes_modal .icdCodesMaster .loaderRefresh').fadeIn(0);
+
+                    var data = {'code':this.icd_code,'search':this.icd_search,'type':this.icd_type};
+
+                    request = $.ajax({
+                        url: baseUrl+'/icd_codes_master?page='+ root_element.pagination.current_page,
+                        type: "get",
+                        data: data,
+                        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                        dataType: 'json'
+                    });
+                    request.done(function (response, textStatus, jqXHR) {
+                        console.log(response);
+                        root_element.icdCodes = response.data.data;
+                        root_element.pagination = response.pagination;
+                    });
+                    request.fail(function (jqXHR, textStatus, errorThrown){
+                        console.log("The following error occured: "+ jqXHR, textStatus, errorThrown);
+                    });
+                    request.always(function(){
+                        $('#icd_codes_modal .icdCodesMaster .loaderRefresh').fadeOut('fast');
+                    });
+
+
+                },
+
+
+
+                get_icd_codes_category: function () {
+
+                    var root_element = this; // the parent element
+
+                    $("#icd_codes_modal .sub_class_two .icd_codes_min_height").scrollTop(0);
+                    $('#icd_codes_modal .sub_class_two .loaderRefresh').fadeIn(0);
+
+                    var data = {'code':this.icd_code_category,'search':this.icd_search_category,'type':this.icd_type_category};
+
+                    request = $.ajax({
+                        url: baseUrl+'/icd_codes_category_master?page='+ root_element.pagination_two.current_page,
+                        type: "get",
+                        data: data,
+                        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                        dataType: 'json'
+                    });
+                    request.done(function (response, textStatus, jqXHR) {
+                        console.log(response);
+                        root_element.icdSubclassTwo = response.data.data;
+                        root_element.pagination_two = response.pagination;
+                    });
+                    request.fail(function (jqXHR, textStatus, errorThrown){
+                        console.log("The following error occured: "+ jqXHR, textStatus, errorThrown);
+                    });
+                    request.always(function(){
+                        $('#icd_codes_modal .sub_class_two .loaderRefresh').fadeOut('fast');
+                    });
+
+
+                },
+
+
+
+                previous_btn: function () {
+                    return this.pagination.current_page <= 1;
+                },
+
+
+                next_btn: function () {
+                    return this.pagination.current_page >= this.pagination.last_page;
+                },
+
+
+                previous_btn_two: function () {
+                    return this.pagination_two.current_page <= 1;
+                },
+
+
+                next_btn_two: function () {
+                    return this.pagination_two.current_page >= this.pagination_two.last_page;
+                },
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1980,6 +3248,106 @@ var queue_vue = new Vue({
 
 
             computed:{
+
+
+                pages: function() {
+                    let pages = [];
+                    let from = this.pagination.current_page - Math.floor(this.pagination.per_page / 2);
+                    if (from < 1) {
+                        from = 1;
+                    }
+                    let to = from + this.pagination.per_page - 1;
+                    if (to > this.pagination.last_page) {
+                        to = this.pagination.last_page;
+                    }
+
+
+                    if (this.pagination.last_page > 9 && this.pagination.current_page > 4
+                        && this.pagination.current_page < (this.pagination.last_page - 4)){
+                        var startPage = this.pagination.current_page - 4;
+                        var endPage = this.pagination.current_page + 5;
+                    }else if(this.pagination.last_page > 9 && this.pagination.current_page < 5){
+                        var startPage = 1;
+                        var endPage = 10;
+                    }else if(this.pagination.last_page > 9 &&
+                        this.pagination.current_page >= (this.pagination.last_page - 5)){
+                        var startPage = this.pagination.last_page - 8;
+                        var endPage = this.pagination.last_page + 1;
+                    }else{
+                        var startPage = 1;
+                        var endPage = this.pagination.last_page + 1;
+                    }
+
+
+                    for(var i=startPage;i<endPage;i++){
+                        /*var active = (response.current_page == i)? 'active' : '';
+                        var li = $('<li class="'+active+'">');
+                        var a = $('<a href="'+baseUrl+'/diagnosis?page='+i+'" onclick="icd($(this))">').text(i);
+                        $(ul).append($(li).append(a));*/
+                        pages.push(i);
+                    }
+
+
+                    /*while (from <= to) {
+                        pages.push(from);
+                        from++;
+                    }*/
+
+                    return pages;
+                },
+
+
+
+
+                pages_two: function() {
+                    let pages_two = [];
+                    let from = this.pagination_two.current_page - Math.floor(this.pagination_two.per_page / 2);
+                    if (from < 1) {
+                        from = 1;
+                    }
+                    let to = from + this.pagination_two.per_page - 1;
+                    if (to > this.pagination_two.last_page) {
+                        to = this.pagination_two.last_page;
+                    }
+
+
+                    if (this.pagination_two.last_page > 9 && this.pagination_two.current_page > 4
+                        && this.pagination_two.current_page < (this.pagination_two.last_page - 4)){
+                        var startPage = this.pagination_two.current_page - 4;
+                        var endPage = this.pagination_two.current_page + 5;
+                    }else if(this.pagination_two.last_page > 9 && this.pagination_two.current_page < 5){
+                        var startPage = 1;
+                        var endPage = 10;
+                    }else if(this.pagination_two.last_page > 9 &&
+                        this.pagination_two.current_page >= (this.pagination_two.last_page - 5)){
+                        var startPage = this.pagination_two.last_page - 8;
+                        var endPage = this.pagination_two.last_page + 1;
+                    }else{
+                        var startPage = 1;
+                        var endPage = this.pagination_two.last_page + 1;
+                    }
+
+
+                    for(var i=startPage;i<endPage;i++){
+                        /*var active = (response.current_page == i)? 'active' : '';
+                        var li = $('<li class="'+active+'">');
+                        var a = $('<a href="'+baseUrl+'/diagnosis?page='+i+'" onclick="icd($(this))">').text(i);
+                        $(ul).append($(li).append(a));*/
+                        pages_two.push(i);
+                    }
+
+
+                    /*while (from <= to) {
+                        pages.push(from);
+                        from++;
+                    }*/
+
+                    return pages_two;
+                },
+
+
+
+
 
                 queued_action_buttons: function()
                 {
@@ -2027,6 +3395,10 @@ var queue_vue = new Vue({
                     return;
                 },
 
+
+
+
+
                 search_filter_consultation: function(){
                     return this.consultations_all.filter((consultation) => {
                         var last_name = consultation.last_name.toLowerCase();
@@ -2039,7 +3411,189 @@ var queue_vue = new Vue({
                             return false;
                         }
                     });
-                }
+                },
+
+
+                search_filter_charging: function(){
+                    return this.ancillary_services_array.filter((anc) => {
+                        var sub_category = anc.sub_category.toLowerCase();
+                        var price = anc.price.toString();
+                        if (sub_category.match(this.search_ancillary_services.toLowerCase()) ||
+                            price.match(this.search_ancillary_services.toLowerCase())){
+                            return true;
+                        }else{
+                            return false;
+                        }
+                    });
+                },
+
+
+                search_primary_class: function(){
+                    return this.icdPrimeclass.filter((anc) => {
+                        var code = anc.code.toLowerCase();
+                        var description = anc.description.toLowerCase().toString();
+                        if (code.match(this.searchPrimaryClass.toLowerCase()) ||
+                            description.match(this.searchPrimaryClass.toLowerCase())){
+                            return true;
+                        }else{
+                            return false;
+                        }
+                    });
+                },
+
+                search_sub_class_one: function(){
+                    return this.icdSubclassOne.filter((anc) => {
+                        var code = anc.code.toLowerCase();
+                        var description = anc.description.toLowerCase().toString();
+                        if (code.match(this.searchSubClassOne.toLowerCase()) ||
+                            description.match(this.searchSubClassOne.toLowerCase())){
+                            return true;
+                        }else{
+                            return false;
+                        }
+                    });
+                },
+
+
+
+                search_sub_class_two: function(){
+                    return this.icdSubclassTwo.filter((anc) => {
+                        var code = anc.code.toLowerCase();
+                        var description = anc.description.toLowerCase().toString();
+                        if (code.match(this.searchSubClassTwo.toLowerCase()) ||
+                            description.match(this.searchSubClassTwo.toLowerCase())){
+                            return true;
+                        }else{
+                            return false;
+                        }
+                    });
+                },
+
+
+                icd_codes_list: function(){
+                    return this.icdCodes.filter((anc) => {
+                        var code = anc.code.toLowerCase();
+                        var description = anc.description.toLowerCase().toString();
+                        if (code.match(this.searchICDCodes.toLowerCase()) ||
+                            description.match(this.searchICDCodes.toLowerCase())){
+                            return true;
+                        }else{
+                            return false;
+                        }
+                    });
+                },
+
+
+                // for charging ancillary and services offered
+
+                charging_amount: function () {
+                    var root_element = this;
+                    var ch_amount = 0;
+                    $.each(this.add_charging_array, function (index, value) {
+                        ch_amount += root_element.add_charging_array[index].amount;
+                    });
+                    return ch_amount;
+                },
+                charging_discount: function () {
+                    var root_element = this;
+                    var ch_discount = 0;
+                    $.each(this.add_charging_array, function (index, value) {
+                        ch_discount += root_element.add_charging_array[index].discount;
+                    });
+                    return ch_discount;
+                },
+                charging_net: function () {
+                    var root_element = this;
+                    var ch_net = 0;
+                    $.each(this.add_charging_array, function (index, value) {
+                        ch_net += root_element.add_charging_array[index].net;
+                    });
+                    return ch_net;
+                },
+
+                // for unpaid chargings
+                unpaid_amount: function () {
+                    var root_element = this;
+                    var ch_amount = 0;
+                    $.each(this.unpaid_request_array, function (index, value) {
+                        ch_amount += root_element.unpaid_request_array[index].amount;
+                    });
+                    return ch_amount;
+                },
+                unpaid_discount: function () {
+                    var root_element = this;
+                    var ch_discount = 0;
+                    $.each(this.unpaid_request_array, function (index, value) {
+                        ch_discount += root_element.unpaid_request_array[index].discount;
+                    });
+                    return ch_discount;
+                },
+                unpaid_net: function () {
+                    var root_element = this;
+                    var ch_net = 0;
+                    $.each(this.unpaid_request_array, function (index, value) {
+                        ch_net += root_element.unpaid_request_array[index].net;
+                    });
+                    return ch_net;
+                },
+
+
+                // for paid but undone requests
+                paid_amount: function () {
+                    var root_element = this;
+                    var ch_amount = 0;
+                    $.each(this.paid_but_undone_array, function (index, value) {
+                        ch_amount += root_element.paid_but_undone_array[index].amount;
+                    });
+                    return ch_amount;
+                },
+                paid_discount: function () {
+                    var root_element = this;
+                    var ch_discount = 0;
+                    $.each(this.paid_but_undone_array, function (index, value) {
+                        ch_discount += root_element.paid_but_undone_array[index].discount;
+                    });
+                    return ch_discount;
+                },
+                paid_net: function () {
+                    var root_element = this;
+                    var ch_net = 0;
+                    $.each(this.paid_but_undone_array, function (index, value) {
+                        ch_net += root_element.paid_but_undone_array[index].net;
+                    });
+                    return ch_net;
+                },
+
+
+
+                // for paid and done requests
+                done_amount: function () {
+                    var root_element = this;
+                    var ch_amount = 0;
+                    $.each(this.paid_and_done_array, function (index, value) {
+                        ch_amount += root_element.paid_and_done_array[index].amount;
+                    });
+                    return ch_amount;
+                },
+                done_discount: function () {
+                    var root_element = this;
+                    var ch_discount = 0;
+                    $.each(this.paid_and_done_array, function (index, value) {
+                        ch_discount += root_element.paid_and_done_array[index].discount;
+                    });
+                    return ch_discount;
+                },
+                done_net: function () {
+                    var root_element = this;
+                    var ch_net = 0;
+                    $.each(this.paid_and_done_array, function (index, value) {
+                        ch_net += root_element.paid_and_done_array[index].net;
+                    });
+                    return ch_net;
+                },
+
+
+
 
             }, // end of computed properties
 
@@ -2062,7 +3616,37 @@ var queue_vue = new Vue({
                     var year = d.getFullYear();
                     var today = month+' '+day+', '+year;
                     return today;
-                }
+                },
+                trimmed: function (value) {
+                    return value.trim();
+                },
+                time_calculate: function($date){
+                    var d = new Date($date);
+                    var days = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+                    var month = days[d.getMonth()];
+                    var day = d.getDate();
+                    var year = d.getFullYear();
+                    var hour = d.getHours();
+                    var min = d.getMinutes();
+                    if(hour < 10){
+                        hour = '0'+hour;
+                    }
+                    if(min < 10){
+                        min = '0'+min;
+                    }
+                    var today = month+' '+day+', '+year+' '+hour+':'+min;
+                    return today;
+                },
+                formatMoney: function (n, c, d, t) {
+                    var c = isNaN(c = Math.abs(c)) ? 2 : c,
+                        d = d == undefined ? "." : d,
+                        t = t == undefined ? "," : t,
+                        s = n < 0 ? "-" : "",
+                        i = String(parseInt(n = Math.abs(Number(n) || 0).toFixed(c))),
+                        j = (j = i.length) > 3 ? j % 3 : 0;
+                    return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
+                },
+
             }
 
 
@@ -2116,8 +3700,18 @@ $('.followup_notification').on('show.bs.dropdown', function () {
     queue_vue.followup_notifications();
 });
 
-
-
+// when unpaid requests tabs is clicked
+$('.nav-tabs a[href="#unpaid_tab"]').on('show.bs.tab', function(event){
+    queue_vue.unpaid_request();
+});
+// when paid but undone requests tabs is clicked
+$('.nav-tabs a[href="#paid_but_undone_tab"]').on('show.bs.tab', function(event){
+    queue_vue.paid_but_undone();
+});
+// when paid and done requests tabs is clicked
+$('.nav-tabs a[href="#paid_and_done_tab"]').on('show.bs.tab', function(event){
+    queue_vue.paid_and_done();
+});
 
 
 

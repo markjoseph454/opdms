@@ -150,7 +150,10 @@ class SearchQueuedPatientController extends Controller
             ->groupBy('queues.patients_id')
             ->paginate(20);
 
-        return view('OPDMS.reception.queue', compact('queues'));
+            $status = 'A';
+
+        return view('OPDMS.reception.queue', compact('queues', 'status'));
     }
+
 
 }

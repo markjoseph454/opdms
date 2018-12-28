@@ -143,7 +143,8 @@ class ReceptionController extends Controller
                         'assignations.created_at as assigned_time', 'assignations.updated_at as assigned_uptime')
                     ->orderBy('queues.created_at')
                     ->groupBy('queues.patients_id')
-                    ->paginate(20);
+                    ->paginate(50);
+
 
         return view('OPDMS.reception.queue', compact('queues', 'status'));
 

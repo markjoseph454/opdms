@@ -1,5 +1,5 @@
 <div class="box-header with-border">
-        <form class="form-inline text-right" method="GET">
+        <form class="form-inline text-right" method="GET" onsubmit="full_loader()">
             <div class="form-group">
                 <label>FILTER </label>
                 <select class="form-control" name="top" required>

@@ -93,3 +93,12 @@ input[type="text"]::-ms-input-placeholder, input[type="password"]::-ms-input-pla
 form h1{
 	color: #fff;
 }
+#passwordaddon:hover{
+	cursor: pointer;
+}
+.capslockon{
+	color: #b30000;
+	text-align: center;
+	display: none;
+	font-weight: bold;
+}

@@ -116,9 +116,10 @@ class ConsultationController extends Controller
                 'physical_exams', 'industrial_surveys', 'final_results')
                 ->where([
                     ['patient_id', $pid],
-                    [DB::raw('DATE(industrial_forms.created_at)'), Carbon::now()->toDateString()],
+//                    [DB::raw('DATE(industrial_forms.created_at)'), Carbon::now()->toDateString()],
                     ['industrial_forms.user_id', Auth::user()->id]
                 ])
+                ->latest('industrial_forms.created_at')
                 ->first();
         }else{
             $industrialConsultations = null;

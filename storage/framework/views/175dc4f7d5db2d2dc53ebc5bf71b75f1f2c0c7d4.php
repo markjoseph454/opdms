@@ -4,7 +4,7 @@
             <h3 style="margin: 5px 0 0 0 " class="text-blue"><?php echo e($clinic->name); ?></h3>
         </div>
         <div class="col-md-9 text-right">
-            <form action="<?php echo e(url('demographic')); ?>" method="post" class="form-inline" style="display: inline">
+            <form action="<?php echo e(url('demographic')); ?>" method="post" class="form-inline" style="display: inline" onsubmit="full_loader()">
                 <?php echo e(csrf_field()); ?>
 
                 <div class="input-group">

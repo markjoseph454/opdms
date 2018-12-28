@@ -37,7 +37,7 @@
 
 
         <?php
-            $chrgingClinics = array(3,5,8,24,32,34,10,48,22,21,25,11);
+            $chrgingClinics = array(3,5,8,24,32,34,10,48,22,21,25,11,26);
             $noDoctorsClinic = array(10,48,22,21);
         ?>
 

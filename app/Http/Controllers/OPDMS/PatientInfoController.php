@@ -31,4 +31,6 @@ class PatientInfoController extends Controller
     {
         return $patient->toJson();
     }
+
+
 }

@@ -434,6 +434,21 @@ class DoctorsController extends Controller
     }
 
 
+    public function doc()
+    {
+        $data = DB::select("SELECT CONCAT(patients.last_name,' ',patients.first_name) as patient,
+            CONCAT(users.last_name,' ',users.first_name) as doctors,
+            consultations.consultation, consultations.created_at as date
+            FROM consultations
+            LEFT JOIN users ON users.id  = consultations.users_id
+            LEFT JOIN patients ON patients.id = consultations.patients_id
+            WHERE MONTH(consultations.created_at) = 11 
+            AND users.clinic = 3
+            ORDER BY consultations.created_at DESC");
+        return view('doctors.doc', compact('data'));
+    }
+
+
 
 
 

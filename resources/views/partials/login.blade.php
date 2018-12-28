@@ -64,10 +64,10 @@
 
                                     <div class="form-group @if($errors->has('password')) has-error @endif">
                                         <div class="input-group">
-                                        <input type="password" name="password" class="form-control" placeholder="Enter Password"
+                                        <input type="password" id="pass_input" name="password" class="form-control" placeholder="Enter Password"
                                         aria-describedby="passwordaddon" />
-                                        <span class="input-group-addon addonIcon" id="emailaddon">
-                                                <i class="fa fa-lock"></i>
+                                        <span class="input-group-addon addonIcon" id="passwordaddon">
+                                                <i class="fa fa-unlock-alt"></i>
                                             </span>
                                         </div>
                                         @if ($errors->has('password'))
@@ -76,6 +76,11 @@
                                             </span>
                                         @endif
                                     </div>
+
+                                    <p class="capslockon">
+                                        <i class="fa fa-warning"></i>
+                                        Caps Lock is on.
+                                    </p>
 
                                     <div class="form-group">
                                         <br/>
@@ -105,6 +110,7 @@
 
     @section('pagescript')
         @include('message.toaster')
+        <script src="{{ asset('public/js/partials/login.js') }}"></script>
     @stop
 
 

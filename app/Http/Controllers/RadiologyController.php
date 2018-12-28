@@ -517,7 +517,8 @@ class RadiologyController extends Controller
 
         $radiology = Radiology::where('radiology.id', $rid)
             ->leftJoin('patients as pt', 'pt.id', 'radiology.patient_id')
-            ->select('radiology.*', 'pt.birthday','pt.sex',
+            ->leftJoin('users', 'users.id', 'radiology.user_id')
+            ->select('radiology.*', 'pt.birthday','pt.sex', 'users.clinic', 'pt.address', 'pt.sex',
                 DB::raw("CONCAT(pt.last_name,' ',pt.first_name,' ',
                                             CASE WHEN pt.suffix IS NOT NULL THEN pt.suffix ELSE '' END,' ',
                                             CASE WHEN pt.middle_name IS NOT NULL THEN LEFT(pt.middle_name,1) ELSE '' END) as patient"))
@@ -539,38 +540,40 @@ class RadiologyController extends Controller
         $pdf->SetFont('times','');
 
 
-        $pdf->SetXY(83,5);
-        $pdf->Cell(45,1,'Republic of the Philippines',0,0,'C',false,'',2,false,'T');
-        $pdf->SetXY(86,10);
-        $pdf->Cell(40,1,'Department of Health',0,0,'C',false,'',2,false,'T');
-        $pdf->SetXY(68,15);
-        $pdf->Cell(75,1,'Department of Health Regional Office No. 8',0,0,'C',false,'',2,false,'T');
-        $pdf->SetXY(55,20);
+//        $pdf->SetXY(83,5);
+//        $pdf->Cell(45,1,'Republic of the Philippines',0,0,'C',false,'',2,false,'T');
+//        $pdf->SetXY(86,10);
+//        $pdf->Cell(40,1,'Department of Health',0,0,'C',false,'',2,false,'T');
+//        $pdf->SetXY(68,15);
+//        $pdf->Cell(75,1,'Department of Health Regional Office No. 8',0,0,'C',false,'',2,false,'T');
+        $pdf->SetFont('times','B');
+        $pdf->SetXY(50,12);
         $pdf->Cell(100,1,'EASTERN VISAYAS REGIONAL MEDICAL CENTER',0,0,'C',false,'',2,false,'T');
-        $pdf->SetXY(93,25);
-        $pdf->Cell(25,1,'Tacloban City',0,0,'C',false,'',2,false,'T');
-        $pdf->SetXY(65,30);
-        $pdf->Cell(80,1,'(053)832-0308;evrmcmccoffice@gmail.com',0,0,'C',false,'',2,false,'T');
-        $pdf->SetXY(70,40);
+        $pdf->SetXY(50,17);
+        $pdf->Cell(67,1,'TACLOBAN CITY, PHILIPPINES 6500',0,0,'C',false,'',2,false,'T');
+        $pdf->SetFont('times','N');
+        $pdf->SetXY(50,22);
+        $pdf->Cell(43,1,'evrmcmccoffice@gmail.com',0,0,'C',false,'',2,false,'T');
+        /*$pdf->SetXY(70,40);
         $pdf->SetFont('times','I');
         $pdf->Cell(78,1,'"PHIC Accredited Health Care Provider"',0,0,'C',false,'',2,false,'T');
-        $pdf->SetFont('times','B',18);
-        $pdf->SetXY(70,50);
-        $pdf->Image('./public/images/doh-logo.png',20,10,35);
-        $pdf->Image('./public/images/evrmc-logo.png',160,10.5,25);
+        $pdf->SetFont('times','B',18);*/
+        $pdf->SetXY(80,45);
+//        $pdf->Image('./public/images/doh-logo.png',20,10,35);
+        $pdf->Image('./public/images/evrmc-logo.png',25,10.5,20);
+//        $pdf->Image('./public/images/evrmc-logo.png',160,10.5,25);
 
         $pdf->SetFont('times','N',11);
-        $pdf->SetXY(5,50);
-
+        $pdf->SetXY(5,35);
         $table = \View::make('radiology.print', compact('radiology', 'dateQueue'));
         $pdf->writeHTML($table, true, false, false, false, '');
 
-        $pdf->SetXY(5,100);
+        $pdf->SetXY(5,85);
         $pdf->writeHTML($radiology->result, true, false, false, false, '');
 
 
-        $pdf->SetXY(5,100);
-        $pdf->writeHTML($radiology->result, true, false, false, false, '');
+        /*$pdf->SetXY(5,100);
+        $pdf->writeHTML($radiology->result, true, false, false, false, '');*/
 
         $pdf->Output();
 

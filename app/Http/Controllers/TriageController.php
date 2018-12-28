@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
 use Illuminate\Http\Request;
 use App\Patient;
 use App\Clinic;
@@ -9,6 +10,7 @@ use App\Triage;
 use App\VitalSigns;
 use App\Assignation;
 use App\Mssclassification;
+use App\Queue;
 use Validator;
 use Auth;
 use Session;
@@ -56,6 +58,40 @@ class TriageController extends Controller
 
             $vitalsigns = new VitalSigns();
             $vitalsigns->storeVitalSigns($request, $triage->id, $request->patients_id);
+
+            // get the clinic receptionist id
+            $user = User::where([
+                        ['clinics.code', $request->clinic_code],
+                        ['role', 5],
+                    ])
+                    ->leftJoin('clinics', 'clinics.id', 'users.clinic')
+                    ->latest('users.created_at')
+                    ->pluck('users.id')
+                    ->first();
+
+            if ($user){
+                $user_id = $user;
+            }else{
+                $user_id = Auth::user()->id; // assign the triage user_id if receptionist does not exist
+            }
+
+            // get the clinic id
+            $clinic_id = Clinic::where('code', $request->clinic_code)->pluck('id')->first();
+
+            $checkQueueList = Queue::where('patients_id', '=', $request->patients_id)
+                ->where('clinic_code', '=', $clinic_id)
+                ->whereDate('created_at', Carbon::now()->format('Y-m-d'))
+                ->count();
+
+
+            if ($checkQueueList <= 0){
+                Queue::create([
+                    'patients_id' => $request->patients_id,
+                    'users_id' => $user_id,
+                    'clinic_code' => $clinic_id,
+                ]);
+            }
+
             Session::flash('toaster', array('success', 'Triage successfully saved.'));
             return redirect('triage');
         }else{
@@ -143,7 +179,11 @@ class TriageController extends Controller
     {
         $patient = Patient::find($id);
         $clinics = Clinic::orderBy('name')->get();
-        return view('triage.triage', compact('patient', 'clinics'));
+        $last_checkup = Queue::where('patients_id', $id)
+                        ->leftJoin('clinics', 'clinics.id', 'queues.clinic_code')
+                        ->select('clinics.id', 'clinics.name', 'queues.created_at')
+                        ->latest('queues.created_at')->first();
+        return view('triage.triage', compact('patient', 'clinics', 'last_checkup'));
     }
 
 

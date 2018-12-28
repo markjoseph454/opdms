@@ -7,11 +7,38 @@
 
      
 
+
     <li class="header action_buttons bg-green" v-if="action_btn_loader">
         <i class="fa fa-spinner fa-pulse fa-lg"></i> Please wait...
     </li>
 
     <li class="header action_buttons" v-if="action_btn_header">
+        Action Buttons
+    </li>
+
+    <li v-if="assignations" v-bind:class="{ active_li : is_active_li }">
+        <a href="" v-on:click.prevent="patient_assignation"
+           v-bind:class="{ active_link : is_active_link }">
+            <i class="fa fa-arrow-left"></i>
+            <span>Assignations</span>
+        </a>
+    </li>
+    <li v-if="re_assign" v-bind:class="{ active_li : is_active_li }">
+        <a href="" v-on:click.prevent="patient_re_assignation"
+           v-bind:class="{ active_link : is_active_link }">
+            <i class="fa fa-arrow-left"></i>
+            <span>Re-assign</span>
+        </a>
+    </li>
+    <li v-if="nawc" v-bind:class="{ active_li : is_active_li }">
+        <a href="" v-on:click.prevent="remove_queued_patient"
+           v-bind:class="{ active_link : is_active_link }">
+            <i class="fa fa-trash-o"></i>
+            <span>Remove</span>
+        </a>
+    </li>
+
+    <li class="header action_buttons" v-if="patient_selected">
         Main Menu
     </li>
 
@@ -37,6 +64,15 @@
             <span>Nurse Notes</span>
         </a>
     </li>
+    
+    <li v-if="patient_selected" v-bind:class="{ active_li : is_active_li }">
+        <a href="" v-bind:class="{ active_link : is_active_link}"
+           v-on:click.prevent="show_vs_modal"
+           v-if="user_clinic == 43">
+            <i class="fa fa-file-text"></i>
+            <span>Industrial Form</span>
+        </a>
+    </li>
     <li v-if="patient_selected" v-bind:class="{ active_li : is_active_li }">
         <a href="" v-on:click.prevent="get_patient_notifications"
            v-bind:class="{ active_link : is_active_link }">
@@ -58,7 +94,8 @@
     </li>
     <li v-if="charging_allowed" v-bind:class="{ active_li : is_active_li }">
         <a href="#"
-           v-bind:class="{ active_link : is_active_link }">
+           v-bind:class="{ active_link : is_active_link }"
+        v-on:click.prevent="charged_patient">
             <i class="fa fa-database"></i>
             <span>Charging</span>
             <span class="pull-right-container">
@@ -73,27 +110,7 @@
     </li>
 
 
-    <li v-if="assignations" v-bind:class="{ active_li : is_active_li }">
-        <a href="" v-on:click.prevent="patient_assignation"
-           v-bind:class="{ active_link : is_active_link }">
-            <i class="fa fa-arrow-left"></i>
-            <span>Assignations</span>
-        </a>
-    </li>
-    <li v-if="re_assign" v-bind:class="{ active_li : is_active_li }">
-        <a href="" v-on:click.prevent="patient_re_assignation"
-           v-bind:class="{ active_link : is_active_link }">
-            <i class="fa fa-arrow-left"></i>
-            <span>Re-assign</span>
-        </a>
-    </li>
-    <li v-if="nawc" v-bind:class="{ active_li : is_active_li }">
-        <a href="" v-on:click.prevent="remove_queued_patient"
-           v-bind:class="{ active_link : is_active_link }">
-            <i class="fa fa-trash-o"></i>
-            <span>Remove</span>
-        </a>
-    </li>
+
 
 
 

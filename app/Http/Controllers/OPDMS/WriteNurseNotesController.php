@@ -48,7 +48,8 @@ class WriteNurseNotesController extends Controller
                     "))
                 ->leftJoin('users', 'users.id', 'consultations.users_id')
                 ->select('consultations.*', 'users.clinic', 'users.role')
-                ->latest('consultations.created_at')
+//                ->latest('consultations.created_at')
+                ->latest('consultations.updated_at')
                 ->first();
         }else{
             $consultation = null;

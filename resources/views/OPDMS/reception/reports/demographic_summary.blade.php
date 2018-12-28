@@ -49,7 +49,7 @@
 
 
             @include('OPDMS.partials.boilerplate.header',
-            ['header' => 'Demographic Detailed Census', 'sub' => 'Showing a detailed demographic census of registered patients.'])
+            ['header' => 'Demographic Summary Census', 'sub' => 'Showing demographic summary census of registered patients.'])
 
             <!-- Main content -->
                 <section class="content container-fluid">

@@ -2,7 +2,7 @@
 
 
     @slot('title')
-        Referrals Reports
+        Demographic Detailed Census
     @endslot
 
 
@@ -49,7 +49,7 @@
 
 
             @include('OPDMS.partials.boilerplate.header',
-            ['header' => 'Referrals Report', 'sub' => 'Showing all referrals from this clinic.'])
+            ['header' => 'Demographic Detailed Census', 'sub' => 'Showing a detailed demographic census of registered patients.'])
 
             <!-- Main content -->
                 <section class="content container-fluid">
