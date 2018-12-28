@@ -11,7 +11,7 @@
                 @include('OPDMS.partials.loader')
                 <div class="form-group has-feedback">
                     <div>
-                        <input type="text" name="" class="form-control search-patient-input" id="search-patient-input" placeholder="Search Record...">
+                        <input type="text" name="" class="form-control search-patient-input" id="search-patient-input" placeholder="hospital no last name first name middle name">
                         <span class="fa fa-search text-muted form-control-feedback"></span>
                     </div>
                 </div>
@@ -22,7 +22,7 @@
                 <div class="table-responsive">
                     <table class="table table-striped table-hover" id="result-table">
                         <thead>
-                            <tr>
+                            <tr class="bg-gray">
                                 <th></th>
                                 <th>ID no</th>
                                 <th>Last Name</th>

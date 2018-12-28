@@ -11,6 +11,7 @@
 }
 .table-hover tbody tr:hover td{
   background-color: #ccffe8;
+  color: #000;
 }
 table tbody tr.selected td{
 	background-color: #99ffd1;
@@ -68,4 +69,14 @@ table.table-striped tbody tr td:nth-child(1) span{
 	position: relative; 
 	z-index: 10000 !important; 
 }
+.sidebar-menu li.disabled a{
+	/*pointer-events:none;*/
+	opacity:0.6;  
+	cursor: not-allowed!important;
+
+}
+
+.sidebar-menu li.disabled a{
+}
+
 

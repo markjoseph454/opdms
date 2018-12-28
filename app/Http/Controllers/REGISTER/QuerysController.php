@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
 use App\Http\Controllers\Controller;
 use App\Patient;
+use App\User;
 use App\Clinic;
 use App\ForDelete;
 use App\AdoptedhostpitalNumbers;
@@ -108,5 +109,82 @@ class QuerysController extends Controller
                         ->where('patients.id', '=', $id)
                         ->first());
         return;                      
+    }
+
+    public function register_report(Request $request)
+    {
+        $data = [];
+        if ($request->generate) {
+            foreach ($request->arr_from as $key => $value) {
+                if ($request->arr_from[$key]) {
+                     $request->request->add(['from' => $request->arr_from[$key]]);
+                }
+                if ($request->arr_to[$key]) {
+                     $request->request->add(['to' => $request->arr_to[$key]]);
+                }
+            }
+            
+                $validator = Validator::make($request->all(), [
+                    'generate' => 'required',
+                    'user' => 'required',
+                    'from' => 'required|date|before_or_equal:'.Carbon::now()->format('m/d/Y').'|before_or_equal:to',
+                    'to' => 'required|date|before_or_equal:'.Carbon::now()->format('m/d/Y').'|after_or_equal:from',
+                ]);
+
+            if ($validator->passes()) { 
+                $data = DB::select("SELECT DATE(a.created_at) as date, COUNT(*) as result 
+                                    FROM $request->report
+                                    LEFT JOIN users b ON a.users_id = b.id
+                                    WHERE DATE(a.created_at) BETWEEN ? AND ?
+                                    AND a.users_id =
+                                       (CASE 
+                                            WHEN '$request->user' = 'All' 
+                                            THEN a.users_id
+                                            ELSE ?
+                                        END)
+                                    GROUP BY $request->generate(a.created_at)
+                                ", [Carbon::parse($request->from)->format('Y-m-d'), 
+                                    Carbon::parse($request->to)->format('Y-m-d'), 
+                                    $request->user]);
+                
+            }else{
+                return redirect()->back()->withInput()->withErrors($validator);  
+            }
+        }
+        
+        return view('OPDMS.patients.pages.report', compact('data', 'request'));
+    }
+    public function getpatienttransaction($id)
+    {
+        $paid = DB::select("SELECT h.price,
+                                    h.or_no,
+                                    j.last_name, j.first_name, j.middle_name,
+                                    DATE(h.created_at) as created_at
+                            FROM cashidsale h
+                            LEFT JOIN users j ON h.users_id = j.id
+                            WHERE h.patients_id = ?
+                            AND h.void = 0
+                            UNION 
+                            SELECT a.price,
+                                    a.or_no,
+                                    b.last_name, b.first_name, b.middle_name,
+                                    DATE(a.created_at) as created_at
+                            FROM cashincome a 
+                            LEFT JOIN users b ON a.users_id = b.id
+                            WHERE a.patients_id = ?
+                            AND a.void = '0'
+                            AND a.category_id = 312
+                            ORDER BY created_at DESC
+                            ", [$id, $id]);
+        $printed = DB::select("SELECT b.last_name,
+                                    b.first_name,
+                                    b.middle_name,
+                            a.created_at 
+                            FROM printed a 
+                            LEFT JOIN users b ON a.users_id = b.id
+                            WHERE a.patient_id = ?
+                        ", [$id]);
+        echo json_encode(['paid' => $paid, 'printed' => $printed]);
+        return;
     }
 }

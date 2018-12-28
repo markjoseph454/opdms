@@ -11,26 +11,34 @@
             <span>Patients</span>
         </a>
     </li>
+    <!-- <div > -->
+        <li class="header" @if(Request::is('register_report')) hidden @endif>LABELS</li>
 
-    <li class="header">LABELS</li>
-
+        <li @if(Request::is('register_report')) hidden @endif class="disabled">
+            <a href="#" id="patient-information" data-id="#">
+                <i class="fa fa-user-o"></i>
+                <span>Patient Information</span>
+            </a>
+        </li>
+        <li @if(Request::is('register_report')) hidden @endif class="disabled">
+            <a href="#" id="medical-record" data-id="#">
+                <i class="fa fa-book"></i>
+                <span>Medical Record</span>
+            </a>
+        </li>
+        <li @if(Request::is('register_report')) hidden @endif class="disabled">
+            <a href="#" id="patient-transaction" data-id="#">
+                <i class="fa fa-id-card-o"></i>
+                <span>Transaction</span>
+            </a>
+        </li>
+    <!-- </div> -->
+    <li class="header">OTHERS</li>
     <li>
-        <a href="#" id="patient-information" data-id="#">
-            <i class="fa fa-user-o"></i>
-            <span>Patient Information</span>
-        </a>
-    </li>
-    <li>
-        <a href="#" id="medical-record" data-id="#">
+       <a href="{{ url('register_report') }}">
             <i class="fa fa-file-text-o"></i>
-            <span>Medical Records</span>
-        </a>
-    </li>
-    <li>
-        <a href="#" id="history-record" data-id="#">
-            <i class="fa fa-history"></i>
-            <span>History</span>
-        </a>
+            <span>Report</span>
+       </a> 
     </li>
 
 </ul>

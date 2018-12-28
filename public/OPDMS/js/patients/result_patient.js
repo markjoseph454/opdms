@@ -71,7 +71,7 @@ function reserveHospitalNo(id_no) {
 
 
 $(document).on('click', '#modal-check-result #select-active-record', function(){
-	$('#modal-check-result .loaderRefresh').fadeIn('fast');
+	
 	var id = $(this).attr('data-id');
 
 	if (id == "#") {
@@ -80,7 +80,7 @@ $(document).on('click', '#modal-check-result #select-active-record', function(){
 		setTimeout(function(){ 
 			$('#modal-check-result').modal('toggle');
 		},500);
-		edit_patient(id);
+		edit_patient(id, enable = true);
 	}
 
 })

@@ -62,7 +62,7 @@
                                             <option>VI</option>
                                         </select>
                                     </div>
-                                    <div class="col-md-4 col-sm-4 divider">
+                                    <div class="col-md-3 col-sm-3 divider" style="padding-right: 0px;">
                                         <label>Birth Date <b class="text-red">*</b></label>
                                         <div class="input-group">
                                             <div class="input-group-addon">
@@ -70,6 +70,10 @@
                                             </div>
                                             <input type="text" name="birthday" class="form-control birthday" id="datemask2" data-inputmask="'alias': 'mm/dd/yyyy'" data-mask>
                                         </div>
+                                    </div>
+                                    <div class="col-md-1 col-sm-1 divider">
+                                        <label>Age</label>
+                                        <input type="text" name="age" class="form-control calculated-age text-center" readonly>
                                     </div>
                                     <div class="col-md-2 col-sm-2 divider" id="sexdiv">
                                         <label>Sex <b class="text-red">*</b></label>
@@ -134,25 +138,6 @@
                                             <option value="" hidden=>--</option>
                                         </select>
                                     </div>
-
-                                    <div class="col-md-4 col-sm-4 divider">
-                                        <label>Weight</label>
-                                        <div class="input-group">
-                                            <div class="input-group-addon">
-                                                KG.
-                                            </div>
-                                            <input type="text" name="weight" class="form-control weight">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 col-sm-4 divider">
-                                        <label>Height</label>
-                                        <div class="input-group">
-                                            <div class="input-group-addon">
-                                                CM.
-                                            </div>
-                                            <input type="text" name="height" class="form-control height">
-                                        </div>
-                                    </div>
                                     <div class="col-md-4 col-sm-4 divider">
                                         <label>Blood Pressure</label>
                                         <div class="input-group">
@@ -187,6 +172,24 @@
                                                 °C
                                             </div>
                                             <input type="text" name="body_temperature" class="form-control body_temperature">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-sm-4 divider">
+                                        <label>Weight</label>
+                                        <div class="input-group">
+                                            <div class="input-group-addon">
+                                                KG.
+                                            </div>
+                                            <input type="text" name="weight" class="form-control weight">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-sm-4 divider">
+                                        <label>Height</label>
+                                        <div class="input-group">
+                                            <div class="input-group-addon">
+                                                CM.
+                                            </div>
+                                            <input type="text" name="height" class="form-control height">
                                         </div>
                                     </div>
                                 </div>

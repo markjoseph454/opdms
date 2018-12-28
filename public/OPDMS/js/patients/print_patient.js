@@ -1,10 +1,3 @@
-$(document).on('click', '#print-multiple', function(){
-	var count = 50; 
-	$('.print-count').val('50');
-	printMultipleTable(count);
-	$('#modal-print-patient').modal('toggle');
-})
-
 function updatetablecontent(ele) {
     if(event.key === 'Enter') {
     	if (ele.value <= 300 && ele.value >= 1 && ele.value != '') {
@@ -54,13 +47,21 @@ function tobePrint()
 			}
 		}
 	});
-	// alert(value_id);
 }
 
 
 $(document).on('click', '#print-selected-record', function(){
-	// alert(unique);
-	// alert(value_id);
+
+	for (var i = 0; i < value_id.length; i++) {
+		$('#patient-table tbody tr').each(function(){
+			var tr = $(this);
+			var tr_id = $(tr).attr("data-id");
+			if (value_id[i] == tr_id) {
+				$(tr).find('.print_status').html('<small class="label bg-green">Printed</small>');
+			}
+		})
+	}
+	
 	if (value_id.length > 0) {
 		window.open(baseUrl+'/patients/'+value_id, '_blank');
 		value_id = [];

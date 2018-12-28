@@ -11,6 +11,7 @@ use App\VitalSigns;
 use App\Clinic;
 use App\Regforreferral;
 use App\ForDelete;
+use App\Printed;
 use Auth;
 use DB;
 use Validator;
@@ -34,31 +35,42 @@ class RegisterController extends Controller
     public function store(Request $request)
     {
         /*=============HOSPITAL NO================*/
-        if (!$request->hospital_no) {
-            $hospital_no = DB::select("SELECT 
-                                        MAX(hospital_no) as hospital_no
-                                    FROM patients
-                                    WHERE hospital_no NOT IN(SELECT hospital_no FROM adopted_hostpital_numbers)");
-            $hospital_no = $hospital_no[0]->hospital_no;
+        // if (!$request->hospital_no) {
+        //     $hospital_no = DB::select("SELECT 
+        //                                 MAX(hospital_no) as hospital_no
+        //                             FROM patients
+        //                             WHERE hospital_no NOT IN(SELECT hospital_no FROM adopted_hostpital_numbers)");
+        //     $hospital_no = $hospital_no[0]->hospital_no;
 
-            $get = false;
+        //     $get = false;
 
             
             
-            if ($hospital_no) {
-                while($get == false){
-                    $hospital_no = $hospital_no + 1;
-                    $hospital_no =  str_pad($hospital_no, 6, '0', STR_PAD_LEFT);
-                    $try = DB::select("SELECT hospital_no FROM patients WHERE hospital_no = ?", [$hospital_no]);
-                    if (!$try) {
-                        $get = true;
-                    }
-                }
-            }else{
-                $hospital_no = '000001';
-            }
-            $request->request->add(['hospital_no' => $hospital_no]);
+        //     if ($hospital_no) {
+        //         while($get == false){
+        //             $hospital_no = $hospital_no + 1;
+        //             $hospital_no =  str_pad($hospital_no, 6, '0', STR_PAD_LEFT);
+        //             $try = DB::select("SELECT hospital_no FROM patients WHERE hospital_no = ?", [$hospital_no]);
+        //             if (!$try) {
+        //                 $get = true;
+        //             }
+        //         }
+        //     }else{
+        //         $hospital_no = '000001';
+        //     }
+        //     $request->request->add(['hospital_no' => $hospital_no]);
+        // }
+
+        /*==========================USED FUNCTIONS ID=========================*/
+        $hospital_no = Patient::max('hospital_no');
+        if ($hospital_no) {
+            $hospital_no = $hospital_no + 1;
+            $hospital_no =  str_pad($hospital_no, 6, '0', STR_PAD_LEFT);
+        }else{
+            $hospital_no = '000001';
         }
+        $request->request->add(['hospital_no' => $hospital_no]);
+        /*===================================================================*/
         
 
         /*===============BARCODE================*/        
@@ -108,28 +120,33 @@ class RegisterController extends Controller
                         $patient = 'Synchronize Registration Not Allowed.';
                     }
                 }
-        if ($request->referral == "yes")
-        {
-            $regforreferral = new Regforreferral();
-            $regforreferral->patients_id = $patient->id;
-            $regforreferral->save();
-        }
-        $triage = false;
-        if ($request->clinic_code_store) {
-            $triage = new Triage();
-            $triage->patients_id = $patient->id;
-            $triage->users_id = Auth::user()->id;
-            $triage->clinic_code = $request->clinic_code_store;
-            $triage->save();
+        $regforreferral = null;
+        $triage = null;
+        if ($patient != 'Synchronize Registration Not Allowed.') {
+            if ($request->referral == "yes")
+            {
+                $regforreferral = new Regforreferral();
+                $regforreferral->patients_id = $patient->id;
+                $regforreferral->save();
+            }
+           
+            if ($request->clinic_code_store) {
+                $triage = new Triage();
+                $triage->patients_id = $patient->id;
+                $triage->users_id = Auth::user()->id;
+                $triage->clinic_code = $request->clinic_code_store;
+                $triage->save();
 
-            
-        }
-        if ($triage) {
-            $vitalsigns = new VitalSigns();
-            $vitalsigns->storeVitalSigns($request, $triage->id, $patient->id);
+                
+            }
+            if ($triage) {
+                $vitalsigns = new VitalSigns();
+                $vitalsigns->storeVitalSigns($request, $triage->id, $patient->id);
+            }
         }
 
-        echo json_encode($triage);
+
+        echo json_encode(['patient' => $patient, 'regforreferral' => $regforreferral, 'triage' => $triage]);
         return;
     }
 
@@ -144,6 +161,13 @@ class RegisterController extends Controller
         DB::table('patients')
                                 ->whereIn('id', explode(',', $id))
                                 ->update(array('printed' => 'Y'));
+        $list = explode(',', $id);
+        foreach ($list as $key => $value) {
+           $print = new Printed();
+           $print->users_id = Auth::user()->id;
+           $print->patient_id = $list[$key];
+           $print->save();
+        }
         $hospital = new HospitalIDController();
         $hospital->hospitalid($patient);
 
@@ -159,7 +183,18 @@ class RegisterController extends Controller
         $vital = VitalSigns::where('patients_id', '=', $id)
                         ->whereDate('created_at', '=', Carbon::today())->first();
         $referral = Regforreferral::where('patients_id', '=', $patient->id)->first();
-        echo json_encode(['patient' => $patient, 'triage' => $triage, 'vital' => $vital, 'referral' => $referral]);
+        $address = DB::select("SELECT b.id, b.brgyDesc,
+                                        c.citymunCode, c.citymunDesc,
+                                        d.provCode, d.provDesc,
+                                        e.regCode, e.regDesc
+                                FROM patients a 
+                                LEFT JOIN refbrgy b ON a.brgy = b.id
+                                LEFT JOIN refcitymun c ON a.city_municipality = c.citymunCode
+                                LEFT JOIN refprovince d ON c.provCode = d.provCode
+                                LEFT JOIN refregion e ON d.regCode = e.regCode
+                                WHERE a.id = ?
+                                ", [$id]);
+        echo json_encode(['patient' => $patient, 'triage' => $triage, 'vital' => $vital, 'referral' => $referral, 'address' => $address[0]]);
         return;
     }
     public function update(Request $request, $id)

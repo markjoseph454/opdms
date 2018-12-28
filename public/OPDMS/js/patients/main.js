@@ -1,9 +1,9 @@
 function dateCalculate($date){
     var d = new Date($date);
     var days = ["01","02","03","04","05","06","07","08","09","10","11","12"];
-    var month = days[d.getMonth()];
-    var day = d.getDate();
-    var year = d.getFullYear();
+    var month = days[d.getUTCMonth()];
+    var day = d.getUTCDate();
+    var year = d.getUTCFullYear();
     if (day < 10) {
         day = '0'+day;
     }
@@ -20,7 +20,7 @@ function mysqlDateformat($date){
      if (day < 10) {
         day = '0'+day;
     }
-    var today = year+'-'+month+'/'+day;
+    var today = year+'-'+month+'-'+day;
     return today;
 }
 function calculateAge(birthday) {
@@ -59,18 +59,74 @@ function calculateAge(birthday) {
 
 };
 
-$('#datemask2').inputmask('mm/dd/yyyy', { 'placeholder': 'mm/dd/yyyy' });
+function getAge(dateString) {
+    
+    var today = new Date(dateToday);
+
+    var birthDate = new Date(dateString);
+    var age = today.getFullYear() - birthDate.getFullYear();
+    var m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+    }
+    return age;
+}
+
+$('#datemask1, #datemask2').change(function(){
+    $('.calculated-age').val(getAge($(this).val()));
+})
+
+// $('#datemask2').inputmask('mm/dd/yyyy', { 'placeholder': 'mm/dd/yyyy' });
 $('[data-mask]').inputmask();
 
-$( function() {
-    $( "#datemask2" ).datepicker({
+$(document).ready(function(){
+
+    $( "#datemask1, #datemask2" ).datepicker({
         dateFormat: 'mm/dd/yyyy',
         changeMonth: true,
         changeYear: true,
         yearRange: "-110:+0",
-        maxDate: 'today',
+        maxDate: dateToday,
+    });
+
+    $("#from-month").datepicker({
+        changeMonth: true,
+        changeYear: true,
+        showButtonPanel: true,
+        dateFormat: 'mm/dd/yy',
+        maxDate: dateToday,
+        onClose: function (dateText, inst) {
+            var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+            var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+            $(this).datepicker('setDate', new Date(year,month,1));
+            $(".ui-datepicker-calendar").hide();
+        },
+        
+    });
+
+    $("#to-month").datepicker({
+        changeMonth: true,
+        changeYear: true,
+        showButtonPanel: true,
+        dateFormat: 'mm/dd/yy',
+        maxDate: dateToday,
+        onClose: function (dateText, inst) {
+            var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+            var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+            $(this).datepicker('setDate', new Date(year,month,(lastday(year, month))));
+            $(".ui-datepicker-calendar").hide();
+        },
+        
+    });
+
+    $("#from-month, #to-month").focus(function () {
+        $(".ui-datepicker-calendar").hide();
     });
 });
+
+function lastday(y,m){
+    return  new Date(y, Number(m) + 1, 0).getDate();
+}
 
 
 function getallclinics(triage){
@@ -151,4 +207,25 @@ function clearinputs(){
     $('.modal .pulse_rate').val('');
     $('.modal .respiration_rate').val('');
     $('.modal .body_temperature').val('');
+}
+
+function getDate(timestamp)
+{
+// Multiply by 1000 because JS works in milliseconds instead of the UNIX seconds
+var date = new Date(timestamp * 1000);
+
+var year = date.getUTCFullYear();
+var month = date.getUTCMonth() + 1; // getMonth() is zero-indexed, so we'll increment to get the correct month number
+var day = date.getUTCDate();
+var hours = date.getUTCHours();
+var minutes = date.getUTCMinutes();
+var seconds = date.getUTCSeconds();
+
+month = (month < 10) ? '0' + month : month;
+day = (day < 10) ? '0' + day : day;
+hours = (hours < 10) ? '0' + hours : hours;
+minutes = (minutes < 10) ? '0' + minutes : minutes;
+seconds = (seconds < 10) ? '0' + seconds: seconds;
+
+return year + '-' + month + '-' + day + ' ' + hours + ':' + minutes;
 }

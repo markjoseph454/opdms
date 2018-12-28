@@ -126,6 +126,8 @@ Route::group(['middleware' => ['register']], function(){
     Route::get('removePatientInfo/{id}', 'REGISTER\QuerysController@patient');
     Route::get('cancelRemoveRequest/{id}', 'REGISTER\QuerysController@cancel');
     Route::get('information/{id}', 'REGISTER\QuerysController@information');
+    Route::get('register_report', 'REGISTER\QuerysController@register_report');
+    Route::get('getpatienttransaction/{id}', 'REGISTER\QuerysController@getpatienttransaction');
     Route::resource('patients', 'REGISTER\RegisterController');
 
 

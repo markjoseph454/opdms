@@ -40,7 +40,7 @@
                 <div class="col-md-9 col-sm-9">
                     <select class="form-control search-option" name="option">
                         <option value="1">Both Last Name and First Name</option>
-                        <option value="2">Patient ID. No</option>
+                        <option value="2" disabled>Patient ID. No</option>
                     </select>
                 </div>
             </div>

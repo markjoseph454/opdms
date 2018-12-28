@@ -43,6 +43,12 @@ class CashierExport implements FromCollection, WithEvents, WithColumnFormatting,
     */
     public function collection()
     {
+      $cshier_id = Auth::user()->id;
+      if ($cshier_id == 150 || $cshier_id == 325) {
+
+        $cshier_id = '150,325';
+      }
+
     	$data = collect(DB::select("SELECT DATE(h.created_at) as dates, 
                                       h.or_no as numbers,
                                       i.last_name, i.first_name, i.middle_name,
@@ -69,7 +75,7 @@ class CashierExport implements FromCollection, WithEvents, WithColumnFormatting,
                                   LEFT JOIN patients i ON h.patients_id = i.id
                                   LEFT JOIN users j ON h.users_id = j.id
                                   WHERE date(h.created_at) = ?
-                                  AND h.users_id = ?
+                                  AND h.users_id IN($cshier_id)
                                   GROUP BY h.or_no
                                   UNION
                                   SELECT DATE(o.created_at) as dates,
@@ -156,11 +162,11 @@ class CashierExport implements FromCollection, WithEvents, WithColumnFormatting,
                                   LEFT JOIN cashincomesubcategory s ON o.category_id = s.id
                                   LEFT JOIN cashincomecategory t ON s.cashincomecategory_id = t.id
                                   WHERE date(o.created_at) = ?
-                                              AND o.users_id = ?
+                                              AND o.users_id IN($cshier_id)
                                               GROUP BY o.or_no, t.id
                                   ORDER BY numbers ASC
-                                          ", [old('transdate'), Auth::user()->id, 
-                                                old('transdate'), Auth::user()->id]));
+                                          ", [old('transdate'), 
+                                                old('transdate')]));
 		return $data;
     }
  
@@ -179,7 +185,7 @@ class CashierExport implements FromCollection, WithEvents, WithColumnFormatting,
 
                 /*=====PAGE SETUP=======*/
                   // DATA START TO PRINT
-                  $event->sheet->getDelegate()->getPageSetup()->setRowsToRepeatAtTopByStartAndEnd(1,5);
+                  $event->sheet->getDelegate()->getPageSetup()->setRowsToRepeatAtTopByStartAndEnd(6,8);
                   // PAGE LAYOUT
                   $event->sheet->getDelegate()->getPageSetup()
                   ->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_LANDSCAPE)

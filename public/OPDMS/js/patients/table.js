@@ -25,11 +25,12 @@ function foractionandtr(scope) {
 }
 
 function action_button(id) {
-	$("#edit-button").attr('data-id', id);
-	$("#remove-button").attr('data-id', id);
-	$("#print-button").attr('data-id', id);
-	$('#patient-information').attr('data-id', id);
-	$('#medical-record').attr('data-id', id);
+	$("#edit-button").attr('data-id', id).removeClass('disabled');
+	$("#remove-button").attr('data-id', id).removeClass('disabled');
+	$("#print-button").attr('data-id', id).removeAttr('disabled');
+	$('#patient-information').attr('data-id', id).closest('li').removeAttr('class');
+	$('#medical-record').attr('data-id', id).closest('li').removeAttr('class');
+	$('#patient-transaction').attr('data-id', id).closest('li').removeAttr('class');
 }
 
 function result_tbody(response){
@@ -70,11 +71,13 @@ function updateRowContent_patient(patient_id, response){
 	        $(this).find('td.last_name').text(response.last_name);
 	        $(this).find('td.first_name').text(response.first_name);
 	        $(this).find('td.middle_name').text(response.middle_name);
-	        if (response.suffix) {
-	        $(this).find('td.suffix').text(response.suffix);
+	        if (response.civil_status) {
+	        $(this).find('td.civil_status').text(response.civil_status);
 	        }else{
-	        $(this).find('td.suffix').text('');
+	        $(this).find('td.civil_status').text('');
 	        }
+	        $(this).find('td.birthday').text(dateCalculate(response.birthday));
+	        $(this).find('td.age').text(getAge(response.birthday));
 	        if (response.sex == 'F') {
 	        $(this).find('td.sex').text('Female');
 	        }else{
@@ -100,29 +103,41 @@ function refreshpatienttableContentController(response) {
 		var td4 = $('<td>').addClass('last_name').text(response[i].last_name);
 		var td5 = $('<td>').addClass('first_name').text(response[i].first_name);
 		var td6 = $('<td>').addClass('middle_name').text(response[i].middle_name);
-		if (response[i].suffix) {
-			var td7 = $('<td>').addClass('suffix').text(response[i].suffix);
+		if (response[i].civil_status) {
+			var td7 = $('<td>').addClass('civil_status').attr('align', 'center').text(response[i].civil_status);
 		}else{
-			var td7 = $('<td>').addClass('suffix').text('');
+			var td7 = $('<td>').addClass('civil_status').attr('align', 'center').text('');
 		}
 		if (response[i].sex == 'M') {
-		var td8 = $('<td>').addClass('sex').text('Male');
+		var td8 = $('<td>').addClass('sex').attr('align', 'center').text('Male');
 		}else{
-		var td8 = $('<td>').addClass('sex').text('Female');
+		var td8 = $('<td>').addClass('sex').attr('align', 'center').text('Female');
 		}
-		var td9 = $('<td>').text(dateCalculate(response[i].birthday));
+		var td9 = $('<td>').addClass('birthday').text(dateCalculate(response[i].birthday));
+		if (getAge(response[i].birthday) > 60) {
+			var td13 = $('<td>').addClass('age').attr('class', 'text-red text-bold').attr('align', 'center').text(getAge(response[i].birthday));	
+		}else{
+			var td13 = $('<td>').addClass('age').attr('align', 'center').text(getAge(response[i].birthday));
+		}
+		
 		if (response[i].brgyDesc) {
 		var td10 = $('<td>').text(response[i].brgyDesc+' '+response[i].citymunDesc+', '+response[i].provDesc);
 		}else{
 		var td10 = $('<td>').text(response[i].citymunDesc+', '+response[i].provDesc);
 		}
 		var td11 = $('<td>').text(dateCalculate(response[i].regdate));
-		$(tr).append(td1, td2, td3, td4, td5, td6, td7, td8, td9, td10, td11);
+		if (response[i].printed == 'Y') {
+		var td12 = $('<td>').attr('align', 'center').attr('class', 'print_status').html(' <small class="label bg-green">Printed</small>');
+		}else{
+		var td12 = $('<td>').attr('align', 'center').attr('class', 'print_status').html(' <small class="label bg-red">No</small>');
+		}
+		$(tr).append(td1, td2, td3, td4, td5, td6, td7, td8, td9, td13, td10, td11, td12);
 		$('#patient-table tbody').append(tr);
 	}
 	// body...
 }
 function updateprinttbodycontent(response) {
+	console.log(response);
 	$('.print-tbody').empty();
 	for (var i = 0; i < response.length; i++) {
     	$('.print-count').text(response.length);
@@ -151,13 +166,67 @@ function updateprinttbodycontent(response) {
     	var td6 = $('<td>').attr('align', 'center').text('Female');
     	}
     	if (response[i].printed == "Y") {
-    	var td7 = $('<td>').attr('align', 'center').html('<small class="label bg-green">Yes</small>');
+    	var td7 = $('<td>').attr('align', 'center').html('<small class="label bg-green">Printed</small>');
     	}else{
     	var td7 = $('<td>').attr('align', 'center').html('<small class="label bg-red">No</small>');
     	}
     	$(tr).append(td0,td1,td2,td3,td4,td5,td6,td7);
     	$('.print-tbody').append(tr);
     }
+}
+
+function transactiontabletbody(paid)
+{
+	$('#paid-id-table tbody').empty();
+	if (paid.length > 0) {
+		for (var i = 0; i < paid.length; i++) {
+			var tr = $('<tr>');
+			var td = $('<td hidden>');
+			var td1 = $('<td>').attr('align', 'right').text(paid[i].price.toFixed(2));
+			var td2 = $('<td>').attr('align', 'center').text(paid[i].or_no);
+			if (paid[i].middle_name) {
+			var td3 = $('<td>').attr('class', 'text-capitalize').text(paid[i].last_name+', '+paid[i].first_name+', '+paid[i].middle_name);
+			}else{
+			var td3 = $('<td>').attr('class', 'text-capitalize').text(paid[i].last_name+', '+paid[i].first_name);
+			}
+			var td4 = $('<td>').attr('align', 'center').text(dateCalculate(paid[i].created_at));
+			$(tr).append(td, td1, td2, td3, td4);
+			$('#paid-id-table tbody').append(tr);
+		}
+	}else{
+		var tr = $('<tr>');
+		var td = $('<td hidden>');
+		var td1 = $('<td>').attr('colspan', '5').attr('align', 'center').html('<span class="fa fa-warning"></span> Empty Data').css('font-weight', 'bold');
+		$(tr).append(td, td1);
+		$('#paid-id-table tbody').append(tr);
+
+	}
+
+}
+function printedtabletbody(printed){
+	$('#printed-id-table tbody').empty();
+	if (printed.length > 0) {
+		for (var i = 0; i < printed.length; i++) {
+			var tr = $('<tr>');
+			var td = $('<td hidden>');
+			if (printed[i].middle_name) {
+			var td3 = $('<td>').attr('class', 'text-capitalize').text(printed[i].last_name+', '+printed[i].first_name+', '+printed[i].middle_name);
+			}else{
+			var td3 = $('<td>').attr('class', 'text-capitalize').text(printed[i].last_name+', '+printed[i].first_name);
+			}
+			var td4 = $('<td>').attr('align', 'center').text(dateCalculate(printed[i].created_at));
+			$(tr).append(td, td3, td4);
+			$('#printed-id-table tbody').append(tr);
+		}
+	}else{
+		var tr = $('<tr>');
+		var td = $('<td hidden>');
+		var td1 = $('<td>').attr('colspan', '3').attr('align', 'center').html('<span class="fa fa-warning"></span> Empty Data').css('font-weight', 'bold');
+		$(tr).append(td, td1);
+		$('#printed-id-table tbody').append(tr);
+
+	}
+
 }
 
 // function isInArray(value, array) {

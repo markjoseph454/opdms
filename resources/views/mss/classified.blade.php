@@ -130,7 +130,7 @@
                             <tr>
                                 <td hidden></td>
                                 <td>{{ $var->hospital_no }}</td>
-                                <td>{{ $var->patient }}</td>
+                                <td>{{ $var->last_name.', '.$var->first_name.' '.$var->middle_name }}</td>
                                 <td>{{ $var->address }}</td>
                                 <td>{{ Carbon::parse($var->birthday)->format('m/d/Y') }}</td>
                                 <td>{{ $var->sex }}</td>
